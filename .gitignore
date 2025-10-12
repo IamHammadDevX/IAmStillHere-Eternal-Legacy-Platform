@@ -1,0 +1,152 @@
+# PHP
+vendor/
+*.log
+.env
+
+# Upload files
+data/uploads/photos/*
+data/uploads/videos/*
+data/uploads/documents/*
+!data/uploads/photos/.gitkeep
+!data/uploads/videos/.gitkeep
+!data/uploads/documents/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.lock
+
+# ---------------------------
+# Core OS / Editor junk
+# ---------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# ---------------------------
+# PHP and Composer
+# ---------------------------
+# If you later add Composer
+/vendor/
+composer.lock
+
+# PHPStorm / JetBrains
+.idea/
+*.iml
+
+# PHP error logs
+php_errors.log
+error_log
+*.log
+
+# Local config overrides
+/config/local_config.php
+/config/*.local.php
+.env
+.env.*
+.envrc
+
+# ---------------------------
+# Runtime and cache files
+# ---------------------------
+/tmp/
+/cache/
+/logs/
+/sessions/
+/storage/
+/vendor/
+/node_modules/
+
+# ---------------------------
+# Uploads and user data
+# ---------------------------
+/data/uploads/
+/data/vault/
+/data/backups/
+/data/temp/
+*.bak
+*.swp
+*.swo
+*.tmp
+
+# ---------------------------
+# Database and dumps
+# ---------------------------
+/data/*.sql
+*.sql
+*.db
+*.sqlite
+*.sql.gz
+
+# ---------------------------
+# Docker / Build / IDE stuff
+# ---------------------------
+# Docker
+/docker-compose.override.yml
+/db_data/
+/.docker/
+*.pid
+
+# Xdebug or runtime caches
+*.xdebug
+*.cache
+
+# ---------------------------
+# System config / OS metadata
+# ---------------------------
+*.env.local
+*.ini.bak
+*.cfg.bak
+*.old
+*.orig
+
+# ---------------------------
+# Logs / Reports
+# ---------------------------
+/reports/
+/test-output/
+/coverage/
+
+# ---------------------------
+# Compiled / Minified / Builds
+# ---------------------------
+/dist/
+/build/
+/public/build/
+/public/dist/
+
+# ---------------------------
+# Miscellaneous
+# ---------------------------
+# Optional backup folders or zip archives
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+/backups/
+# Editor temp files
+*~
+

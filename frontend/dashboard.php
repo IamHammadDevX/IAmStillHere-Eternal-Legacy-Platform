@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IAmStillHere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../index.php">
+                <i class="bi bi-heart-fill text-danger"></i> IAmStillHere
+            </a>
+            <div class="ms-auto">
+                <span class="text-white me-3" id="user-name"></span>
+                <a href="#" class="btn btn-outline-light btn-sm" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-4">My Dashboard</h2>
+        
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-images display-4 text-primary"></i>
+                        <h5 class="mt-2">Memories</h5>
+                        <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#uploadMemoryModal">Upload</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-calendar-event display-4 text-success"></i>
+                        <h5 class="mt-2">Milestones</h5>
+                        <button class="btn btn-sm btn-success mt-2" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-clock-history display-4 text-warning"></i>
+                        <h5 class="mt-2">Scheduled Events</h5>
+                        <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#scheduleEventModal">Schedule</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 text-info"></i>
+                        <h5 class="mt-2">Tributes</h5>
+                        <p class="mb-0" id="tribute-count">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#memories-tab">Memories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#timeline-tab">Timeline</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="memories-tab">
+                <div class="row" id="memories-grid"></div>
+            </div>
+            <div class="tab-pane fade" id="timeline-tab">
+                <div id="timeline-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uploadMemoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Memory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="memoryForm">
+                        <div class="mb-3">
+                            <label for="memory-title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="memory-title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memory-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="memory-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memory-file" class="form-label">File</label>
+                            <input type="file" class="form-control" id="memory-file" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memory-date" class="form-label">Memory Date</label>
+                            <input type="date" class="form-control" id="memory-date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="memory-privacy" class="form-label">Privacy</label>
+                            <select class="form-select" id="memory-privacy">
+                                <option value="public">Public</option>
+                                <option value="family">Family Only</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addMilestoneModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Milestone</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="milestoneForm">
+                        <div class="mb-3">
+                            <label for="milestone-title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="milestone-title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="milestone-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="milestone-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="milestone-date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="milestone-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="milestone-category" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="milestone-category" placeholder="e.g., Birth, Education, Career">
+                        </div>
+                        <div class="mb-3">
+                            <label for="milestone-privacy" class="form-label">Privacy</label>
+                            <select class="form-select" id="milestone-privacy">
+                                <option value="public">Public</option>
+                                <option value="family">Family Only</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Add Milestone</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="scheduleEventModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Schedule Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="mb-3">
+                            <label for="event-title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="event-title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="event-message" class="form-label">Message</label>
+                            <textarea class="form-control" id="event-message" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="event-date" class="form-label">Scheduled Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="event-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="event-privacy" class="form-label">Privacy</label>
+                            <select class="form-select" id="event-privacy">
+                                <option value="public">Public</option>
+                                <option value="family">Family Only</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Schedule</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
