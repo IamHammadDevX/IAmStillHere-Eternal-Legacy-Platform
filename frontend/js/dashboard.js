@@ -31,7 +31,7 @@ async function loadMemories() {
                 
                 let mediaHtml = '';
                 if (memory.file_type.includes('image')) {
-                    mediaHtml = `<img src="/data/uploads/photos/${memory.file_path}" alt="${memory.title}">`;
+                    mediaHtml = `<img src="http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}" alt="${memory.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">`;
                 } else if (memory.file_type.includes('video')) {
                     mediaHtml = `<video controls><source src="/data/uploads/videos/${memory.file_path}" type="${memory.file_type}"></video>`;
                 } else {

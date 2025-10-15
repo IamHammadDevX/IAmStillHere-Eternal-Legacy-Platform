@@ -38,7 +38,6 @@
                         </form>
                         <div class="text-center mt-3">
                             <p>Don't have an account? <a href="register.php">Register here</a></p>
-                            <p class="text-muted small">Default Admin: username: admin, password: admin123</p>
                         </div>
                     </div>
                 </div>
