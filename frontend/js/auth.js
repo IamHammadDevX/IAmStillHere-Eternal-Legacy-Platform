@@ -1,6 +1,6 @@
 async function checkSession() {
     try {
-        const response = await fetch('/backend/auth/check_session.php');
+        const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
         const data = await response.json();
         
         if (data.logged_in) {
@@ -29,7 +29,7 @@ async function checkSession() {
 
 async function logout() {
     try {
-        const response = await fetch('/backend/auth/logout.php');
+        const response = await fetch('http://localhost/IAmStillHere/backend/auth/logout.php');
         const data = await response.json();
         
         if (data.success) {

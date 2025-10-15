@@ -1,7 +1,7 @@
 let currentUserId = null;
 
 async function init() {
-    const response = await fetch('/backend/auth/check_session.php');
+    const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
     const data = await response.json();
     
     if (!data.logged_in) {
@@ -18,7 +18,7 @@ async function init() {
 
 async function loadMemories() {
     try {
-        const response = await fetch(`/backend/memories/list.php?user_id=${currentUserId}`);
+        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}`);
         const data = await response.json();
         
         const grid = document.getElementById('memories-grid');
@@ -63,7 +63,7 @@ async function loadMemories() {
 
 async function loadTimeline() {
     try {
-        const response = await fetch(`/backend/milestones/list.php?user_id=${currentUserId}`);
+        const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${currentUserId}`);
         const data = await response.json();
         
         const container = document.getElementById('timeline-container');
@@ -107,7 +107,7 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     formData.append('file', document.getElementById('memory-file').files[0]);
     
     try {
-        const response = await fetch('/backend/memories/upload.php', {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/upload.php', {
             method: 'POST',
             body: formData
         });
@@ -139,7 +139,7 @@ document.getElementById('milestoneForm').addEventListener('submit', async (e) =>
     };
     
     try {
-        const response = await fetch('/backend/milestones/create.php', {
+        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/create.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(milestoneData)
@@ -171,7 +171,7 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
     };
     
     try {
-        const response = await fetch('/backend/events/create.php', {
+        const response = await fetch('http://localhost/IAmStillHere/backend/events/create.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(eventData)
