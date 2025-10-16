@@ -79,7 +79,7 @@
     <script>
         async function loadUsers() {
             try {
-                const response = await fetch('/backend/admin/users.php');
+                const response = await fetch('http://localhost/IAmStillHere/backend/admin/users.php');
                 const data = await response.json();
                 
                 if (data.success) {
@@ -116,7 +116,7 @@
 
         async function updateUserStatus(userId, status) {
             try {
-                const response = await fetch('/backend/admin/users.php', {
+                const response = await fetch('http://localhost/IAmStillHere/backend/admin/users.php', {
                     method: 'PUT',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ user_id: userId, status: status })
@@ -135,7 +135,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const response = await fetch('/backend/auth/check_session.php');
+            const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
             const data = await response.json();
             
             if (!data.logged_in || data.user.role !== 'admin') {

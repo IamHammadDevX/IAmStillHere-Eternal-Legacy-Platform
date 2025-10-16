@@ -54,7 +54,7 @@
     <script>
         async function loadMemorials() {
             try {
-                const response = await fetch('/backend/memorials/list.php');
+                const response = await fetch('http://localhost/IAmStillHere/backend/memorials/list.php');
                 const data = await response.json();
                 
                 const grid = document.getElementById('memorials-grid');

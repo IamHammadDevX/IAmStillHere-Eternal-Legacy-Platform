@@ -38,7 +38,6 @@
                         </form>
                         <div class="text-center mt-3">
                             <p>Don't have an account? <a href="register.php">Register here</a></p>
-                            <p class="text-muted small">Default Admin: username: admin, password: admin123</p>
                         </div>
                     </div>
                 </div>
@@ -56,7 +55,7 @@
             const password = document.getElementById('password').value;
             
             try {
-                const response = await fetch('/backend/auth/login.php', {
+                const response = await fetch('http://localhost/IAmStillHere/backend/auth/login.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ username, password })
