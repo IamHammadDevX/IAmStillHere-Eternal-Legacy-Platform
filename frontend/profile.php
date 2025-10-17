@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memorial Profile - IAmStillHere</title>
+  <title>Memorial Profile - IamAlwaysHere</title>
 
   <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -14,7 +14,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="../index.php">
-        <i class="bi bi-heart-fill text-danger"></i> IAmStillHere
+        <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
       </a>
       <div class="ms-auto">
         <a href="memorials.php" class="btn btn-outline-light btn-sm me-2">All Memorials</a>
@@ -183,53 +183,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
-
-  <!-- NEW profile.js logic 
-  <script>
-  document.getElementById('profileForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('bio', document.getElementById('bio-input').value);
-    formData.append('dob', document.getElementById('dob-input').value);
-    if (document.getElementById('profile-photo-upload').files[0]) {
-      formData.append('profile_photo', document.getElementById('profile-photo-upload').files[0]);
-    }
-    if (document.getElementById('cover-photo-upload').files[0]) {
-      formData.append('cover_photo', document.getElementById('cover-photo-upload').files[0]);
-    }
-
-    const res = await fetch('http://localhost/IAmStillHere/backend/users/update_profile.php', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      alert('Profile updated successfully!');
-      location.reload();
-    } else {
-      alert(data.message || 'Error updating profile.');
-    }
-  });
-
-  document.getElementById('memorialSettingsForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('is_memorial', document.getElementById('is-memorial-input').value);
-    formData.append('date_of_passing', document.getElementById('dop-input').value);
-    formData.append('tribute_permission', document.getElementById('tribute-permission-input').value);
-
-    const res = await fetch('http://localhost/IAmStillHere/backend/users/memorial_settings.php', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      alert('Memorial settings updated!');
-      location.reload();
-    } else {
-      alert(data.message || 'Error updating settings.');
-    }
-  });
-  </script>  -->
+  
 </body>
 </html>
