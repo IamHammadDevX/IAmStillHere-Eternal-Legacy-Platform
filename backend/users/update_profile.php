@@ -28,7 +28,6 @@ try {
     $updates = [];
     $params = ['user_id' => $_SESSION['user_id']];
 
-    // ✅ Bio and DOB
     if (!empty($bio)) {
         $updates[] = "bio = :bio";
         $params['bio'] = $bio;
@@ -39,7 +38,6 @@ try {
         $params['date_of_birth'] = $date_of_birth;
     }
 
-    // ✅ Profile Photo
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $file = $_FILES['profile_photo'];
         if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {
@@ -60,7 +58,6 @@ try {
         }
     }
 
-    // ✅ Cover Photo
     if (isset($_FILES['cover_photo']) && $_FILES['cover_photo']['error'] === UPLOAD_ERR_OK) {
         $file = $_FILES['cover_photo'];
         if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {
@@ -81,7 +78,6 @@ try {
         }
     }
 
-    // ✅ Update DB
     if (!empty($updates)) {
         $sql = "UPDATE users SET " . implode(', ', $updates) . ", updated_at = CURRENT_TIMESTAMP WHERE id = :user_id";
         $stmt = $conn->prepare($sql);
@@ -91,7 +87,6 @@ try {
         exit;
     }
 
-    // ✅ Fetch latest updated data for frontend
     $stmt = $conn->prepare("SELECT full_name, bio, date_of_birth, profile_photo, cover_photo FROM users WHERE id = :user_id");
     $stmt->execute(['user_id' => $_SESSION['user_id']]);
     $user = $stmt->fetch();

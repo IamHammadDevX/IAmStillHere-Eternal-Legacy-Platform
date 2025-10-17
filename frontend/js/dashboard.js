@@ -10,10 +10,25 @@ async function init() {
     }
 
     currentUserId = data.user.id;
-    // document.getElementById('user-name').textContent = data.user.full_name;
 
     loadMemories();
     loadTimeline();
+}
+
+async function loadTributeCount(userId) {
+    try {
+        const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/get_count.php?user_id=${userId}`);
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('tribute-count').textContent = data.tribute_count;
+        } else {
+            document.getElementById('tribute-count').textContent = '0';
+        }
+    } catch (error) {
+        console.error('Error loading tribute count:', error);
+        document.getElementById('tribute-count').textContent = '0';
+    }
 }
 
 async function loadMemories() {
@@ -129,6 +144,16 @@ async function loadTimeline() {
         console.error('Error loading timeline:', error);
     }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+    const data = await response.json();
+
+    if (data.logged_in) {
+        const userId = data.user.id;
+        loadTributeCount(userId);
+    }
+});
 
 document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     e.preventDefault();

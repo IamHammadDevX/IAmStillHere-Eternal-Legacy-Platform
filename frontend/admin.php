@@ -22,6 +22,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li>
+                        <a href="memorials.php" class="nav-link">Memorials</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
                     </li>

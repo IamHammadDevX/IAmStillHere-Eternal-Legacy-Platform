@@ -15,7 +15,6 @@ async function init() {
             document.getElementById('nav-logout').style.display = 'inline-block';
         }
 
-        // Redirect if no profile ID is provided
         if (!profileUserId) {
             if (sessionData.logged_in) {
                 window.location.href = 'profile.php?user_id=' + currentUser.id;
@@ -43,11 +42,9 @@ async function loadProfile() {
 
         const profile = data.profile;
 
-        // Display basic info
         document.getElementById('profile-name').textContent = profile.full_name || "Unknown";
         document.getElementById('profile-bio').textContent = profile.bio || "No bio available.";
 
-        // Profile image
         const profileImg = document.getElementById('profile-image');
         if (profile.profile_photo) {
             profileImg.src = profile.profile_photo;
@@ -55,7 +52,6 @@ async function loadProfile() {
             profileImg.src = 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
         }
 
-        // Cover image
         const coverImg = document.getElementById('cover-image');
         if (profile.cover_photo) {
             coverImg.src = profile.cover_photo;
@@ -64,7 +60,6 @@ async function loadProfile() {
             coverImg.style.display = "none";
         }
 
-        // Dates
         const dates = [];
         if (profile.date_of_birth) {
             dates.push('Born: ' + new Date(profile.date_of_birth).toLocaleDateString());
@@ -74,16 +69,13 @@ async function loadProfile() {
         }
         document.getElementById('profile-dates').textContent = dates.join(' | ');
 
-        // Determine ownership
         const isOwner = currentUser && currentUser.id == profileUserId;
 
         if (isOwner) {
-            // Owner Mode: Can edit and view memorial settings
             document.getElementById('edit-profile-btn').style.display = 'block';
             document.getElementById('memorial-settings-btn').style.display = 'block';
             document.getElementById('tribute-form').style.display = 'none'; // hide tribute form for self
 
-            // Prefill modal fields
             document.getElementById('bio-input').value = profile.bio || '';
             document.getElementById('dob-input').value = profile.date_of_birth || '';
             document.getElementById('is-memorial-input').value = profile.is_memorial ? '1' : '0';
@@ -97,13 +89,10 @@ async function loadProfile() {
             document.getElementById('edit-profile-btn').style.display = 'none';
             document.getElementById('memorial-settings-btn').style.display = 'none';
             document.getElementById('tribute-form').style.display = 'block';
-
-            // Prevent any form editing
             document.querySelectorAll('#profileForm input, #profileForm textarea, #memorialSettingsForm input, #memorialSettingsForm select')
                 .forEach(el => el.disabled = true);
         }
 
-        // Load other profile sections
         loadTimeline();
         loadMemories();
         loadTributes();
@@ -191,6 +180,55 @@ document.getElementById('memorialSettingsForm')?.addEventListener('submit', asyn
     }
 });
 
+document.getElementById('tributeForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); // prevent page reload
+
+    const name = document.getElementById('tribute-name').value.trim();
+    const email = document.getElementById('tribute-email').value.trim();
+    const message = document.getElementById('tribute-message').value.trim();
+
+    // Replace this with the actual memorial user ID (the one whose profile you're viewing)
+    const memorialUserId = window.profileUserId || new URLSearchParams(window.location.search).get('user_id');
+
+    if (!memorialUserId) {
+        alert('Missing memorial user ID.');
+        return;
+    }
+
+    if (!name || !message) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/tributes/create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                memorial_user_id: memorialUserId,
+                author_name: name,
+                author_email: email,
+                message: message
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('✅ Tribute posted successfully!');
+            e.target.reset();
+            // Optionally refresh tribute list dynamically
+            loadTributes();
+        } else {
+            alert(`❌ ${data.message || 'Failed to post tribute.'}`);
+        }
+    } catch (error) {
+        console.error('Error submitting tribute:', error);
+        alert('An unexpected error occurred. Please try again.');
+    }
+});
+
+
 // ---------- Load Timeline ----------
 async function loadTimeline() {
     try {
@@ -241,6 +279,31 @@ async function loadMemories() {
                     mediaHtml = `<img src="http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}" alt="${memory.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">`;
                 } else if (memory.file_type.includes('video')) {
                     mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}"></video>`;
+                } else if (
+                    memory.file_type.includes('pdf') ||
+                    memory.file_type.includes('word') ||
+                    memory.file_type.includes('msword') ||
+                    memory.file_type.includes('document') ||
+                    memory.file_type.includes('text')
+                ) {
+                    mediaHtml = `
+                                <div class="text-center p-4">
+                                    <i class="bi bi-file-earmark-text display-1 text-primary"></i>
+                                    <p class="mt-2">
+                                        <a href="http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}" 
+                                        target="_blank" class="btn btn-outline-primary btn-sm">
+                                        View Document
+                                        </a>
+                                    </p>
+                                </div>
+                                `;
+                } else {
+                    mediaHtml = `
+                                <div class="p-4 text-center">
+                                    <i class="bi bi-file-earmark display-1 text-muted"></i>
+                                    <p class="small text-muted mt-2">Unsupported file type</p>
+                                </div>
+                                `;
                 }
 
                 col.innerHTML = `

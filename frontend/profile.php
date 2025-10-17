@@ -24,6 +24,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+          <li>
+            <a href="memorials.php" class="nav-link">Memorials</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
           </li>
@@ -49,18 +52,6 @@
       </div>
     </div>
   </nav>
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="../index.php">
-        <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
-      </a>
-      <div class="ms-auto">
-        <a href="memorials.php" class="btn btn-outline-light btn-sm me-2">All Memorials</a>
-        <span class="text-white me-3" id="user-name"></span>
-        <a href="#" class="btn btn-outline-light btn-sm" id="logout-btn" style="display:none;" onclick="logout()">Logout</a>
-      </div>
-    </div>
-  </nav> -->
 
   <!-- Cover Section -->
   <div id="cover-section" class="position-relative"
@@ -70,7 +61,8 @@
       style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
       <div class="container">
         <div class="d-flex align-items-end">
-          <img id="profile-image" src="http://localhost/IAmStillHere/data/uploads/photos/default-profile.png" class="profile-photo" alt="Profile" />
+          <img id="profile-image" src="http://localhost/IAmStillHere/data/uploads/photos/default-profile.png"
+            class="profile-photo" alt="Profile" />
           <div class="ms-3 text-white">
             <h2 id="profile-name">Loading...</h2>
             <p class="mb-0" id="profile-dates"></p>

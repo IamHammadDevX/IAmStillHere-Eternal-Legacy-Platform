@@ -22,6 +22,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li>
+                        <a href="memorials.php" class="nav-link">Memorials</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
                     </li>
@@ -38,8 +41,7 @@
                         <a class="nav-link" href="register.php">Register</a>
                     </li>
                     <li class="nav-item" id="nav-profile" style="display:none;">
-                        <a class="nav-link" href="profile.php"
-                            id="username-display"></a>
+                        <a class="nav-link" href="profile.php" id="username-display"></a>
                     </li>
                     <li class="nav-item" id="nav-logout" style="display:none;">
                         <a class="nav-link" href="#" onclick="logout()">Logout</a>
@@ -48,17 +50,6 @@
             </div>
         </div>
     </nav>
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
-            </a>
-            <div class="ms-auto">
-                <span class="text-white me-3" id="user-name"></span>
-                <a href="#" class="btn btn-outline-light btn-sm" onclick="logout()">Logout</a>
-            </div>
-        </div>
-    </nav> -->
 
     <div class="container mt-4">
         <h2 class="mb-4">My Dashboard</h2>
