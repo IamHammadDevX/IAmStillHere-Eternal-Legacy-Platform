@@ -1,41 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memorial Profile - IAmStillHere</title>
+  <title>Memorial Profile - IamAlwaysHere</title>
 
-  <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="../index.php">
-        <i class="bi bi-heart-fill text-danger"></i> IAmStillHere
+      <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+        <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
       </a>
-      <div class="ms-auto">
-        <a href="memorials.php" class="btn btn-outline-light btn-sm me-2">All Memorials</a>
-        <span class="text-white me-3" id="user-name"></span>
-        <a href="#" class="btn btn-outline-light btn-sm" id="logout-btn" style="display:none;" onclick="logout()">Logout</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li>
+            <a href="memorials.php" class="nav-link">Memorials</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+          </li>
+          <li class="nav-item" id="nav-dashboard" style="display:none;">
+            <a class="nav-link" href="dashboard.php">Dashboard</a>
+          </li>
+          <li class="nav-item" id="nav-admin" style="display:none;">
+            <a class="nav-link" href="admin.php">Admin</a>
+          </li>
+          <li class="nav-item" id="nav-login">
+            <a class="nav-link" href="login.php">Login</a>
+          </li>
+          <li class="nav-item" id="nav-register">
+            <a class="nav-link" href="register.php">Register</a>
+          </li>
+          <li class="nav-item" id="nav-profile" style="display:none;">
+            <a class="nav-link" href="#" id="username-display"></a>
+          </li>
+          <li class="nav-item" id="nav-logout" style="display:none;">
+            <a class="nav-link" href="#" onclick="logout()">Logout</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
 
   <!-- Cover Section -->
-  <div id="cover-section" class="position-relative" style="height:300px;background:linear-gradient(135deg,#9b59b6,#3498db)">
+  <div id="cover-section" class="position-relative"
+    style="height:300px;background:linear-gradient(135deg,#9b59b6,#3498db)">
     <img id="cover-image" src="" alt="Cover" class="w-100 h-100" style="object-fit:cover;display:none;" />
-    <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
+    <div class="position-absolute bottom-0 start-0 w-100 p-4"
+      style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
       <div class="container">
         <div class="d-flex align-items-end">
-          <img id="profile-image" src="/data/uploads/photos/default-profile.png" class="profile-photo" alt="Profile" />
+          <img id="profile-image" src="http://localhost/IAmStillHere/data/uploads/photos/default-profile.png"
+            class="profile-photo" alt="Profile" />
           <div class="ms-3 text-white">
             <h2 id="profile-name">Loading...</h2>
             <p class="mb-0" id="profile-dates"></p>
           </div>
-          <button id="edit-profile-btn" class="btn btn-light ms-auto mb-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+          <button id="edit-profile-btn" class="btn btn-light ms-auto mb-3" data-bs-toggle="modal"
+            data-bs-target="#editProfileModal">
             <i class="bi bi-pencil"></i> Edit Profile
           </button>
         </div>
@@ -58,7 +90,8 @@
         <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title">Memorial Settings</h5>
-            <button id="memorial-settings-btn" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#memorialSettingsModal">
+            <button id="memorial-settings-btn" class="btn btn-primary w-100" data-bs-toggle="modal"
+              data-bs-target="#memorialSettingsModal">
               <i class="bi bi-gear"></i> Configure Memorial
             </button>
             <p id="memorial-status" class="text-muted small mt-2"></p>
@@ -72,6 +105,8 @@
           <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
+
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
         </ul>
 
         <div class="tab-content">
@@ -94,7 +129,8 @@
                       <input type="email" class="form-control" id="tribute-email" placeholder="Your Email (optional)" />
                     </div>
                     <div class="mb-3">
-                      <textarea class="form-control" id="tribute-message" rows="4" placeholder="Share your memories..." required></textarea>
+                      <textarea class="form-control" id="tribute-message" rows="4" placeholder="Share your memories..."
+                        required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Post Tribute</button>
                   </form>
@@ -103,6 +139,31 @@
             </div>
             <div id="tributes-container"></div>
           </div>
+
+          <div class="tab-pane fade" id="family-tab">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="mb-3">Family Members</h5>
+                <div id="family-list" class="row g-3">
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-3 mb-4" id="add-family-form">
+              <h5>Add Family Member</h5>
+              <div class="mb-3">
+                <label for="familyEmail" class="form-label">Family Member Email</label>
+                <input type="email" id="familyEmail" class="form-control" placeholder="Enter family member's email">
+              </div>
+              <div class="mb-3">
+                <label for="relationship" class="form-label">Relationship</label>
+                <input type="text" id="relationship" class="form-control" placeholder="e.g., Father, Sister, Friend">
+              </div>
+              <button class="btn btn-primary" id="btn-add-family">Add Member</button>
+            </div>
+          </div>
+          <!-- END FAMILY TAB CONTENT -->
+
         </div>
       </div>
     </div>
@@ -183,53 +244,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/family.js"></script>
 
-  <!-- NEW profile.js logic 
-  <script>
-  document.getElementById('profileForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('bio', document.getElementById('bio-input').value);
-    formData.append('dob', document.getElementById('dob-input').value);
-    if (document.getElementById('profile-photo-upload').files[0]) {
-      formData.append('profile_photo', document.getElementById('profile-photo-upload').files[0]);
-    }
-    if (document.getElementById('cover-photo-upload').files[0]) {
-      formData.append('cover_photo', document.getElementById('cover-photo-upload').files[0]);
-    }
-
-    const res = await fetch('http://localhost/IAmStillHere/backend/users/update_profile.php', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      alert('Profile updated successfully!');
-      location.reload();
-    } else {
-      alert(data.message || 'Error updating profile.');
-    }
-  });
-
-  document.getElementById('memorialSettingsForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('is_memorial', document.getElementById('is-memorial-input').value);
-    formData.append('date_of_passing', document.getElementById('dop-input').value);
-    formData.append('tribute_permission', document.getElementById('tribute-permission-input').value);
-
-    const res = await fetch('http://localhost/IAmStillHere/backend/users/memorial_settings.php', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    if (data.success) {
-      alert('Memorial settings updated!');
-      location.reload();
-    } else {
-      alert(data.message || 'Error updating settings.');
-    }
-  });
-  </script>  -->
 </body>
+
 </html>

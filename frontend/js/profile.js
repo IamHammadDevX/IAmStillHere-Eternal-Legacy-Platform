@@ -11,8 +11,8 @@ async function init() {
 
         if (sessionData.logged_in) {
             currentUser = sessionData.user;
-            document.getElementById('user-name').textContent = currentUser.full_name;
-            document.getElementById('logout-btn').style.display = 'inline-block';
+            document.getElementById('username-display').textContent = currentUser.full_name;
+            document.getElementById('nav-logout').style.display = 'inline-block';
         }
 
         if (!profileUserId) {
@@ -49,7 +49,7 @@ async function loadProfile() {
         if (profile.profile_photo) {
             profileImg.src = profile.profile_photo;
         } else {
-            profileImg.src = '/frontend/images/default-profile.png';
+            profileImg.src = 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
         }
 
         const coverImg = document.getElementById('cover-image');
@@ -69,9 +69,13 @@ async function loadProfile() {
         }
         document.getElementById('profile-dates').textContent = dates.join(' | ');
 
-        if (currentUser && currentUser.id == profileUserId) {
+        const isOwner = currentUser && currentUser.id == profileUserId;
+
+        if (isOwner) {
             document.getElementById('edit-profile-btn').style.display = 'block';
             document.getElementById('memorial-settings-btn').style.display = 'block';
+            document.getElementById('tribute-form').style.display = 'none'; // hide tribute form for self
+
             document.getElementById('bio-input').value = profile.bio || '';
             document.getElementById('dob-input').value = profile.date_of_birth || '';
             document.getElementById('is-memorial-input').value = profile.is_memorial ? '1' : '0';
@@ -81,10 +85,14 @@ async function loadProfile() {
                 ? 'Memorial mode is active'
                 : 'Memorial mode is inactive';
         } else {
+            // View-Only Mode
+            document.getElementById('edit-profile-btn').style.display = 'none';
+            document.getElementById('memorial-settings-btn').style.display = 'none';
             document.getElementById('tribute-form').style.display = 'block';
+            document.querySelectorAll('#profileForm input, #profileForm textarea, #memorialSettingsForm input, #memorialSettingsForm select')
+                .forEach(el => el.disabled = true);
         }
 
-        // Load other profile sections
         loadTimeline();
         loadMemories();
         loadTributes();
@@ -94,6 +102,7 @@ async function loadProfile() {
     }
 }
 
+// ---------- Profile Update ----------
 document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -140,6 +149,7 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     }
 });
 
+// ---------- Memorial Settings Update ----------
 document.getElementById('memorialSettingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -170,6 +180,56 @@ document.getElementById('memorialSettingsForm')?.addEventListener('submit', asyn
     }
 });
 
+document.getElementById('tributeForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); // prevent page reload
+
+    const name = document.getElementById('tribute-name').value.trim();
+    const email = document.getElementById('tribute-email').value.trim();
+    const message = document.getElementById('tribute-message').value.trim();
+
+    // Replace this with the actual memorial user ID (the one whose profile you're viewing)
+    const memorialUserId = window.profileUserId || new URLSearchParams(window.location.search).get('user_id');
+
+    if (!memorialUserId) {
+        alert('Missing memorial user ID.');
+        return;
+    }
+
+    if (!name || !message) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/tributes/create.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                memorial_user_id: memorialUserId,
+                author_name: name,
+                author_email: email,
+                message: message
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('✅ Tribute posted successfully!');
+            e.target.reset();
+            // Optionally refresh tribute list dynamically
+            loadTributes();
+        } else {
+            alert(`❌ ${data.message || 'Failed to post tribute.'}`);
+        }
+    } catch (error) {
+        console.error('Error submitting tribute:', error);
+        alert('An unexpected error occurred. Please try again.');
+    }
+});
+
+
+// ---------- Load Timeline ----------
 async function loadTimeline() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${profileUserId}`);
@@ -201,6 +261,7 @@ async function loadTimeline() {
     }
 }
 
+// ---------- Load Memories ----------
 async function loadMemories() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${profileUserId}`);
@@ -217,7 +278,32 @@ async function loadMemories() {
                 if (memory.file_type.includes('image')) {
                     mediaHtml = `<img src="http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}" alt="${memory.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">`;
                 } else if (memory.file_type.includes('video')) {
-                    mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="/data/uploads/videos/${memory.file_path}"></video>`;
+                    mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}"></video>`;
+                } else if (
+                    memory.file_type.includes('pdf') ||
+                    memory.file_type.includes('word') ||
+                    memory.file_type.includes('msword') ||
+                    memory.file_type.includes('document') ||
+                    memory.file_type.includes('text')
+                ) {
+                    mediaHtml = `
+                                <div class="text-center p-4">
+                                    <i class="bi bi-file-earmark-text display-1 text-primary"></i>
+                                    <p class="mt-2">
+                                        <a href="http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}" 
+                                        target="_blank" class="btn btn-outline-primary btn-sm">
+                                        View Document
+                                        </a>
+                                    </p>
+                                </div>
+                                `;
+                } else {
+                    mediaHtml = `
+                                <div class="p-4 text-center">
+                                    <i class="bi bi-file-earmark display-1 text-muted"></i>
+                                    <p class="small text-muted mt-2">Unsupported file type</p>
+                                </div>
+                                `;
                 }
 
                 col.innerHTML = `
@@ -239,6 +325,7 @@ async function loadMemories() {
     }
 }
 
+// ---------- Load Tributes ----------
 async function loadTributes() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/list.php?memorial_user_id=${profileUserId}`);
@@ -265,9 +352,11 @@ async function loadTributes() {
     }
 }
 
+// ---------- Alert Helper ----------
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
+    alertDiv.className = `alert alert-${type} position-fixed bottom-0 end-0 m-3`;
+    alertDiv.style.zIndex = 1050;
     alertDiv.textContent = message;
     document.body.appendChild(alertDiv);
     setTimeout(() => alertDiv.remove(), 3000);

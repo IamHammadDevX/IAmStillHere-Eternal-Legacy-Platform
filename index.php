@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAmStillHere - Memorial Social Network</title>
+    <title>IamAlwaysHere - Memorial Social Network</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="frontend/css/style.css">
@@ -12,7 +12,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <i class="bi bi-heart-fill text-danger"></i> IAmStillHere
+                <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -47,7 +47,7 @@
 
     <div class="hero-section text-center py-5">
         <div class="container">
-            <h1 class="display-4 mb-4">IAmStillHere</h1>
+            <h1 class="display-4 mb-4">IamAlwaysHere</h1>
             <p class="lead">A Digital Memorial Platform - Honoring Lives, Preserving Memories</p>
             <p class="text-muted">Create a lasting tribute for your loved ones. Share memories, milestones, and stories that live forever.</p>
             <div class="mt-4">
@@ -112,8 +112,8 @@
 
     <footer class="bg-dark text-white text-center py-4 mt-5">
         <div class="container">
-            <p>&copy; 2024 IAmStillHere. Honoring memories, celebrating lives.</p>
-            <p class="text-muted small">A memorial social networking platform</p>
+            <p>&copy; 2024 IamAlwaysHere. Honoring memories, celebrating lives.</p>
+            <p class="small">A memorial social networking platform</p>
         </div>
     </footer>
 

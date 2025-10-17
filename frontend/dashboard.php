@@ -1,36 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - IAmStillHere</title>
+    <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="bi bi-heart-fill text-danger"></i> IAmStillHere
+            <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+                <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
             </a>
-            <div class="ms-auto">
-                <span class="text-white me-3" id="user-name"></span>
-                <a href="#" class="btn btn-outline-light btn-sm" onclick="logout()">Logout</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li>
+                        <a href="memorials.php" class="nav-link">Memorials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+                    </li>
+                    <li class="nav-item" id="nav-dashboard" style="display:none;">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item" id="nav-admin" style="display:none;">
+                        <a class="nav-link" href="admin.php">Admin</a>
+                    </li>
+                    <li class="nav-item" id="nav-login">
+                        <a class="nav-link" href="login.php">Login</a>
+                    </li>
+                    <li class="nav-item" id="nav-register">
+                        <a class="nav-link" href="register.php">Register</a>
+                    </li>
+                    <li class="nav-item" id="nav-profile" style="display:none;">
+                        <a class="nav-link" href="profile.php" id="username-display"></a>
+                    </li>
+                    <li class="nav-item" id="nav-logout" style="display:none;">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
         <h2 class="mb-4">My Dashboard</h2>
-        
+
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-images display-4 text-primary"></i>
                         <h5 class="mt-2">Memories</h5>
-                        <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#uploadMemoryModal">Upload</button>
+                        <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal"
+                            data-bs-target="#uploadMemoryModal">Upload</button>
                     </div>
                 </div>
             </div>
@@ -39,7 +70,8 @@
                     <div class="card-body">
                         <i class="bi bi-calendar-event display-4 text-success"></i>
                         <h5 class="mt-2">Milestones</h5>
-                        <button class="btn btn-sm btn-success mt-2" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">Add</button>
+                        <button class="btn btn-sm btn-success mt-2" data-bs-toggle="modal"
+                            data-bs-target="#addMilestoneModal">Add</button>
                     </div>
                 </div>
             </div>
@@ -48,7 +80,8 @@
                     <div class="card-body">
                         <i class="bi bi-clock-history display-4 text-warning"></i>
                         <h5 class="mt-2">Scheduled Events</h5>
-                        <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#scheduleEventModal">Schedule</button>
+                        <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal"
+                            data-bs-target="#scheduleEventModal">Schedule</button>
                     </div>
                 </div>
             </div>
@@ -145,7 +178,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="milestone-category" class="form-label">Category</label>
-                            <input type="text" class="form-control" id="milestone-category" placeholder="e.g., Birth, Education, Career">
+                            <input type="text" class="form-control" id="milestone-category"
+                                placeholder="e.g., Birth, Education, Career">
                         </div>
                         <div class="mb-3">
                             <label for="milestone-privacy" class="form-label">Privacy</label>
@@ -202,4 +236,5 @@
     <script src="js/auth.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
+
 </html>
