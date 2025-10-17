@@ -113,7 +113,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="activity-log-body">
-                                    <tr><td colspan="6" class="text-center text-muted">Loading activity log...</td></tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Loading activity log...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -148,13 +150,16 @@
                             <td>${new Date(user.created_at).toLocaleDateString()}</td>
                             <td>
                                 ${user.role !== 'admin' ? `
-                                    <select class="form-select form-select-sm" onchange="updateUserStatus(${user.id}, this.value)">
+                                    <select class="form-select form-select-sm d-inline w-auto me-2" onchange="updateUserStatus(${user.id}, this.value)">
                                         <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
                                         <option value="suspended" ${user.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                                        <option value="deleted" ${user.status === 'deleted' ? 'selected' : ''}>Deleted</option>
                                     </select>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 ` : '-'}
                             </td>
+
                         `;
                         tbody.appendChild(row);
                     });
@@ -213,6 +218,33 @@
             }
         }
 
+        async function deleteUser(userId) {
+            if (!confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/IAmStillHere/backend/admin/users.php`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('User deleted successfully', 'success');
+                    loadUsers();
+                    loadActivityLog();
+                } else {
+                    showAlert(data.message || 'Failed to delete user', 'danger');
+                }
+            } catch (error) {
+                showAlert('Error deleting user', 'danger');
+                console.error('Delete error:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
             const data = await response.json();
@@ -227,4 +259,5 @@
         });
     </script>
 </body>
+
 </html>
