@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -52,47 +54,65 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
     <script>
+
         async function loadMemorials() {
             try {
                 const response = await fetch('http://localhost/IAmStillHere/backend/memorials/list.php');
                 const data = await response.json();
-                
+
                 const grid = document.getElementById('memorials-grid');
-                
+
                 if (data.success && data.memorials.length > 0) {
                     grid.innerHTML = '';
+
                     data.memorials.forEach(memorial => {
                         const col = document.createElement('div');
                         col.className = 'col-md-4 mb-4';
-                        
-                        const profilePhoto = memorial.profile_photo || '/frontend/images/default-profile.png';
-                        const coverPhoto = memorial.cover_photo || '';
-                        
+
+                        // Build the correct photo paths
+                        const profilePhoto = memorial.profile_photo
+                            ? `http://localhost/IAmStillHere/data/uploads/photos/${memorial.profile_photo}`
+                            : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+
+                        const coverPhoto = memorial.cover_photo
+                            ? `http://localhost/IAmStillHere/data/uploads/photos/${memorial.cover_photo}`
+                            : null;
+
                         col.innerHTML = `
-                            <div class="card h-100">
-                                ${coverPhoto ? `<img src="${coverPhoto}" class="card-img-top" alt="Cover" style="height: 150px; object-fit: cover;">` : ''}
-                                <div class="card-body text-center">
-                                    <img src="${profilePhoto}" class="profile-photo mb-3" alt="${memorial.full_name}" style="width: 100px; height: 100px;">
-                                    <h5 class="card-title">${memorial.full_name}</h5>
-                                    ${memorial.date_of_birth ? `<p class="text-muted small">Born: ${new Date(memorial.date_of_birth).toLocaleDateString()}</p>` : ''}
-                                    ${memorial.date_of_passing ? `<p class="text-muted small">Passed: ${new Date(memorial.date_of_passing).toLocaleDateString()}</p>` : ''}
-                                    ${memorial.bio ? `<p class="card-text">${memorial.bio.substring(0, 100)}${memorial.bio.length > 100 ? '...' : ''}</p>` : ''}
-                                    <a href="profile.php?user_id=${memorial.id}" class="btn btn-primary btn-sm">View Memorial</a>
-                                </div>
-                            </div>
-                        `;
+                    <div class="card h-100 shadow-sm">
+                        ${coverPhoto ? `<img src="${coverPhoto}" class="card-img-top" alt="Cover Photo" style="height: 150px; object-fit: cover;">` : ''}
+                        <div class="card-body text-center">
+                            <img src="${profilePhoto}" class="profile-photo mb-3 rounded-circle border" 
+                                 alt="${memorial.full_name}" 
+                                 style="width: 100px; height: 100px; object-fit: cover;">
+                            <h5 class="card-title">${memorial.full_name}</h5>
+                            ${memorial.date_of_birth ? `<p class="text-muted small mb-0">Born: ${new Date(memorial.date_of_birth).toLocaleDateString()}</p>` : ''}
+                            ${memorial.date_of_passing ? `<p class="text-muted small">Passed: ${new Date(memorial.date_of_passing).toLocaleDateString()}</p>` : ''}
+                            ${memorial.bio ? `<p class="card-text">${memorial.bio.substring(0, 100)}${memorial.bio.length > 100 ? '...' : ''}</p>` : ''}
+                            <a href="profile.php?user_id=${memorial.id}" class="btn btn-primary btn-sm">View Memorial</a>
+                        </div>
+                    </div>
+                `;
+
                         grid.appendChild(col);
                     });
                 } else {
-                    grid.innerHTML = '<div class="col-12"><p class="text-center text-muted">No public memorials available yet.</p></div>';
+                    grid.innerHTML = `
+                <div class="col-12">
+                    <p class="text-center text-muted">No public memorials available yet.</p>
+                </div>`;
                 }
             } catch (error) {
                 console.error('Error loading memorials:', error);
-                document.getElementById('memorials-grid').innerHTML = '<div class="col-12"><p class="text-center text-danger">Error loading memorials.</p></div>';
+                document.getElementById('memorials-grid').innerHTML = `
+            <div class="col-12">
+                <p class="text-center text-danger">Error loading memorials.</p>
+            </div>`;
             }
         }
 
         document.addEventListener('DOMContentLoaded', loadMemorials);
     </script>
 </body>
+
 </html>
