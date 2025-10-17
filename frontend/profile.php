@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Memorial Profile - IamAlwaysHere</title>
 
-  <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="css/style.css" />
@@ -106,6 +105,8 @@
           <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
+
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
         </ul>
 
         <div class="tab-content">
@@ -138,6 +139,31 @@
             </div>
             <div id="tributes-container"></div>
           </div>
+
+          <div class="tab-pane fade" id="family-tab">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="mb-3">Family Members</h5>
+                <div id="family-list" class="row g-3">
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-3 mb-4" id="add-family-form">
+              <h5>Add Family Member</h5>
+              <div class="mb-3">
+                <label for="familyEmail" class="form-label">Family Member Email</label>
+                <input type="email" id="familyEmail" class="form-control" placeholder="Enter family member's email">
+              </div>
+              <div class="mb-3">
+                <label for="relationship" class="form-label">Relationship</label>
+                <input type="text" id="relationship" class="form-control" placeholder="e.g., Father, Sister, Friend">
+              </div>
+              <button class="btn btn-primary" id="btn-add-family">Add Member</button>
+            </div>
+          </div>
+          <!-- END FAMILY TAB CONTENT -->
+
         </div>
       </div>
     </div>
@@ -218,6 +244,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/family.js"></script>
 
 </body>
 
