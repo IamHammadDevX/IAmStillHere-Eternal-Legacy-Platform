@@ -23,8 +23,12 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li>
-            <a href="memorials.php" class="nav-link">Memorials</a>
+          <li class="nav-item" id="nav-search">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">
+              <i class="bi bi-search"></i>
+            </a>
+          </li>
+          <a href="memorials.php" class="nav-link">Memorials</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
@@ -240,11 +244,32 @@
       </div>
     </div>
   </div>
+  <!-- Search Users Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Search Users</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <input type="text" class="form-control" id="search-input"
+              placeholder="Search by name, username, or email...">
+          </div>
+          <div id="search-results" class="list-group">
+            <p class="text-muted text-center">Enter a search term to find users</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/family.js"></script>
+  <script src="js/search.js"></script>
 
 </body>
 

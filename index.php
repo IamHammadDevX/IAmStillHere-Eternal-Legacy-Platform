@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="frontend/css/style.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -19,6 +21,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" id="nav-search">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">
+                            <i class="bi bi-search"></i>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
@@ -49,7 +56,8 @@
         <div class="container">
             <h1 class="display-4 mb-4">IamAlwaysHere</h1>
             <p class="lead">A Digital Memorial Platform - Honoring Lives, Preserving Memories</p>
-            <p class="text-muted">Create a lasting tribute for your loved ones. Share memories, milestones, and stories that live forever.</p>
+            <p class="text-muted">Create a lasting tribute for your loved ones. Share memories, milestones, and stories
+                that live forever.</p>
             <div class="mt-4">
                 <a href="frontend/register.php" class="btn btn-primary btn-lg me-3">Create Memorial</a>
                 <a href="frontend/memorials.php" class="btn btn-outline-secondary btn-lg">View Memorials</a>
@@ -64,7 +72,8 @@
                     <div class="card-body">
                         <i class="bi bi-camera-fill display-4 text-primary mb-3"></i>
                         <h5 class="card-title">Share Memories</h5>
-                        <p class="card-text">Upload photos, videos, and documents to preserve precious moments forever.</p>
+                        <p class="card-text">Upload photos, videos, and documents to preserve precious moments forever.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -82,7 +91,8 @@
                     <div class="card-body">
                         <i class="bi bi-chat-heart display-4 text-danger mb-3"></i>
                         <h5 class="card-title">Tributes & Messages</h5>
-                        <p class="card-text">Friends and family can leave heartfelt tributes and share their memories.</p>
+                        <p class="card-text">Friends and family can leave heartfelt tributes and share their memories.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -103,7 +113,28 @@
                     <div class="card-body">
                         <i class="bi bi-clock-history display-6 text-warning mb-3"></i>
                         <h5 class="card-title">Scheduled Messages</h5>
-                        <p class="card-text">Schedule future messages and posts for special occasions and anniversaries.</p>
+                        <p class="card-text">Schedule future messages and posts for special occasions and anniversaries.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Search Users Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Users</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="search-input"
+                            placeholder="Search by name, username, or email...">
+                    </div>
+                    <div id="search-results" class="list-group">
+                        <p class="text-muted text-center">Enter a search term to find users</p>
                     </div>
                 </div>
             </div>
@@ -119,5 +150,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="frontend/js/auth.js"></script>
+    <script src="frontend/js/search.js"></script>
 </body>
+
 </html>
