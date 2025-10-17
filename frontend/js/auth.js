@@ -33,7 +33,7 @@ async function logout() {
         const data = await response.json();
         
         if (data.success) {
-            window.location.href = '/index.php';
+            window.location.href = 'http://localhost/IAmStillHere';
         }
     } catch (error) {
         console.error('Logout failed:', error);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,8 +11,45 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+        <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+          </li>
+          <li class="nav-item" id="nav-dashboard" style="display:none;">
+            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/dashboard.php">Dashboard</a>
+          </li>
+          <li class="nav-item" id="nav-admin" style="display:none;">
+            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/admin.php">Admin</a>
+          </li>
+          <li class="nav-item" id="nav-login">
+            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/login.php">Login</a>
+          </li>
+          <li class="nav-item" id="nav-register">
+            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/register.php">Register</a>
+          </li>
+          <li class="nav-item" id="nav-profile" style="display:none;">
+            <a class="nav-link" href="#" id="username-display"></a>
+          </li>
+          <li class="nav-item" id="nav-logout" style="display:none;">
+            <a class="nav-link" href="#" onclick="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="../index.php">
         <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
@@ -22,12 +60,14 @@
         <a href="#" class="btn btn-outline-light btn-sm" id="logout-btn" style="display:none;" onclick="logout()">Logout</a>
       </div>
     </div>
-  </nav>
+  </nav> -->
 
   <!-- Cover Section -->
-  <div id="cover-section" class="position-relative" style="height:300px;background:linear-gradient(135deg,#9b59b6,#3498db)">
+  <div id="cover-section" class="position-relative"
+    style="height:300px;background:linear-gradient(135deg,#9b59b6,#3498db)">
     <img id="cover-image" src="" alt="Cover" class="w-100 h-100" style="object-fit:cover;display:none;" />
-    <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
+    <div class="position-absolute bottom-0 start-0 w-100 p-4"
+      style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
       <div class="container">
         <div class="d-flex align-items-end">
           <img id="profile-image" src="/data/uploads/photos/default-profile.png" class="profile-photo" alt="Profile" />
@@ -35,7 +75,8 @@
             <h2 id="profile-name">Loading...</h2>
             <p class="mb-0" id="profile-dates"></p>
           </div>
-          <button id="edit-profile-btn" class="btn btn-light ms-auto mb-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+          <button id="edit-profile-btn" class="btn btn-light ms-auto mb-3" data-bs-toggle="modal"
+            data-bs-target="#editProfileModal">
             <i class="bi bi-pencil"></i> Edit Profile
           </button>
         </div>
@@ -58,7 +99,8 @@
         <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title">Memorial Settings</h5>
-            <button id="memorial-settings-btn" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#memorialSettingsModal">
+            <button id="memorial-settings-btn" class="btn btn-primary w-100" data-bs-toggle="modal"
+              data-bs-target="#memorialSettingsModal">
               <i class="bi bi-gear"></i> Configure Memorial
             </button>
             <p id="memorial-status" class="text-muted small mt-2"></p>
@@ -94,7 +136,8 @@
                       <input type="email" class="form-control" id="tribute-email" placeholder="Your Email (optional)" />
                     </div>
                     <div class="mb-3">
-                      <textarea class="form-control" id="tribute-message" rows="4" placeholder="Share your memories..." required></textarea>
+                      <textarea class="form-control" id="tribute-message" rows="4" placeholder="Share your memories..."
+                        required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Post Tribute</button>
                   </form>
@@ -183,6 +226,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
-  
+
 </body>
+
 </html>

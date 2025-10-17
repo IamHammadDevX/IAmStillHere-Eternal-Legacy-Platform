@@ -15,6 +15,7 @@ async function init() {
             document.getElementById('logout-btn').style.display = 'inline-block';
         }
 
+        // Redirect if no profile ID is provided
         if (!profileUserId) {
             if (sessionData.logged_in) {
                 window.location.href = 'profile.php?user_id=' + currentUser.id;
@@ -42,16 +43,19 @@ async function loadProfile() {
 
         const profile = data.profile;
 
+        // Display basic info
         document.getElementById('profile-name').textContent = profile.full_name || "Unknown";
         document.getElementById('profile-bio').textContent = profile.bio || "No bio available.";
 
+        // Profile image
         const profileImg = document.getElementById('profile-image');
         if (profile.profile_photo) {
             profileImg.src = profile.profile_photo;
         } else {
-            profileImg.src = '/frontend/images/default-profile.png';
+            profileImg.src = 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
         }
 
+        // Cover image
         const coverImg = document.getElementById('cover-image');
         if (profile.cover_photo) {
             coverImg.src = profile.cover_photo;
@@ -60,6 +64,7 @@ async function loadProfile() {
             coverImg.style.display = "none";
         }
 
+        // Dates
         const dates = [];
         if (profile.date_of_birth) {
             dates.push('Born: ' + new Date(profile.date_of_birth).toLocaleDateString());
@@ -69,9 +74,16 @@ async function loadProfile() {
         }
         document.getElementById('profile-dates').textContent = dates.join(' | ');
 
-        if (currentUser && currentUser.id == profileUserId) {
+        // Determine ownership
+        const isOwner = currentUser && currentUser.id == profileUserId;
+
+        if (isOwner) {
+            // Owner Mode: Can edit and view memorial settings
             document.getElementById('edit-profile-btn').style.display = 'block';
             document.getElementById('memorial-settings-btn').style.display = 'block';
+            document.getElementById('tribute-form').style.display = 'none'; // hide tribute form for self
+
+            // Prefill modal fields
             document.getElementById('bio-input').value = profile.bio || '';
             document.getElementById('dob-input').value = profile.date_of_birth || '';
             document.getElementById('is-memorial-input').value = profile.is_memorial ? '1' : '0';
@@ -81,7 +93,14 @@ async function loadProfile() {
                 ? 'Memorial mode is active'
                 : 'Memorial mode is inactive';
         } else {
+            // View-Only Mode
+            document.getElementById('edit-profile-btn').style.display = 'none';
+            document.getElementById('memorial-settings-btn').style.display = 'none';
             document.getElementById('tribute-form').style.display = 'block';
+
+            // Prevent any form editing
+            document.querySelectorAll('#profileForm input, #profileForm textarea, #memorialSettingsForm input, #memorialSettingsForm select')
+                .forEach(el => el.disabled = true);
         }
 
         // Load other profile sections
@@ -94,6 +113,7 @@ async function loadProfile() {
     }
 }
 
+// ---------- Profile Update ----------
 document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -140,6 +160,7 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     }
 });
 
+// ---------- Memorial Settings Update ----------
 document.getElementById('memorialSettingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -170,6 +191,7 @@ document.getElementById('memorialSettingsForm')?.addEventListener('submit', asyn
     }
 });
 
+// ---------- Load Timeline ----------
 async function loadTimeline() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${profileUserId}`);
@@ -201,6 +223,7 @@ async function loadTimeline() {
     }
 }
 
+// ---------- Load Memories ----------
 async function loadMemories() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${profileUserId}`);
@@ -217,7 +240,7 @@ async function loadMemories() {
                 if (memory.file_type.includes('image')) {
                     mediaHtml = `<img src="http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}" alt="${memory.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">`;
                 } else if (memory.file_type.includes('video')) {
-                    mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="/data/uploads/videos/${memory.file_path}"></video>`;
+                    mediaHtml = `<video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}"></video>`;
                 }
 
                 col.innerHTML = `
@@ -239,6 +262,7 @@ async function loadMemories() {
     }
 }
 
+// ---------- Load Tributes ----------
 async function loadTributes() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/list.php?memorial_user_id=${profileUserId}`);
@@ -265,9 +289,11 @@ async function loadTributes() {
     }
 }
 
+// ---------- Alert Helper ----------
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
+    alertDiv.className = `alert alert-${type} position-fixed bottom-0 end-0 m-3`;
+    alertDiv.style.zIndex = 1050;
     alertDiv.textContent = message;
     document.body.appendChild(alertDiv);
     setTimeout(() => alertDiv.remove(), 3000);
