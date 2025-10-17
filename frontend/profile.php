@@ -28,16 +28,16 @@
             <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
           </li>
           <li class="nav-item" id="nav-dashboard" style="display:none;">
-            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/dashboard.php">Dashboard</a>
+            <a class="nav-link" href="dashboard.php">Dashboard</a>
           </li>
           <li class="nav-item" id="nav-admin" style="display:none;">
-            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/admin.php">Admin</a>
+            <a class="nav-link" href="admin.php">Admin</a>
           </li>
           <li class="nav-item" id="nav-login">
-            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/login.php">Login</a>
+            <a class="nav-link" href="login.php">Login</a>
           </li>
           <li class="nav-item" id="nav-register">
-            <a class="nav-link" href="http://localhost/IAmStillHere/frontend/register.php">Register</a>
+            <a class="nav-link" href="register.php">Register</a>
           </li>
           <li class="nav-item" id="nav-profile" style="display:none;">
             <a class="nav-link" href="#" id="username-display"></a>
@@ -70,7 +70,7 @@
       style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
       <div class="container">
         <div class="d-flex align-items-end">
-          <img id="profile-image" src="/data/uploads/photos/default-profile.png" class="profile-photo" alt="Profile" />
+          <img id="profile-image" src="http://localhost/IAmStillHere/data/uploads/photos/default-profile.png" class="profile-photo" alt="Profile" />
           <div class="ms-3 text-white">
             <h2 id="profile-name">Loading...</h2>
             <p class="mb-0" id="profile-dates"></p>

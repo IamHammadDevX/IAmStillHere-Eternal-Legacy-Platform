@@ -11,8 +11,8 @@ async function init() {
 
         if (sessionData.logged_in) {
             currentUser = sessionData.user;
-            document.getElementById('user-name').textContent = currentUser.full_name;
-            document.getElementById('logout-btn').style.display = 'inline-block';
+            document.getElementById('username-display').textContent = currentUser.full_name;
+            document.getElementById('nav-logout').style.display = 'inline-block';
         }
 
         // Redirect if no profile ID is provided

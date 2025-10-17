@@ -29,16 +29,16 @@
                         <a class="nav-link" href="#">Dashboard</a>
                     </li>
                     <li class="nav-item" id="nav-admin" style="display:none;">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/frontend/admin.php">Admin</a>
+                        <a class="nav-link" href="admin.php">Admin</a>
                     </li>
                     <li class="nav-item" id="nav-login">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/frontend/login.php">Login</a>
+                        <a class="nav-link" href="login.php">Login</a>
                     </li>
                     <li class="nav-item" id="nav-register">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/frontend/register.php">Register</a>
+                        <a class="nav-link" href="register.php">Register</a>
                     </li>
                     <li class="nav-item" id="nav-profile" style="display:none;">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/frontend/profile.php"
+                        <a class="nav-link" href="profile.php"
                             id="username-display"></a>
                     </li>
                     <li class="nav-item" id="nav-logout" style="display:none;">
