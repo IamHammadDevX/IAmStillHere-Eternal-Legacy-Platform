@@ -40,66 +40,109 @@ async function loadMemories() {
         grid.innerHTML = '';
 
         if (data.success && data.memories.length > 0) {
-            data.memories.forEach(memory => {
+            data.memories.forEach((memory, index) => {
                 const col = document.createElement('div');
                 col.className = 'col-md-4 mb-4';
 
                 let mediaHtml = '';
+                const fileName = memory.file_path.toLowerCase();
+                const fileType = memory.file_type.toLowerCase();
 
-                if (memory.file_type.includes('image')) {
+                // Determine file category
+                let isImage = fileType.includes('image') ||
+                    ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tiff'].some(ext => fileName.endsWith('.' + ext));
+
+                let isVideo = fileType.includes('video') ||
+                    ['mp4', 'avi', 'mkv', 'mov', '3gp', 'flv', 'wmv', 'webm', 'mpeg', 'mpg'].some(ext => fileName.endsWith('.' + ext));
+
+                let isAudio = fileType.includes('audio') ||
+                    ['mp3', 'wav', 'aac', 'ogg', 'flac', 'm4a'].some(ext => fileName.endsWith('.' + ext));
+
+                let filePath = '';
+                let downloadButton = '';
+
+                if (isImage) {
+                    filePath = `http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}`;
+                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
+
                     mediaHtml = `
-                                <img src="http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}" 
-                                    alt="${memory.title}" 
-                                    style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
-                                `;
-                } else if (memory.file_type.includes('video')) {
+                        <img src="${filePath}" 
+                            alt="${memory.title}" 
+                            style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                    `;
+                } else if (isVideo) {
+                    filePath = `http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}`;
+                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
+
                     mediaHtml = `
-                                <video controls 
-                                    style="width: 100%; height: 200px; border-radius: 10px;">
-                                    <source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}" 
-                                            type="${memory.file_type}">
-                                </video>
-                                `;
-                } else if (
-                    memory.file_type.includes('pdf') ||
-                    memory.file_type.includes('word') ||
-                    memory.file_type.includes('msword') ||
-                    memory.file_type.includes('document') ||
-                    memory.file_type.includes('text')
-                ) {
+                        <div style="width: 100%; height: 200px; border-radius: 10px; overflow: hidden;">
+                            <video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}">
+                                <p>
+                                    This video format may not be supported. 
+                                    <a href="${filePath}" download>Download the file</a> to view it.
+                                </p>
+                            </video>
+                        </div>
+                    `;
+                } else if (isAudio) {
+                    filePath = `http://localhost/IAmStillHere/data/uploads/audio/${memory.file_path}`;
+                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download</a>`;
+
                     mediaHtml = `
-                                <div class="text-center p-4">
-                                    <i class="bi bi-file-earmark-text display-1 text-primary"></i>
-                                    <p class="mt-2">
-                                        <a href="http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}" 
-                                        target="_blank" class="btn btn-outline-primary btn-sm">
-                                        View Document
-                                        </a>
-                                    </p>
-                                </div>
-                                `;
+                        <div class="text-center p-4">
+                            <i class="bi bi-music-note-beamed display-1 text-success"></i>
+                            <p class="mt-2 mb-2"><strong>${memory.title}</strong></p>
+                            <audio 
+                                controls 
+                                preload="metadata"
+                                style="width: 100%;"
+                            >
+                                <source src="${filePath}" type="${memory.file_type}">
+                                <p>Audio format not supported. <a href="${filePath}" download>Download the file</a></p>
+                            </audio>
+                        </div>
+                    `;
                 } else {
+                    // Documents
+                    filePath = `http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}`;
+                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
+
+                    let fileIcon = 'bi-file-earmark-text';
+                    if (fileName.endsWith('.pdf')) fileIcon = 'bi-file-earmark-pdf';
+                    else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) fileIcon = 'bi-file-earmark-word';
+                    else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) fileIcon = 'bi-file-earmark-excel';
+                    else if (fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) fileIcon = 'bi-file-earmark-ppt';
+
                     mediaHtml = `
-                                <div class="p-4 text-center">
-                                    <i class="bi bi-file-earmark display-1 text-muted"></i>
-                                    <p class="small text-muted mt-2">Unsupported file type</p>
-                                </div>
-                                `;
+                        <div class="text-center p-4">
+                            <i class="${fileIcon} display-1 text-primary"></i>
+                            <p class="mt-2">
+                                <a href="${filePath}" 
+                                   target="_blank" 
+                                   class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </p>
+                        </div>
+                    `;
                 }
 
                 col.innerHTML = `
-                                <div class="card memory-card">
-                                    ${mediaHtml}
-                                    <div class="card-body">
-                                        <h5 class="card-title">${memory.title}</h5>
-                                        <p class="card-text">${memory.description || ''}</p>
-                                        <small class="text-muted">
-                                            <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
-                                            ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
-                                        </small>
-                                    </div>
-                                </div>
-                                `;
+                    <div class="card memory-card">
+                        ${mediaHtml}
+                        <div class="card-body">
+                            <h5 class="card-title">${memory.title}</h5>
+                            <p class="card-text">${memory.description || ''}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
+                                    ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
+                                </small>
+                                ${downloadButton}
+                            </div>
+                        </div>
+                    </div>
+                `;
                 grid.appendChild(col);
             });
         } else {

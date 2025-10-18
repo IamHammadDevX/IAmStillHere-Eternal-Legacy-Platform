@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -139,7 +140,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="memory-file" class="form-label">File</label>
-                            <input type="file" class="form-control" id="memory-file" required>
+                            <input type="file" class="form-control" id="memory-file" required
+                                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.odt,.avi,.mkv,.mov,.3gp,.flv,.wmv,.mp3,.wav,.aac,.ogg,.flac,.m4a">
+                            <small class="text-muted">
+                                Supported: Images, Videos (MP4, 3GP, etc.), Audio (MP3, WAV, etc.),
+                                Documents (PDF, Word, Excel, PowerPoint)
+                            </small>
                         </div>
                         <div class="mb-3">
                             <label for="memory-date" class="form-label">Memory Date</label>
@@ -256,6 +262,25 @@
             </div>
         </div>
     </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <div class="mb-2">
+                <!-- Social Links -->
+                <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
+                    <i class="bi bi-github fs-4"></i>
+                </a>
+                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2" title="Portfolio">
+                    <i class="bi bi-globe fs-4"></i>
+                </a>
+            </div>
+
+            <!-- Copyright -->
+            <p class="mb-0 small">
+                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+            </p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="frontend/images/favicon.png">
     <title>IamAlwaysHere - Memorial Social Network</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -141,12 +142,38 @@
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+    <!-- ===== Footer Start ===== -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <div class="mb-2">
+                <!-- Social Links -->
+                <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
+                    <i class="bi bi-github fs-4"></i>
+                </a>
+                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2" title="Portfolio">
+                    <i class="bi bi-globe fs-4"></i>
+                </a>
+            </div>
+
+            <!-- Copyright -->
+            <p class="mb-0 small">
+                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <!-- ===== Footer End ===== -->
+
+    <!-- Script to auto-update year -->
+    <script>
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
+
+    <!-- <footer class="bg-dark text-white text-center py-4 mt-5">
         <div class="container">
             <p>&copy; 2024 IamAlwaysHere. Honoring memories, celebrating lives.</p>
             <p class="small">A memorial social networking platform</p>
         </div>
-    </footer>
+    </footer> -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="frontend/js/auth.js"></script>
