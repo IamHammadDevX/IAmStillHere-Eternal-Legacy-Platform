@@ -56,7 +56,7 @@ function displaySearchResults(users) {
 
     users.forEach(user => {
         const resultItem = document.createElement('a');
-        resultItem.href = `profile.php?user_id=${user.id}`;
+        resultItem.href = `http://localhost/IAmStillHere/frontend/profile.php?user_id=${user.id}`;
         resultItem.className = 'list-group-item list-group-item-action';
         resultItem.innerHTML = `
             <div class="d-flex align-items-center">

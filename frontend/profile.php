@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="images/favicon.png">
   <title>Memorial Profile - IamAlwaysHere</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -46,7 +47,7 @@
             <a class="nav-link" href="register.php">Register</a>
           </li>
           <li class="nav-item" id="nav-profile" style="display:none;">
-            <a class="nav-link" href="#" id="username-display"></a>
+            <a class="nav-link" href="profile.php" id="username-display"></a>
           </li>
           <li class="nav-item" id="nav-logout" style="display:none;">
             <a class="nav-link" href="#" onclick="logout()">Logout</a>
