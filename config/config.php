@@ -189,3 +189,8 @@ function get_file_icon($file_type) {
     if (strpos($file_type, 'pdf') !== false) return 'bi-file-pdf';
     return 'bi-file-earmark';
 }
+
+// ===== Email Configuration =====
+define('SMTP_FROM_EMAIL', 'noreply@iamalwayshere.com');
+define('SMTP_FROM_NAME', 'IamAlwaysHere');
+define('VERIFICATION_CODE_EXPIRY', 15); // minutes
