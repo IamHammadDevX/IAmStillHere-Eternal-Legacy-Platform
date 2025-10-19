@@ -8,30 +8,25 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-class EmailHelper {
-    
+class EmailHelper
+{
     // --- SMTP CONFIGURATION CONSTANTS ---
-    // IMPORTANT: Replace these placeholder values with your actual SMTP server settings.
-    // For security, it's best to load these from a secure configuration file (e.g., .env).
-    private const SMTP_HOST = ''; // E.g., 'smtp.gmail.com' or 'smtp.sendgrid.net'
-    private const SMTP_USERNAME = ''; 
-    private const SMTP_PASSWORD = ''; 
-    private const SMTP_PORT = 587; // Common ports: 587 (TLS/STARTTLS) or 465 (SSL/SMTPS)
-    // Use PHPMailer::ENCRYPTION_STARTTLS for port 587 or PHPMailer::ENCRYPTION_SMTPS for port 465
-    private const SMTP_SECURE = PHPMailer::ENCRYPTION_STARTTLS; 
+    private const SMTP_HOST = 'smtp.gmail.com';
+    private const SMTP_USERNAME = 'jennie.lipa6655@gmail.com'; 
+    private const SMTP_PASSWORD = 'sbbs effy pnen fqeu';
+    private const SMTP_PORT = 587;
+    private const SMTP_SECURE = PHPMailer::ENCRYPTION_STARTTLS;
 
     // Sender details
     private const FROM_EMAIL = 'noreply@iamalwayshere.com';
     private const FROM_NAME = 'IamAlwaysHere';
 
 
-    public static function sendVerificationEmail($toEmail, $toName, $verificationCode) {
-        
-        $mail = new PHPMailer(true); // Passing 'true' enables exceptions for error handling
-        
+    public static function sendVerificationEmail($toEmail, $toName, $verificationCode)
+    {
+        $mail = new PHPMailer(true);
         $subject = "Verify Your Email - IamAlwaysHere";
-        
-        // --- Existing HTML Message (no change to content, just moved to a variable) ---
+
         $html_message = "
         <html>
         <head>
@@ -73,42 +68,121 @@ class EmailHelper {
         </body>
         </html>
         ";
-        
-        // Plain text alternative for non-HTML clients
-        $alt_body = "Hello $toName,\n\nThank you for registering. Please use the following code to verify your email:\n\nYour Verification Code: $verificationCode\n\nValid for 15 minutes.\n\nEnter this code on the verification page to activate your account.\n\nImportant: If you didn't request this registration, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
-        
-        try {
-            // --- Server settings ---
-            $mail->isSMTP(); // Send using SMTP
-            $mail->Host       = self::SMTP_HOST; // Set the SMTP server
-            $mail->SMTPAuth   = true; // Enable SMTP authentication                               
-            $mail->Username   = self::SMTP_USERNAME; // SMTP username             
-            $mail->Password   = self::SMTP_PASSWORD; // SMTP password                         
-            $mail->SMTPSecure = self::SMTP_SECURE; // Enable TLS encryption (or SMTPS)
-            $mail->Port       = self::SMTP_PORT; // TCP port to connect to                                    
-            // $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Uncomment to enable verbose debug output
-            
-            // --- Recipients ---
-            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
-            $mail->addAddress($toEmail, $toName); // Add a recipient
 
-            // --- Content ---
-            $mail->isHTML(true); // Set email format to HTML                                  
+        $alt_body = "Hello $toName,\n\nThank you for registering. Please use the following code to verify your email:\n\nYour Verification Code: $verificationCode\n\nValid for 15 minutes.\n\nEnter this code on the verification page to activate your account.\n\nImportant: If you didn't request this registration, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = self::SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = self::SMTP_USERNAME;
+            $mail->Password = self::SMTP_PASSWORD;
+            $mail->SMTPSecure = self::SMTP_SECURE;
+            $mail->Port = self::SMTP_PORT;
+
+            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
+            $mail->addAddress($toEmail, $toName);
+
+            $mail->isHTML(true);
             $mail->Subject = $subject;
-            $mail->Body    = $html_message;
-            $mail->AltBody = $alt_body; // Plain text alternative
+            $mail->Body = $html_message;
+            $mail->AltBody = $alt_body;
 
             $mail->send();
-            return true; // Email sent successfully
+            return true;
 
         } catch (Exception $e) {
-            // Log or handle the error
-            // error_log("Mailer Error for $toEmail: {$mail->ErrorInfo}");
             return false;
         }
     }
 
-    public static function generateVerificationCode() {
+
+    public static function sendFamilyRequestEmail($toEmail, $toName, $requesterName, $relationship, $requestId)
+    {
+        $mail = new PHPMailer(true);
+        $subject = "Family Connection Request - IamAlwaysHere";
+
+        // NOTE: Update URLs if not running locally
+        $approveUrl = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
+        $rejectUrl  = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
+
+        $html_message = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+                .request-box { background: white; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 5px; }
+                .button-container { text-align: center; margin: 30px 0; }
+                .button { display: inline-block; padding: 12px 30px; margin: 0 10px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+                .btn-accept { background: #28a745; color: white; }
+                .btn-reject { background: #dc3545; color: white; }
+                .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #999; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Family Connection Request</h1>
+                    <p>IamAlwaysHere Memorial Platform</p>
+                </div>
+                <div class='content'>
+                    <h2>Hello, $toName!</h2>
+                    <p><strong>$requesterName</strong> would like to add you as family on IamAlwaysHere.</p>
+                    
+                    <div class='request-box'>
+                        <p style='margin: 0;'><strong>Relationship:</strong> $relationship</p>
+                        <p style='margin: 5px 0 0 0; font-size: 14px; color: #666;'>If you accept, $requesterName will be able to view your family-only content and post on your memorial page.</p>
+                    </div>
+                    
+                    <div class='button-container'>
+                        <a href='$approveUrl' class='button btn-accept'>✓ Accept Request</a>
+                        <a href='$rejectUrl' class='button btn-reject'>✗ Decline Request</a>
+                    </div>
+                    
+                    <p style='font-size: 14px; color: #666; text-align: center;'>You can also respond to this request by logging into your account.</p>
+                    
+                    <p style='margin-top: 30px;'>Best regards,<br>The IamAlwaysHere Team</p>
+                </div>
+                <div class='footer'>
+                    <p>&copy; " . date('Y') . " IamAlwaysHere. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+
+        $alt_body = "Hello $toName,\n\n$requesterName would like to add you as family on IamAlwaysHere.\n\nRelationship: $relationship\n\nApprove: $approveUrl\nReject: $rejectUrl\n\nIf you accept, they’ll be able to view family-only content and post on your memorial page.\n\n— IamAlwaysHere Team";
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = self::SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = self::SMTP_USERNAME;
+            $mail->Password = self::SMTP_PASSWORD;
+            $mail->SMTPSecure = self::SMTP_SECURE;
+            $mail->Port = self::SMTP_PORT;
+
+            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
+            $mail->addAddress($toEmail, $toName);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $html_message;
+            $mail->AltBody = $alt_body;
+
+            $mail->send();
+            return true;
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public static function generateVerificationCode()
+    {
         return str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
     }
 }

@@ -195,3 +195,33 @@ body {
         font-size: 0.85rem;
     }
 }
+
+/* Family Requests Styling */
+.text-purple {
+    color: #764ba2 !important;
+}
+
+.btn-purple {
+    background-color: #764ba2;
+    border-color: #764ba2;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #5e3a82;
+    border-color: #5e3a82;
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+}
+
+.nav-tabs .nav-link.active {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link .badge {
+    font-size: 0.7rem;
+}
