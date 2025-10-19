@@ -103,6 +103,11 @@
                 return;
             }
 
+            if (password.length < 8) {
+                showAlert('Password must be at least 8 characters', 'warning');
+                return;
+            }
+
             const formData = {
                 username: document.getElementById('username').value,
                 email: document.getElementById('email').value,
@@ -112,7 +117,9 @@
             };
 
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/auth/register.php', {
+                showAlert('Sending verification code...', 'info');
+
+                const response = await fetch('http://localhost/IAmStillHere/backend/auth/send_verification.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -121,14 +128,15 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('Registration successful! Redirecting to login...', 'success');
+                    showAlert('Verification code sent! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'login.php';
+                        window.location.href = `verify_email.php?email=${encodeURIComponent(data.email)}`;
                     }, 2000);
                 } else {
                     showAlert(data.message, 'danger');
                 }
             } catch (error) {
+                console.error('Error:', error);
                 showAlert('An error occurred. Please try again.', 'danger');
             }
         });
