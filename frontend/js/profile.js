@@ -387,19 +387,58 @@ async function loadTributes() {
             container.innerHTML = '';
             data.tributes.forEach(tribute => {
                 const div = document.createElement('div');
-                div.className = 'tribute-card';
+                div.className = 'tribute-card card mb-3 shadow-sm';
+                
+                // Determine avatar and name
+                let avatarUrl, displayName, userBadge;
+                
+                if (tribute.author_id && tribute.registered_user_name) {
+                    // Registered user
+                    avatarUrl = tribute.profile_photo 
+                        ? `http://localhost/IAmStillHere/data/uploads/photos/${tribute.profile_photo}`
+                        : 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                    displayName = tribute.registered_user_name;
+                    userBadge = '<span class="badge bg-primary ms-2" style="font-size: 0.7rem;">Member</span>';
+                } else {
+                    // Guest user
+                    avatarUrl = 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                    displayName = tribute.author_name || 'Anonymous';
+                    userBadge = '<span class="badge bg-secondary ms-2" style="font-size: 0.7rem;">Guest</span>';
+                }
+                
                 div.innerHTML = `
-                    <strong>${tribute.author_name}</strong>
-                    <p class="mb-1">${tribute.message}</p>
-                    <small class="text-muted">${new Date(tribute.created_at).toLocaleDateString()}</small>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start">
+                            <img src="${avatarUrl}" 
+                                 alt="${displayName}" 
+                                 class="rounded-circle me-3" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <strong class="text-dark">${displayName}</strong>
+                                    ${userBadge}
+                                    <small class="text-muted ms-auto">${new Date(tribute.created_at).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'short', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</small>
+                                </div>
+                                <p class="mb-0 text-secondary">${tribute.message}</p>
+                            </div>
+                        </div>
+                    </div>
                 `;
                 container.appendChild(div);
             });
         } else {
-            container.innerHTML = '<p class="text-muted">No tributes yet.</p>';
+            container.innerHTML = '<p class="text-muted text-center py-4">No tributes yet. Be the first to leave a tribute.</p>';
         }
     } catch (error) {
         console.error('Error loading tributes:', error);
+        document.getElementById('tributes-container').innerHTML = 
+            '<p class="text-danger text-center py-4">Error loading tributes. Please try again later.</p>';
     }
 }
 

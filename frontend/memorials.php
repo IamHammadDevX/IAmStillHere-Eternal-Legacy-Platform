@@ -96,7 +96,8 @@
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2" title="Portfolio">
+                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                    title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
             </div>
@@ -107,6 +108,10 @@
             </p>
         </div>
     </footer>
+
+    <script>
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
