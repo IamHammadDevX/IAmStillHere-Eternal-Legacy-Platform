@@ -11,9 +11,9 @@ use PHPMailer\PHPMailer\SMTP;
 class EmailHelper
 {
     // --- SMTP CONFIGURATION CONSTANTS ---
-    private const SMTP_HOST = 'smtp.gmail.com';
-    private const SMTP_USERNAME = 'jennie.lipa6655@gmail.com'; 
-    private const SMTP_PASSWORD = 'sbbs effy pnen fqeu';
+    private const SMTP_HOST = '';
+    private const SMTP_USERNAME = ''; 
+    private const SMTP_PASSWORD = '';
     private const SMTP_PORT = 587;
     private const SMTP_SECURE = PHPMailer::ENCRYPTION_STARTTLS;
 
