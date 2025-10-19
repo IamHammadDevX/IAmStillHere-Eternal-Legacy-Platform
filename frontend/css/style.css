@@ -135,3 +135,63 @@ body {
         height: 100px;
     }
 }
+
+/* ===== Tribute Card Styling ===== */
+.tribute-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+}
+
+.tribute-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.tribute-card .card-body {
+    padding: 1.25rem;
+}
+
+.tribute-card img.rounded-circle {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.tribute-card:hover img.rounded-circle {
+    transform: scale(1.05);
+}
+
+.tribute-card .badge {
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+}
+
+.tribute-card strong {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tribute-card p {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Responsive tribute cards */
+@media (max-width: 768px) {
+    .tribute-card img.rounded-circle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .tribute-card .card-body {
+        padding: 1rem;
+    }
+    
+    .tribute-card strong {
+        font-size: 0.9rem;
+    }
+    
+    .tribute-card p {
+        font-size: 0.85rem;
+    }
+}

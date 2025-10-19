@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -70,7 +72,8 @@
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2" title="Portfolio">
+                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                    title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
             </div>
@@ -82,20 +85,24 @@
         </div>
     </footer>
 
+    <script>
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
     <script>
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const password = document.getElementById('password').value;
             const confirm_password = document.getElementById('confirm_password').value;
-            
+
             if (password !== confirm_password) {
                 showAlert('Passwords do not match', 'danger');
                 return;
             }
-            
+
             const formData = {
                 username: document.getElementById('username').value,
                 email: document.getElementById('email').value,
@@ -103,16 +110,16 @@
                 full_name: document.getElementById('full_name').value,
                 date_of_birth: document.getElementById('date_of_birth').value
             };
-            
+
             try {
                 const response = await fetch('http://localhost/IAmStillHere/backend/auth/register.php', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showAlert('Registration successful! Redirecting to login...', 'success');
                     setTimeout(() => {
@@ -127,4 +134,5 @@
         });
     </script>
 </body>
+
 </html>
