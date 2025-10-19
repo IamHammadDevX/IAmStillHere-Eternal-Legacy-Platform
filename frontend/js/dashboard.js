@@ -13,6 +13,7 @@ async function init() {
 
     loadMemories();
     loadTimeline();
+    loadRequestCount();
 }
 
 async function loadTributeCount(userId) {
@@ -185,6 +186,23 @@ async function loadTimeline() {
         }
     } catch (error) {
         console.error('Error loading timeline:', error);
+    }
+}
+
+async function loadRequestCount() {
+    try {
+        const response = await fetch(`http://localhost/IAmStillHere/backend/family/pending_requests.php?user_id=${currentUserId}`);
+        const data = await response.json();
+        
+        if (data.success && data.count > 0) {
+            const badge = document.getElementById('request-count-badge');
+            if (badge) {
+                badge.textContent = data.count;
+                badge.style.display = 'inline-block';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading request count:', error);
     }
 }
 
