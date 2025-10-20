@@ -140,6 +140,9 @@ async function loadMemories() {
                                     ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
                                 </small>
                                 ${downloadButton}
+                                <button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -154,6 +157,32 @@ async function loadMemories() {
     }
 }
 
+async function deleteMemory(memoryId) {
+    if (!confirm('Are you sure you want to delete this memory? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ memory_id: memoryId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Memory deleted successfully', 'success');
+            loadMemories(); // Reload memories
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting memory:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
+    }
+}
+
 async function loadTimeline() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${currentUserId}`);
@@ -163,22 +192,38 @@ async function loadTimeline() {
         container.innerHTML = '';
 
         if (data.success && data.milestones.length > 0) {
-            data.milestones.forEach(milestone => {
+            data.milestones.forEach((milestone, index) => {
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
+                
+                const date = new Date(milestone.milestone_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
                 item.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5>${milestone.title}</h5>
-                            <p class="text-muted mb-2">${new Date(milestone.milestone_date).toLocaleDateString()}</p>
-                            ${milestone.category ? `<span class="badge bg-info">${milestone.category}</span>` : ''}
-                            <p class="mt-2">${milestone.description || ''}</p>
-                            <small class="text-muted">
-                                <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
-                            </small>
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="mb-1">
+                                    ${milestone.title}
+                                    ${milestone.category ? `<span class="badge bg-info ms-2">${milestone.category}</span>` : ''}
+                                </h5>
+                                <small class="text-muted"><i class="bi bi-calendar"></i> ${date}</small>
+                                <p class="text-muted mb-0">${milestone.description || ''}</p>
+                                <small class="text-muted">
+                                    <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
+                                </small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                 `;
+                
                 container.appendChild(item);
             });
         } else {
@@ -186,6 +231,32 @@ async function loadTimeline() {
         }
     } catch (error) {
         console.error('Error loading timeline:', error);
+    }
+}
+
+async function deleteMilestone(milestoneId) {
+    if (!confirm('Are you sure you want to delete this milestone?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ milestone_id: milestoneId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Milestone deleted successfully', 'success');
+            loadTimeline(); // Reload timeline
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting milestone:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
     }
 }
 
