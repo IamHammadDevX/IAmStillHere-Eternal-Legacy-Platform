@@ -124,6 +124,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#timeline-tab">Timeline</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -132,6 +135,9 @@
             </div>
             <div class="tab-pane fade" id="timeline-tab">
                 <div id="timeline-container"></div>
+            </div>
+            <div class="tab-pane fade" id="events-tab">
+                <div id="events-container"></div>
             </div>
         </div>
     </div>

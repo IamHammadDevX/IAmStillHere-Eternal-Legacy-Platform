@@ -110,7 +110,7 @@
           <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
-
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
         </ul>
 
@@ -120,6 +120,9 @@
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div class="row" id="memories-grid"></div>
+          </div>
+          <div class="tab-pane fade" id="events-tab">
+            <div id="events-container"></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
             <div id="tribute-form" style="display:none;">
