@@ -225,3 +225,28 @@ body {
 .nav-tabs .nav-link .badge {
     font-size: 0.7rem;
 }
+
+/* ===== Events Styling ===== */
+.border-info {
+    border-left: 4px solid #0dcaf0 !important;
+}
+
+.card.bg-light {
+    opacity: 0.85;
+}
+
+.event-card {
+    transition: all 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Event type colors */
+.text-danger { color: #dc3545 !important; }
+.text-info { color: #0dcaf0 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-success { color: #198754 !important; }
+.text-secondary { color: #6c757d !important; }

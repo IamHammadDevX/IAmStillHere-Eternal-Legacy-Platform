@@ -95,6 +95,7 @@ async function loadProfile() {
 
         loadTimeline();
         loadMemories();
+        loadEvents();
         loadTributes();
 
     } catch (error) {
@@ -230,34 +231,88 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
 
 
 // ---------- Load Timeline ----------
+
 async function loadTimeline() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${profileUserId}`);
         const data = await response.json();
+
         const container = document.getElementById('timeline-container');
+        container.innerHTML = '';
 
         if (data.success && data.milestones.length > 0) {
-            container.innerHTML = '';
-            data.milestones.forEach(milestone => {
+            data.milestones.forEach((milestone, index) => {
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
+
+                const date = new Date(milestone.milestone_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const canDelete = loggedInUser && (
+                    loggedInUser.id == profileUserId ||
+                    loggedInUser.role === 'admin'
+                );
+
                 item.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5>${milestone.title}</h5>
-                            <p class="text-muted mb-2">${new Date(milestone.milestone_date).toLocaleDateString()}</p>
-                            ${milestone.category ? `<span class="badge bg-info">${milestone.category}</span>` : ''}
-                            <p class="mt-2">${milestone.description || ''}</p>
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="mb-1">
+                                    ${milestone.title}
+                                    ${milestone.category ? `<span class="badge bg-info ms-2">${milestone.category}</span>` : ''}
+                                </h5>
+                                <small class="text-muted"><i class="bi bi-calendar"></i> ${date}</small>
+                                <p class="text-muted mb-0">${milestone.description || ''}</p>
+                                <small class="text-muted">
+                                    <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
+                                </small>
+                            </div>
+                            ${canDelete ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>` : ''}
+                            
                         </div>
                     </div>
                 `;
+
+
                 container.appendChild(item);
             });
         } else {
-            container.innerHTML = '<p class="text-muted">No timeline events yet.</p>';
+            container.innerHTML = '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
         }
     } catch (error) {
         console.error('Error loading timeline:', error);
+    }
+}
+
+async function deleteMilestone(milestoneId) {
+    if (!confirm('Are you sure you want to delete this milestone?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ milestone_id: milestoneId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Milestone deleted successfully', 'success');
+            loadTimeline(); // Reload timeline
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting milestone:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
     }
 }
 
@@ -357,12 +412,28 @@ async function loadMemories() {
                     `;
                 }
 
+                const canDelete = loggedInUser && (
+                    loggedInUser.id == profileUserId ||
+                    loggedInUser.role === 'admin'
+                );
+
                 col.innerHTML = `
-                    <div class="card">
+                    <div class="card memory-card">
                         ${mediaHtml}
                         <div class="card-body">
-                            <h6>${memory.title}</h6>
-                            <p class="small text-muted">${memory.description || ''}</p>
+                            <h5 class="card-title">${memory.title}</h5>
+                            <p class="card-text">${memory.description || ''}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
+                                    ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
+                                </small>
+                                ${downloadButton}
+                                ${canDelete ? `<button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>` : ''}
+                                
+                            </div>
                         </div>
                     </div>
                 `;
@@ -376,7 +447,34 @@ async function loadMemories() {
     }
 }
 
+async function deleteMemory(memoryId) {
+    if (!confirm('Are you sure you want to delete this memory? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ memory_id: memoryId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Memory deleted successfully', 'success');
+            loadMemories(); // Reload memories
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting memory:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
+    }
+}
+
 // ---------- Load Tributes ----------
+
 async function loadTributes() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/list.php?memorial_user_id=${profileUserId}`);
@@ -388,13 +486,13 @@ async function loadTributes() {
             data.tributes.forEach(tribute => {
                 const div = document.createElement('div');
                 div.className = 'tribute-card card mb-3 shadow-sm';
-                
+
                 // Determine avatar and name
                 let avatarUrl, displayName, userBadge;
-                
+
                 if (tribute.author_id && tribute.registered_user_name) {
                     // Registered user
-                    avatarUrl = tribute.profile_photo 
+                    avatarUrl = tribute.profile_photo
                         ? `http://localhost/IAmStillHere/data/uploads/photos/${tribute.profile_photo}`
                         : 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
                     displayName = tribute.registered_user_name;
@@ -405,29 +503,37 @@ async function loadTributes() {
                     displayName = tribute.author_name || 'Anonymous';
                     userBadge = '<span class="badge bg-secondary ms-2" style="font-size: 0.7rem;">Guest</span>';
                 }
-                
+
+                // Check if current user can delete (profile owner, tribute author, or admin)
+                const canDelete = loggedInUser && (
+                    loggedInUser.id == profileUserId ||
+                    loggedInUser.id == tribute.author_id ||
+                    loggedInUser.role === 'admin'
+                );
+
                 div.innerHTML = `
                     <div class="card-body">
                         <div class="d-flex align-items-start">
-                            <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${tribute.author_id}" style="text-decoration: none; color: inherit;">
-                                <img src="${avatarUrl}" 
-                                    alt="${displayName}" 
-                                    class="rounded-circle me-3" 
-                                    style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
-                            </a>
+                            <img src="${avatarUrl}" 
+                                 alt="${displayName}" 
+                                 class="rounded-circle me-3" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center mb-2">
-                                    <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${tribute.author_id}" style="text-decoration: none; color: inherit;">
-                                        <strong class="text-dark">${displayName}</strong>
-                                    </a>
+                                    <strong class="text-dark">${displayName}</strong>
                                     ${userBadge}
-                                    <small class="text-muted ms-auto">${new Date(tribute.created_at).toLocaleDateString('en-US', { 
-                                        year: 'numeric', 
-                                        month: 'short', 
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}</small>
+                                    <small class="text-muted ms-auto">${new Date(tribute.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</small>
+                                    ${canDelete ? `
+                                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteTribute(${tribute.id})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    ` : ''}
                                 </div>
                                 <p class="mb-0 text-secondary">${tribute.message}</p>
                             </div>
@@ -441,8 +547,190 @@ async function loadTributes() {
         }
     } catch (error) {
         console.error('Error loading tributes:', error);
-        document.getElementById('tributes-container').innerHTML = 
+        document.getElementById('tributes-container').innerHTML =
             '<p class="text-danger text-center py-4">Error loading tributes. Please try again later.</p>';
+    }
+}
+
+async function deleteTribute(tributeId) {
+    if (!confirm('Are you sure you want to delete this tribute?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/tributes/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tribute_id: tributeId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Tribute deleted successfully', 'success');
+            loadTributes(); // Reload tributes
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting tribute:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
+    }
+}
+
+// Load Events Function
+async function loadEvents() {
+    try {
+        const response = await fetch(`http://localhost/IAmStillHere/backend/events/list.php?user_id=${profileUserId}`);
+        const data = await response.json();
+
+        const container = document.getElementById('events-container');
+
+        if (!data.success) {
+            container.innerHTML = '<div class="alert alert-danger">Error loading events</div>';
+            return;
+        }
+
+        if (data.events.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x display-3 text-muted"></i>
+                    <p class="text-muted mt-3">No scheduled events yet. Schedule your first event!</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '';
+
+        // Separate upcoming and past events
+        const now = new Date();
+        const upcomingEvents = data.events.filter(e => new Date(e.scheduled_date) >= now);
+        const pastEvents = data.events.filter(e => new Date(e.scheduled_date) < now);
+
+        // Display upcoming events
+        if (upcomingEvents.length > 0) {
+            const upcomingSection = document.createElement('div');
+            upcomingSection.className = 'mb-4';
+            upcomingSection.innerHTML = '<h6 class="text-primary mb-3"><i class="bi bi-clock-history"></i> Upcoming Events</h6>';
+
+            upcomingEvents.forEach(event => {
+                upcomingSection.appendChild(createEventCard(event, false));
+            });
+
+            container.appendChild(upcomingSection);
+        }
+
+        // Display past events
+        if (pastEvents.length > 0) {
+            const pastSection = document.createElement('div');
+            pastSection.innerHTML = '<h6 class="text-muted mb-3"><i class="bi bi-clock"></i> Past Events</h6>';
+
+            pastEvents.forEach(event => {
+                pastSection.appendChild(createEventCard(event, true));
+            });
+
+            container.appendChild(pastSection);
+        }
+
+    } catch (error) {
+        console.error('Error loading events:', error);
+        document.getElementById('events-container').innerHTML =
+            '<div class="alert alert-danger">Error loading events</div>';
+    }
+}
+
+// Create Event Card
+function createEventCard(event, isPast) {
+    const card = document.createElement('div');
+    card.className = `card mb-3 ${isPast ? 'bg-light' : 'border-info'}`;
+
+    const eventDate = new Date(event.scheduled_date);
+    const formattedDate = eventDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    const formattedTime = eventDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    // Event type icons and colors
+    const eventTypes = {
+        'birthday': { icon: 'bi-cake2', color: 'text-danger', label: 'Birthday' },
+        'anniversary': { icon: 'bi-heart', color: 'text-danger', label: 'Anniversary' },
+        'memorial': { icon: 'bi-flower1', color: 'text-info', label: 'Memorial' },
+        'remembrance': { icon: 'bi-star', color: 'text-warning', label: 'Remembrance' },
+        'celebration': { icon: 'bi-balloon', color: 'text-success', label: 'Celebration' },
+        'other': { icon: 'bi-calendar-event', color: 'text-secondary', label: 'Other' }
+    };
+
+    const typeInfo = eventTypes[event.event_type] || eventTypes['other'];
+
+    // Privacy badge
+    const privacyBadges = {
+        'public': 'bg-success',
+        'family': 'bg-warning',
+        'private': 'bg-secondary'
+    };
+
+    const canDelete = loggedInUser && (
+        loggedInUser.id == profileUserId ||
+        loggedInUser.role === 'admin'
+    );
+
+    card.innerHTML = `
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi ${typeInfo.icon} ${typeInfo.color} fs-4 me-2"></i>
+                        <h5 class="mb-0">${event.title}</h5>
+                        <span class="badge ${privacyBadges[event.privacy_level]} ms-2">${event.privacy_level}</span>
+                        ${isPast ? '<span class="badge bg-secondary ms-2">Past</span>' : ''}
+                    </div>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar3"></i> ${formattedDate} at ${formattedTime}
+                    </p>
+                    ${event.message ? `<p class="mb-0 text-secondary">${event.message}</p>` : ''}
+                </div>
+                ${canDelete ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(${event.id})">
+                    <i class="bi bi-trash"></i>
+                </button>` : ''}
+                
+            </div>
+        </div>
+    `;
+
+    return card;
+}
+
+// Delete Event Function
+async function deleteEvent(eventId) {
+    if (!confirm('Are you sure you want to delete this event?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/events/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_id: eventId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showAlert('Event deleted successfully', 'success');
+            loadEvents(); // Reload events
+        } else {
+            showAlert(data.message, 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        showAlert('An error occurred. Please try again.', 'danger');
     }
 }
 
