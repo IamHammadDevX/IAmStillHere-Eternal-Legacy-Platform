@@ -71,6 +71,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-person-plus display-4 text-purple mb-3"></i>
+                        <h5 class="mt-2">Family Requests</h5>
+                        <a href="family_requests.php" class="btn btn-sm btn-secondary mt-2">
+                            View Requests
+                            <span class="badge bg-danger ms-1" id="request-count-badge" style="display:none;">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-3 mb-3">
                 <div class="card text-center">
                     <div class="card-body">
@@ -81,6 +95,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-3 mb-3">
                 <div class="card text-center">
                     <div class="card-body">

@@ -409,13 +409,17 @@ async function loadTributes() {
                 div.innerHTML = `
                     <div class="card-body">
                         <div class="d-flex align-items-start">
-                            <img src="${avatarUrl}" 
-                                 alt="${displayName}" 
-                                 class="rounded-circle me-3" 
-                                 style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
+                            <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${tribute.author_id}" style="text-decoration: none; color: inherit;">
+                                <img src="${avatarUrl}" 
+                                    alt="${displayName}" 
+                                    class="rounded-circle me-3" 
+                                    style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
+                            </a>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center mb-2">
-                                    <strong class="text-dark">${displayName}</strong>
+                                    <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${tribute.author_id}" style="text-decoration: none; color: inherit;">
+                                        <strong class="text-dark">${displayName}</strong>
+                                    </a>
                                     ${userBadge}
                                     <small class="text-muted ms-auto">${new Date(tribute.created_at).toLocaleDateString('en-US', { 
                                         year: 'numeric', 

@@ -7,17 +7,17 @@ const USER_LOOKUP = "http://localhost/IAmStillHere/backend/users/find.php";
 let loggedInUser = null; // set after check_session
 
 function showAlert(message, type = 'success') {
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alert.role = 'alert';
-    alert.innerHTML = `
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-custom`;
+    alertDiv.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    document.body.prepend(alert);
+    document.body.appendChild(alertDiv);
+    
     setTimeout(() => {
-        try { bootstrap.Alert.getOrCreateInstance(alert).close(); } catch (e) { }
-    }, 4000);
+        alertDiv.remove();
+    }, 5000);
 }
 
 async function checkSession() {
@@ -88,7 +88,7 @@ async function loadFamilyMembers() {
             const canRemove = loggedInUser && (String(loggedInUser.id) === String(profileUserId) || loggedInUser.role === 'admin');
 
             const memberName = member.member_name || member.full_name || member.name || 'Unknown';
-            const memberPhoto = member.member_picture || 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+            const memberPhoto = member.member_picture || 'default-profile.png';
 
             const memberItem = document.createElement('div');
             memberItem.className = 'text-center position-relative';
@@ -96,11 +96,13 @@ async function loadFamilyMembers() {
 
             memberItem.innerHTML = `
                 <div class="position-relative d-inline-block">
-                    <img src="http://localhost/IAmStillHere/data/uploads/photos/${memberPhoto}" 
-                         alt="${memberName}" 
-                         class="rounded-circle border border-3 border-light shadow-sm" 
-                         style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
-                         title="${memberName}">
+                    <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${member.family_member_id}" style="text-decoration: none; color: inherit;">
+                        <img src="http://localhost/IAmStillHere/data/uploads/photos/${memberPhoto}" 
+                            alt="${memberName}" 
+                            class="rounded-circle border border-3 border-light shadow-sm" 
+                            style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
+                            title="${memberName}">
+                    </a>
                     ${canRemove ? `
                         <button class="btn btn-danger btn-sm rounded-circle position-absolute" 
                                 data-family-id="${member.family_member_id}"
@@ -111,7 +113,9 @@ async function loadFamilyMembers() {
                     ` : ''}
                 </div>
                 <div class="mt-2">
-                    <p class="mb-0 fw-semibold small text-truncate" style="max-width: 120px;" title="${memberName}">${memberName}</p>
+                    <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${member.family_member_id}" style="text-decoration: none; color: inherit;">
+                        <p class="mb-0 fw-semibold small text-truncate" style="max-width: 120px;" title="${memberName}">${memberName}</p>
+                    </a>
                     <p class="mb-0 text-muted" style="font-size: 0.75rem;">${member.relationship || 'Family'}</p>
                 </div>
             `;
@@ -231,6 +235,23 @@ function wireAddButton() {
         e.preventDefault();
         addFamilyMember();
     });
+}
+
+// Show pending requests count (optional enhancement)
+async function loadPendingRequests() {
+    if (!loggedInUser) return;
+
+    try {
+        const res = await fetch(`http://localhost/IAmStillHere/backend/family/pending_requests.php?user_id=${loggedInUser.id}`);
+        const data = await res.json();
+
+        if (data.success && data.count > 0) {
+            // Show notification badge (you can add UI for this)
+            console.log(`You have ${data.count} pending family requests`);
+        }
+    } catch (err) {
+        console.error('Error loading pending requests:', err);
+    }
 }
 
 async function initFamilyFeature() {
