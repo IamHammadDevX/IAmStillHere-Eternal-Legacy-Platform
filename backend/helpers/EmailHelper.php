@@ -12,7 +12,7 @@ class EmailHelper
 {
     // --- SMTP CONFIGURATION CONSTANTS ---
     private const SMTP_HOST = '';
-    private const SMTP_USERNAME = ''; 
+    private const SMTP_USERNAME = '';
     private const SMTP_PASSWORD = '';
     private const SMTP_PORT = 587;
     private const SMTP_SECURE = PHPMailer::ENCRYPTION_STARTTLS;
@@ -104,7 +104,7 @@ class EmailHelper
 
         // NOTE: Update URLs if not running locally
         $approveUrl = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
-        $rejectUrl  = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
+        $rejectUrl = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
 
         $html_message = "
         <html>
@@ -180,6 +180,92 @@ class EmailHelper
             return false;
         }
     }
+
+    public static function sendPasswordResetEmail($toEmail, $toName, $resetCode, $resetToken)
+{
+    $mail = new PHPMailer(true);
+    $subject = "Password Reset Request - IamAlwaysHere";
+    $resetUrl = "http://localhost/IAmStillHere/frontend/reset_password.php?token=" . $resetToken;
+
+    // --- HTML body ---
+    $html_message = "
+    <html>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .code-box { background: white; border: 2px dashed #667eea; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px; }
+            .code { font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 5px; }
+            .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+            .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #999; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>Password Reset Request</h1>
+                <p>IamAlwaysHere Memorial Platform</p>
+            </div>
+            <div class='content'>
+                <h2>Hello, $toName!</h2>
+                <p>We received a request to reset your password. Use the code below to reset your password:</p>
+                
+                <div class='code-box'>
+                    <p style='margin: 0; font-size: 14px; color: #666;'>Your Reset Code</p>
+                    <div class='code'>$resetCode</div>
+                    <p style='margin: 10px 0 0 0; font-size: 12px; color: #999;'>Valid for 30 minutes</p>
+                </div>
+                
+                <div style='text-align: center; margin: 30px 0;'>
+                    <a href='$resetUrl' class='button'>Reset Password</a>
+                </div>
+                
+                <p><strong>Important:</strong> If you didn't request this password reset, please ignore this email. Your password will remain unchanged.</p>
+                
+                <p style='margin-top: 30px;'>Best regards,<br>The IamAlwaysHere Team</p>
+            </div>
+            <div class='footer'>
+                <p>&copy; " . date('Y') . " IamAlwaysHere. All rights reserved.</p>
+                <p>This is an automated email. Please do not reply.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    ";
+
+    // --- Plain text version ---
+    $alt_body = "Hello $toName,\n\nWe received a request to reset your password. Use the following code to reset it:\n\nReset Code: $resetCode\n\nYou can also click this link to reset your password:\n$resetUrl\n\nThis code is valid for 30 minutes.\n\nIf you didn’t request this, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
+
+    try {
+        // --- SMTP Configuration ---
+        $mail->isSMTP();
+        $mail->Host = self::SMTP_HOST;
+        $mail->SMTPAuth = true;
+        $mail->Username = self::SMTP_USERNAME;
+        $mail->Password = self::SMTP_PASSWORD;
+        $mail->SMTPSecure = self::SMTP_SECURE;
+        $mail->Port = self::SMTP_PORT;
+
+        // --- Sender and Recipient ---
+        $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
+        $mail->addAddress($toEmail, $toName);
+
+        // --- Content ---
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $html_message;
+        $mail->AltBody = $alt_body;
+
+        $mail->send();
+        return true;
+
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
     public static function generateVerificationCode()
     {

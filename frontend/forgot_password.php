@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <title>Login - IamAlwaysHere</title>
+    <title>Forgot Password - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
@@ -20,32 +20,33 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
+    <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="card">
                     <div class="card-body p-5">
-                        <h2 class="text-center mb-4">Welcome Back</h2>
-                        <form id="loginForm">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-key display-1 text-primary"></i>
+                            <h2 class="mt-3">Forgot Password?</h2>
+                            <p class="text-muted">Enter your email to receive a reset code</p>
+                        </div>
+                        
+                        <form id="forgotPasswordForm">
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username or Email</label>
-                                <input type="text" class="form-control" id="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" required>
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" required>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-send"></i> Send Reset Code
+                                </button>
                             </div>
                         </form>
-                        <div class="text-center mt-3">
-                            <a href="forgot_password.php" class="text-decoration-none">
-                                Forgot your password?
+
+                        <div class="text-center mt-4">
+                            <a href="login.php" class="text-decoration-none">
+                                <i class="bi bi-arrow-left"></i> Back to Login
                             </a>
-                        </div>
-                        <div class="text-center mt-3">
-                            <p>Don't have an account? <a href="register.php">Register here</a></p>
                         </div>
                     </div>
                 </div>
@@ -55,18 +56,6 @@
 
     <footer class="bg-dark text-light py-4 mt-5">
         <div class="container text-center">
-            <div class="mb-2">
-                <!-- Social Links -->
-                <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
-                    <i class="bi bi-github fs-4"></i>
-                </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
-                    title="Portfolio">
-                    <i class="bi bi-globe fs-4"></i>
-                </a>
-            </div>
-
-            <!-- Copyright -->
             <p class="mb-0 small">
                 © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
@@ -80,31 +69,39 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
 
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/auth/login.php', {
+                const response = await fetch('http://localhost/IAmStillHere/backend/auth/request_reset.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ email: email })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('Login successful! Redirecting...', 'success');
+                    showAlert('Reset code sent! Check your email.', 'success');
                     setTimeout(() => {
-                        window.location.href = data.user.role === 'admin' ? 'admin.php' : 'dashboard.php';
-                    }, 1000);
+                        window.location.href = `reset_password.php?token=${data.token}`;
+                    }, 2000);
                 } else {
                     showAlert(data.message, 'danger');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-send"></i> Send Reset Code';
                 }
             } catch (error) {
+                console.error('Error:', error);
                 showAlert('An error occurred. Please try again.', 'danger');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send"></i> Send Reset Code';
             }
         });
     </script>
