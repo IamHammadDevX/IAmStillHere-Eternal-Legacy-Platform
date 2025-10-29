@@ -135,12 +135,6 @@ Configure your virtual host to point to the project root directory.
 - Homepage: `http://localhost:5000/`
 - Login: `http://localhost:5000/frontend/login.php`
 
-## 🔐 Default Admin Account
-
-- **Username**: admin
-- **Email**: admin@iamstillhere.com
-- **Password**: admin123
-
 **⚠️ IMPORTANT: Change the default admin password after first login!**
 
 ## 📊 Database Schema
