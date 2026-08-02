@@ -55,6 +55,10 @@ function authorPhotoUrl(photo) {
         : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
 }
 
+function safeUploadPathSegment(value) {
+    return encodeURIComponent(value == null ? '' : String(value));
+}
+
 async function loadProfile() {
     try {
         const response = await fetch(`http://localhost/IAmStillHere/backend/users/profile.php?user_id=${profileUserId}`);
@@ -381,12 +385,16 @@ async function loadMemories() {
                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                     `;
                 } else if (isVideo) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}`;
+                    filePath = `http://localhost/IAmStillHere/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
+                    const posterPath = memory.video_thumbnail_path
+                        ? `http://localhost/IAmStillHere/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
+                        : '';
 
                     mediaHtml = `
-                        <div style="width: 100%; height: 200px; border-radius: 10px; overflow: hidden;">
-                            <video controls style="width: 100%; height: 200px; border-radius: 10px;"><source src="http://localhost/IAmStillHere/data/uploads/videos/${memory.file_path}">
+                        <div class="video-memory-preview">
+                            <video controls preload="metadata" ${posterPath ? `poster="${posterPath}"` : ''}>
+                                <source src="${filePath}" type="${escapeHtml(memory.file_type)}">
                                 <p>
                                     This video format may not be supported. 
                                     <a href="${filePath}" download>Download the file</a> to view it.

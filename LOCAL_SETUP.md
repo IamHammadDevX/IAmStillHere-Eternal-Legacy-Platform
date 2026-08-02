@@ -572,6 +572,32 @@ backend/migrations/migrations/202608030001_create_memory_comments.php
 
 Run migrations after pulling this feature in local, staging, or cPanel.
 
+The video thumbnail feature adds a nullable `video_thumbnail_path` column to `memories`. Existing video memories keep working even when this value is empty.
+
+### Generate Video Thumbnails
+
+Video thumbnail generation uses FFmpeg when available. If FFmpeg is missing, video uploads still succeed and the UI shows a fallback video preview.
+
+Optional environment variable:
+
+```text
+FFMPEG_PATH
+```
+
+Backfill existing videos with missing thumbnails:
+
+```bash
+php backend/cli/generate_video_thumbnails.php --limit=20
+```
+
+On XAMPP for Windows:
+
+```powershell
+C:\xampp\php\php.exe backend\cli\generate_video_thumbnails.php --limit=20
+```
+
+The backfill script is safe to run multiple times. It skips videos that already have thumbnails.
+
 ### Health Check
 
 With Apache and MySQL/MariaDB running, open:

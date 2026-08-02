@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../helpers/VideoThumbnailHelper.php';
 
 header('Content-Type: application/json');
 
@@ -47,6 +48,7 @@ if ($file_size > MAX_FILE_SIZE) {
 $upload_dir = '';
 $subdirectory = '';
 $needs_conversion = false;
+$is_video_upload = false;
 $original_ext = $file_ext;
 
 if (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tiff'])) {
@@ -55,6 +57,7 @@ if (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tif
 } elseif (in_array($file_ext, ['mp4', 'avi', 'mov', 'mkv', 'webm', 'mpeg', 'mpg', '3gp', 'flv', 'wmv'])) {
     $subdirectory = 'videos';
     $upload_dir = UPLOAD_PATH . '/videos/';
+    $is_video_upload = true;
     
 } elseif (in_array($file_ext, ['mp3', 'wav', 'aac', 'ogg', 'flac', 'm4a'])) {
     $subdirectory = 'audio';
@@ -110,10 +113,15 @@ if ($needs_conversion) {
 try {
     $db = new Database();
     $conn = $db->getConnection();
+
+    $video_thumbnail_path = null;
+    if ($is_video_upload && is_file($file_path)) {
+        $video_thumbnail_path = VideoThumbnailHelper::generate($file_path, $new_filename);
+    }
     
     $stmt = $conn->prepare("
-        INSERT INTO memories (user_id, title, description, file_path, file_type, file_size, privacy_level, memory_date, status) 
-        VALUES (:user_id, :title, :description, :file_path, :file_type, :file_size, :privacy_level, :memory_date, 'active')
+        INSERT INTO memories (user_id, title, description, file_path, video_thumbnail_path, file_type, file_size, privacy_level, memory_date, status) 
+        VALUES (:user_id, :title, :description, :file_path, :video_thumbnail_path, :file_type, :file_size, :privacy_level, :memory_date, 'active')
     ");
     
     $stmt->execute([
@@ -121,6 +129,7 @@ try {
         'title' => $title,
         'description' => $description,
         'file_path' => $new_filename,
+        'video_thumbnail_path' => $video_thumbnail_path,
         'file_type' => $file_type,
         'file_size' => $file_size,
         'privacy_level' => $privacy_level,
@@ -133,6 +142,7 @@ try {
         'memory_id' => $conn->lastInsertId(),
         'subdirectory' => $subdirectory,
         'filename' => $new_filename,
+        'video_thumbnail_path' => $video_thumbnail_path,
         'converted' => $needs_conversion
     ]);
     

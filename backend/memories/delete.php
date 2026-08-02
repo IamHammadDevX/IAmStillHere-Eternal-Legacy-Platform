@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../helpers/VideoThumbnailHelper.php';
 header('Content-Type: application/json');
 
 try {
@@ -27,7 +28,7 @@ try {
     $conn = $db->getConnection();
 
     // Get memory details
-    $stmt = $conn->prepare("SELECT user_id, file_path, file_type FROM memories WHERE id = :id");
+    $stmt = $conn->prepare("SELECT user_id, file_path, video_thumbnail_path, file_type FROM memories WHERE id = :id");
     $stmt->execute(['id' => $memory_id]);
     $memory = $stmt->fetch();
 
@@ -62,6 +63,11 @@ try {
     // Delete file from server
     if (file_exists($filePath)) {
         unlink($filePath);
+    }
+
+    $thumbnailPath = VideoThumbnailHelper::thumbnailFilePath($memory['video_thumbnail_path'] ?? null);
+    if ($thumbnailPath !== null && is_file($thumbnailPath)) {
+        unlink($thumbnailPath);
     }
 
     // Delete from database
