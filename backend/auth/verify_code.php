@@ -68,6 +68,8 @@ try {
     $_SESSION['username'] = $verification['username'];
     $_SESSION['full_name'] = $verification['full_name'];
     $_SESSION['user_role'] = 'client';
+    // Temporary compatibility for older session readers. New code should use user_role.
+    $_SESSION['role'] = 'client';
 
     echo json_encode([
         'success' => true,

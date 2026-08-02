@@ -546,6 +546,70 @@ Options -Indexes
 
 ## Maintenance
 
+### Run Database Migrations
+
+The migration runner creates the `migrations` tracking table and runs pending migration files once.
+
+From the project root:
+
+```bash
+php backend/migrations/migrate.php
+php backend/migrations/status.php
+```
+
+On XAMPP for Windows, if `php` is not in PATH:
+
+```powershell
+C:\xampp\php\php.exe backend\migrations\migrate.php
+C:\xampp\php\php.exe backend\migrations\status.php
+```
+
+The memory comments feature adds a `memory_comments` table through:
+
+```text
+backend/migrations/migrations/202608030001_create_memory_comments.php
+```
+
+Run migrations after pulling this feature in local, staging, or cPanel.
+
+### Health Check
+
+With Apache and MySQL/MariaDB running, open:
+
+```text
+http://localhost/IAmStillHere/backend/health.php
+```
+
+The health response intentionally avoids exposing credentials, file paths, environment values, stack traces, or database details.
+
+### Mail Configuration
+
+Email sending reads SMTP settings from environment variables. Do not put real credentials in source files.
+
+Required variables:
+
+```text
+MAIL_HOST
+MAIL_PORT
+MAIL_USERNAME
+MAIL_PASSWORD
+MAIL_FROM_ADDRESS
+MAIL_FROM_NAME
+MAIL_ENCRYPTION
+```
+
+Supported `MAIL_ENCRYPTION` values:
+
+```text
+tls
+starttls
+ssl
+smtps
+none
+```
+
+For local XAMPP testing, set these variables in your Apache environment or Windows user environment, then restart Apache from the XAMPP Control Panel. If variables are missing, email sending fails safely and logs a configuration error without exposing credentials.
+
 ### Backup Database (Recommended: Daily)
 ```bash
 # Automated backup script

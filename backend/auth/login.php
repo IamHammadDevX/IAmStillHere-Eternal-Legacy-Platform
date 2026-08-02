@@ -32,6 +32,8 @@ try {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['user_role'] = $user['role'];
+        // Temporary compatibility for older session readers. New code should use user_role.
+        $_SESSION['role'] = $user['role'];
         $_SESSION['full_name'] = $user['full_name'];
         $_SESSION['last_activity'] = time();
         

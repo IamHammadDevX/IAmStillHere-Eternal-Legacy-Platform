@@ -1,6 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const profileUserId = urlParams.get('user_id');
 let currentUser = null;
+let csrfToken = null;
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -13,6 +14,7 @@ async function init() {
             currentUser = sessionData.user;
             document.getElementById('username-display').textContent = currentUser.full_name;
             document.getElementById('nav-logout').style.display = 'inline-block';
+            await loadCsrfToken();
         }
 
         if (!profileUserId) {
@@ -28,6 +30,29 @@ async function init() {
     } catch (error) {
         console.error('Initialization error:', error);
     }
+}
+
+async function loadCsrfToken() {
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/auth/csrf_token.php');
+        const data = await response.json();
+        csrfToken = data.success ? data.data.csrf_token : null;
+    } catch (error) {
+        console.error('Error loading CSRF token:', error);
+        csrfToken = null;
+    }
+}
+
+function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value == null ? '' : String(value);
+    return div.innerHTML;
+}
+
+function authorPhotoUrl(photo) {
+    return photo
+        ? `http://localhost/IAmStillHere/data/uploads/photos/${encodeURIComponent(photo)}`
+        : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
 }
 
 async function loadProfile() {
@@ -421,8 +446,8 @@ async function loadMemories() {
                     <div class="card memory-card">
                         ${mediaHtml}
                         <div class="card-body">
-                            <h5 class="card-title">${memory.title}</h5>
-                            <p class="card-text">${memory.description || ''}</p>
+                            <h5 class="card-title">${escapeHtml(memory.title)}</h5>
+                            <p class="card-text">${escapeHtml(memory.description || '')}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
                                     <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
@@ -434,16 +459,247 @@ async function loadMemories() {
                                 </button>` : ''}
                                 
                             </div>
+                            <div class="memory-comments mt-3" data-memory-comments="${memory.id}">
+                                <div class="small text-muted">Loading comments...</div>
+                            </div>
                         </div>
                     </div>
                 `;
                 grid.appendChild(col);
+                loadMemoryComments(memory.id);
             });
         } else {
             grid.innerHTML = '<p class="text-muted">No memories shared yet.</p>';
         }
     } catch (error) {
         console.error('Error loading memories:', error);
+    }
+}
+
+async function loadMemoryComments(memoryId, page = 1) {
+    const container = document.querySelector(`[data-memory-comments="${memoryId}"]`);
+    if (!container) return;
+
+    container.innerHTML = '<div class="small text-muted">Loading comments...</div>';
+
+    try {
+        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/comments/list.php?memory_id=${memoryId}&page=${page}&limit=20`);
+        const data = await response.json();
+
+        if (!data.success) {
+            container.innerHTML = '<div class="small text-danger">Unable to load comments.</div>';
+            return;
+        }
+
+        renderMemoryComments(container, memoryId, data.data.comments, data.data.pagination);
+    } catch (error) {
+        console.error('Error loading comments:', error);
+        container.innerHTML = '<div class="small text-danger">Unable to load comments.</div>';
+    }
+}
+
+function renderMemoryComments(container, memoryId, comments, pagination) {
+    container.innerHTML = '';
+
+    const title = document.createElement('div');
+    title.className = 'small fw-semibold text-muted mb-2';
+    title.textContent = `Comments (${pagination.total_items})`;
+    container.appendChild(title);
+
+    const list = document.createElement('div');
+    list.className = 'memory-comments-list';
+    container.appendChild(list);
+
+    if (comments.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'small text-muted mb-2';
+        empty.textContent = 'No comments yet.';
+        list.appendChild(empty);
+    } else {
+        comments.forEach(comment => list.appendChild(createCommentElement(comment, memoryId)));
+    }
+
+    if (currentUser && csrfToken) {
+        const form = document.createElement('form');
+        form.className = 'memory-comment-form mt-2';
+        form.dataset.memoryId = memoryId;
+
+        const group = document.createElement('div');
+        group.className = 'input-group input-group-sm';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+        input.maxLength = 2000;
+        input.placeholder = 'Write a comment...';
+        input.required = true;
+
+        const button = document.createElement('button');
+        button.className = 'btn btn-primary';
+        button.type = 'submit';
+        button.textContent = 'Post';
+
+        group.appendChild(input);
+        group.appendChild(button);
+        form.appendChild(group);
+        form.addEventListener('submit', event => submitMemoryComment(event, memoryId, input));
+        container.appendChild(form);
+    } else {
+        const note = document.createElement('div');
+        note.className = 'small text-muted';
+        note.textContent = 'Log in to comment.';
+        container.appendChild(note);
+    }
+}
+
+function createCommentElement(comment, memoryId) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'memory-comment d-flex gap-2 mb-2';
+    wrapper.dataset.commentId = comment.id;
+
+    const img = document.createElement('img');
+    img.className = 'rounded-circle flex-shrink-0';
+    img.src = authorPhotoUrl(comment.author_profile_photo);
+    img.alt = '';
+    img.style.width = '32px';
+    img.style.height = '32px';
+    img.style.objectFit = 'cover';
+
+    const body = document.createElement('div');
+    body.className = 'flex-grow-1';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'memory-comment-bubble';
+
+    const meta = document.createElement('div');
+    meta.className = 'd-flex justify-content-between gap-2';
+
+    const author = document.createElement('strong');
+    author.className = 'small';
+    author.textContent = comment.author_name || 'Deleted user';
+
+    const time = document.createElement('small');
+    time.className = 'text-muted';
+    time.textContent = new Date(comment.created_at).toLocaleString();
+
+    meta.appendChild(author);
+    meta.appendChild(time);
+
+    const text = document.createElement('div');
+    text.className = 'small memory-comment-text';
+    text.textContent = comment.comment_text;
+
+    bubble.appendChild(meta);
+    bubble.appendChild(text);
+    body.appendChild(bubble);
+
+    if (comment.can_edit || comment.can_delete) {
+        const actions = document.createElement('div');
+        actions.className = 'memory-comment-actions small mt-1';
+
+        if (comment.can_edit) {
+            const edit = document.createElement('button');
+            edit.type = 'button';
+            edit.className = 'btn btn-link btn-sm p-0 me-2';
+            edit.textContent = 'Edit';
+            edit.addEventListener('click', () => editMemoryComment(comment, memoryId));
+            actions.appendChild(edit);
+        }
+
+        if (comment.can_delete) {
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'btn btn-link btn-sm p-0 text-danger';
+            del.textContent = 'Delete';
+            del.addEventListener('click', () => deleteMemoryComment(comment.id, memoryId));
+            actions.appendChild(del);
+        }
+
+        body.appendChild(actions);
+    }
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(body);
+    return wrapper;
+}
+
+async function submitMemoryComment(event, memoryId, input) {
+    event.preventDefault();
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/create.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ memory_id: memoryId, comment_text: text })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            input.value = '';
+            loadMemoryComments(memoryId);
+        } else {
+            showAlert(data.message || 'Failed to post comment', 'danger');
+        }
+    } catch (error) {
+        console.error('Error posting comment:', error);
+        showAlert('Failed to post comment', 'danger');
+    }
+}
+
+async function editMemoryComment(comment, memoryId) {
+    const updated = prompt('Edit your comment:', comment.comment_text);
+    if (updated === null) return;
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/update.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ comment_id: comment.id, comment_text: updated })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            loadMemoryComments(memoryId);
+        } else {
+            showAlert(data.message || 'Failed to update comment', 'danger');
+        }
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        showAlert('Failed to update comment', 'danger');
+    }
+}
+
+async function deleteMemoryComment(commentId, memoryId) {
+    if (!confirm('Delete this comment?')) return;
+
+    try {
+        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/delete.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ comment_id: commentId })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            loadMemoryComments(memoryId);
+        } else {
+            showAlert(data.message || 'Failed to delete comment', 'danger');
+        }
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        showAlert('Failed to delete comment', 'danger');
     }
 }
 

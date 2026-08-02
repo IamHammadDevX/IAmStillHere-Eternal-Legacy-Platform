@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 header('Content-Type: application/json');
 
 try {
@@ -7,7 +8,7 @@ try {
         session_start();
     }
 
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (!SessionHelper::isAdmin()) {
         throw new Exception('Unauthorized');
     }
 

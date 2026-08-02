@@ -10,17 +10,65 @@ use PHPMailer\PHPMailer\SMTP;
 
 class EmailHelper
 {
-    // --- SMTP CONFIGURATION CONSTANTS ---
-    private const SMTP_HOST = 'smtp.gmail.com';
-    private const SMTP_USERNAME = 'jennie.lipa6655@gmail.com';
-    private const SMTP_PASSWORD = 'sbbs effy pnen fqeu';
-    private const SMTP_PORT = 587;
-    private const SMTP_SECURE = PHPMailer::ENCRYPTION_STARTTLS;
+    private const REQUIRED_MAIL_VARIABLES = [
+        'MAIL_HOST',
+        'MAIL_PORT',
+        'MAIL_USERNAME',
+        'MAIL_PASSWORD',
+        'MAIL_FROM_ADDRESS',
+        'MAIL_FROM_NAME',
+        'MAIL_ENCRYPTION',
+    ];
 
-    // Sender details
-    private const FROM_EMAIL = 'noreply@iamalwayshere.com';
-    private const FROM_NAME = 'IamAlwaysHere';
+    public static function validateConfiguration(): array
+    {
+        $missing = [];
 
+        foreach (self::REQUIRED_MAIL_VARIABLES as $variable) {
+            $value = getenv($variable);
+            if ($value === false || $value === '') {
+                $missing[] = $variable;
+            }
+        }
+
+        return [
+            'valid' => count($missing) === 0,
+            'missing' => $missing,
+        ];
+    }
+
+    private static function configureMailer(PHPMailer $mail): bool
+    {
+        $validation = self::validateConfiguration();
+
+        if (!$validation['valid']) {
+            error_log('Mail configuration missing required variables: ' . implode(', ', $validation['missing']));
+            return false;
+        }
+
+        $mail->isSMTP();
+        $mail->Host = (string) getenv('MAIL_HOST');
+        $mail->SMTPAuth = true;
+        $mail->Username = (string) getenv('MAIL_USERNAME');
+        $mail->Password = (string) getenv('MAIL_PASSWORD');
+        $mail->Port = (int) getenv('MAIL_PORT');
+
+        $encryption = strtolower((string) getenv('MAIL_ENCRYPTION'));
+        if ($encryption === 'tls' || $encryption === 'starttls') {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        } elseif ($encryption === 'ssl' || $encryption === 'smtps') {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        } elseif ($encryption === 'none') {
+            $mail->SMTPSecure = '';
+            $mail->SMTPAutoTLS = false;
+        } else {
+            error_log('Mail configuration has unsupported MAIL_ENCRYPTION value.');
+            return false;
+        }
+
+        $mail->setFrom((string) getenv('MAIL_FROM_ADDRESS'), (string) getenv('MAIL_FROM_NAME'));
+        return true;
+    }
 
     public static function sendVerificationEmail($toEmail, $toName, $verificationCode)
     {
@@ -72,15 +120,10 @@ class EmailHelper
         $alt_body = "Hello $toName,\n\nThank you for registering. Please use the following code to verify your email:\n\nYour Verification Code: $verificationCode\n\nValid for 15 minutes.\n\nEnter this code on the verification page to activate your account.\n\nImportant: If you didn't request this registration, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
 
         try {
-            $mail->isSMTP();
-            $mail->Host = self::SMTP_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = self::SMTP_USERNAME;
-            $mail->Password = self::SMTP_PASSWORD;
-            $mail->SMTPSecure = self::SMTP_SECURE;
-            $mail->Port = self::SMTP_PORT;
+            if (!self::configureMailer($mail)) {
+                return false;
+            }
 
-            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
             $mail->addAddress($toEmail, $toName);
 
             $mail->isHTML(true);
@@ -157,15 +200,10 @@ class EmailHelper
         $alt_body = "Hello $toName,\n\n$requesterName would like to add you as family on IamAlwaysHere.\n\nRelationship: $relationship\n\nApprove: $approveUrl\nReject: $rejectUrl\n\nIf you accept, they’ll be able to view family-only content and post on your memorial page.\n\n— IamAlwaysHere Team";
 
         try {
-            $mail->isSMTP();
-            $mail->Host = self::SMTP_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = self::SMTP_USERNAME;
-            $mail->Password = self::SMTP_PASSWORD;
-            $mail->SMTPSecure = self::SMTP_SECURE;
-            $mail->Port = self::SMTP_PORT;
+            if (!self::configureMailer($mail)) {
+                return false;
+            }
 
-            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
             $mail->addAddress($toEmail, $toName);
 
             $mail->isHTML(true);
@@ -240,16 +278,10 @@ class EmailHelper
 
         try {
             // --- SMTP Configuration ---
-            $mail->isSMTP();
-            $mail->Host = self::SMTP_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = self::SMTP_USERNAME;
-            $mail->Password = self::SMTP_PASSWORD;
-            $mail->SMTPSecure = self::SMTP_SECURE;
-            $mail->Port = self::SMTP_PORT;
+            if (!self::configureMailer($mail)) {
+                return false;
+            }
 
-            // --- Sender and Recipient ---
-            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
             $mail->addAddress($toEmail, $toName);
 
             // --- Content ---
@@ -361,16 +393,10 @@ class EmailHelper
 
         try {
             // --- SMTP Configuration ---
-            $mail->isSMTP();
-            $mail->Host = self::SMTP_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = self::SMTP_USERNAME;
-            $mail->Password = self::SMTP_PASSWORD;
-            $mail->SMTPSecure = self::SMTP_SECURE;
-            $mail->Port = self::SMTP_PORT;
+            if (!self::configureMailer($mail)) {
+                return false;
+            }
 
-            // --- Sender and Recipient ---
-            $mail->setFrom(self::FROM_EMAIL, self::FROM_NAME);
             $mail->addAddress($toEmail, $toName);
 
             // --- Content ---
