@@ -1,6 +1,7 @@
 let currentUserId = null;
 let loggedInUser = null;
 let csrfToken = null;
+let currentMemoryFolderId = 0;
 
 async function init() {
     const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
@@ -16,6 +17,7 @@ async function init() {
     await loadCsrfToken();
 
     loadMemories();
+    loadMemoryFolders();
     loadTimeline();
     loadEvents();
     loadRequestCount();
@@ -66,7 +68,7 @@ async function loadTributeCount(userId) {
 
 async function loadMemories() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}`);
+        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}`);
         const data = await response.json();
 
         const grid = document.getElementById('memories-grid');
@@ -182,7 +184,7 @@ async function loadMemories() {
                                     ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
                                 </small>
                                 ${downloadButton}
-                                ${canDelete ? `<button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
+                                ${canDelete ? `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="moveMemory(${memory.id})" title="Move memory"><i class="bi bi-folder2-open"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
                                     <i class="bi bi-trash"></i>
                                 </button>` : ''}
                                 
@@ -731,6 +733,7 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     formData.append('description', document.getElementById('memory-description').value);
     formData.append('memory_date', document.getElementById('memory-date').value);
     formData.append('privacy_level', document.getElementById('memory-privacy').value);
+    if (currentMemoryFolderId) { formData.append('folder_id', currentMemoryFolderId); formData.append('privacy_override', '0'); }
     formData.append('file', document.getElementById('memory-file').files[0]);
 
     try {
@@ -819,3 +822,46 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', init);
+
+async function loadMemoryFolders(search = '') {
+    const box = document.getElementById('memory-folders');
+    if (!box) return;
+    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}`);
+    const data = await response.json();
+    box.innerHTML = '';
+    const folders = data.success ? data.data.folders : [];
+    const all = document.createElement('button');
+    all.className = 'btn btn-sm btn-outline-dark'; all.textContent = 'All';
+    all.onclick = () => { currentMemoryFolderId = 0; document.getElementById('memory-folder-breadcrumb').textContent = 'All memories'; loadMemories(); loadMemoryFolders(search); };
+    box.appendChild(all);
+    folders.forEach(folder => {
+        const button = document.createElement('button');
+        button.className = `btn btn-sm ${currentMemoryFolderId === folder.id ? 'btn-primary' : 'btn-outline-secondary'}`;
+        button.textContent = `${folder.name} (${folder.memory_count})`;
+        button.onclick = () => { currentMemoryFolderId = folder.id; document.getElementById('memory-folder-breadcrumb').textContent = folder.name; loadMemories(); loadMemoryFolders(search); };
+        const renameButton = document.createElement('button'); renameButton.className='btn btn-sm btn-outline-secondary'; renameButton.textContent='Rename'; renameButton.onclick=()=>renameFolder(folder);
+        const childButton = document.createElement('button'); childButton.className='btn btn-sm btn-outline-secondary'; childButton.textContent='+ Child'; childButton.onclick=()=>createChildFolder(folder);
+        const deleteButton = document.createElement('button'); deleteButton.className='btn btn-sm btn-outline-danger'; deleteButton.textContent='Delete'; deleteButton.onclick=()=>deleteFolder(folder);
+        box.appendChild(button); box.append(renameButton, childButton, deleteButton);
+    });
+    const select = document.getElementById('memory-folder');
+    if (select) { select.innerHTML = '<option value="0">No folder</option>'; folders.forEach(folder => { const option=document.createElement('option'); option.value=folder.id; option.textContent=folder.name; select.appendChild(option); }); }
+}
+
+document.getElementById('folder-search')?.addEventListener('input', event => loadMemoryFolders(event.target.value));
+document.getElementById('new-folder-button')?.addEventListener('click', async () => {
+    const name = prompt('Folder name');
+    if (!name) return;
+    const privacy = prompt('Privacy: public, family, friends, or private', 'private');
+    const response = await fetch('http://localhost/IAmStillHere/backend/memories/folders/create.php', { method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-Token':csrfToken}, body: JSON.stringify({name, privacy_level: privacy || 'private'}) });
+    const data = await response.json();
+    if (data.success) loadMemoryFolders(); else showAlert(data.message || 'Unable to create folder', 'danger');
+});
+async function folderPost(endpoint, payload) {
+    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/${endpoint}.php`, {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify(payload)});
+    return response.json();
+}
+async function renameFolder(folder) { const name=prompt('New folder name',folder.name); if(!name)return; const data=await folderPost('update',{folder_id:folder.id,name}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to rename folder','danger'); }
+async function createChildFolder(parent) { const name=prompt('Child folder name'); if(!name)return; const data=await folderPost('create',{name,parent_folder_id:parent.id,privacy_level:parent.privacy_level}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to create child folder','danger'); }
+async function deleteFolder(folder) { if(!confirm(`Delete empty folder "${folder.name}"?`))return; const data=await folderPost('delete',{folder_id:folder.id}); if(data.success){if(currentMemoryFolderId===folder.id){currentMemoryFolderId=0;loadMemories();}loadMemoryFolders();}else showAlert(data.message||'Folder must be empty','danger'); }
+async function moveMemory(memoryId) { const folders=await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}`).then(r=>r.json()); const options=(folders.data?.folders||[]).map(f=>`${f.id}: ${f.name}`).join('\n'); const choice=prompt(`Enter folder ID. Enter 0 to remove folder.\n${options}`,'0'); if(choice===null)return; const data=await folderPost('move_memory',{memory_id:memoryId,folder_id:parseInt(choice,10)||0}); if(data.success)loadMemories();else showAlert(data.message||'Unable to move memory','danger'); }

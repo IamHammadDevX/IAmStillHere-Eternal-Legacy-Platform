@@ -131,6 +131,7 @@
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="memories-tab">
+                <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-sm btn-outline-primary" id="new-folder-button">New folder</button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
                 <div class="row" id="memories-grid"></div>
             </div>
             <div class="tab-pane fade" id="timeline-tab">
@@ -169,6 +170,7 @@
                             </small>
                         </div>
                         <div class="mb-3">
+                            <label for="memory-folder" class="form-label">Folder (optional)</label><select class="form-select mb-2" id="memory-folder"><option value="0">No folder</option></select>
                             <label for="memory-date" class="form-label">Memory Date</label>
                             <input type="date" class="form-control" id="memory-date">
                         </div>

@@ -20,6 +20,8 @@ $title = sanitize_input($_POST['title'] ?? '');
 $description = sanitize_input($_POST['description'] ?? '');
 $memory_date = sanitize_input($_POST['memory_date'] ?? '');
 $privacy_level = sanitize_input($_POST['privacy_level'] ?? 'public');
+$folder_id = (int) ($_POST['folder_id'] ?? 0);
+$privacy_override = isset($_POST['privacy_override']) ? (int) (bool) $_POST['privacy_override'] : ($folder_id > 0 ? 0 : 1);
 
 if (empty($title) || !isset($_FILES['file'])) {
     echo json_encode(['success' => false, 'message' => 'Title and file are required']);
@@ -58,11 +60,11 @@ if (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tif
     $subdirectory = 'videos';
     $upload_dir = UPLOAD_PATH . '/videos/';
     $is_video_upload = true;
-    
+
 } elseif (in_array($file_ext, ['mp3', 'wav', 'aac', 'ogg', 'flac', 'm4a'])) {
     $subdirectory = 'audio';
     $upload_dir = UPLOAD_PATH . '/audio/';
-    
+
 } else {
     $subdirectory = 'documents';
     $upload_dir = UPLOAD_PATH . '/documents/';
@@ -81,27 +83,27 @@ $temp_file = $file['tmp_name'];
 if ($needs_conversion) {
     $temp_filename = uniqid('temp_') . '.' . $original_ext;
     $temp_path = $upload_dir . $temp_filename;
-    
+
     if (!move_uploaded_file($temp_file, $temp_path)) {
         echo json_encode(['success' => false, 'message' => 'File upload failed']);
         exit;
     }
-    
+
     // Clean up original file
     if (file_exists($temp_path)) {
         unlink($temp_path);
     }
-    
+
     // Update file type after conversion
     if ($subdirectory === 'videos') {
         $file_type = 'video/mp4';
     } elseif ($subdirectory === 'audio') {
         $file_type = 'audio/mpeg';
     }
-    
+
     // Get new file size
     $file_size = filesize($file_path);
-    
+
 } else {
     // No conversion needed, just move file
     if (!move_uploaded_file($temp_file, $file_path)) {
@@ -114,16 +116,22 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
+    if ($folder_id > 0) {
+        $folderStmt = $conn->prepare("SELECT id FROM memory_folders WHERE id = :id AND user_id = :user_id AND deleted_at IS NULL");
+        $folderStmt->execute(['id' => $folder_id, 'user_id' => $_SESSION['user_id']]);
+        if (!$folderStmt->fetchColumn()) throw new RuntimeException('Selected folder was not found');
+    }
+
     $video_thumbnail_path = null;
     if ($is_video_upload && is_file($file_path)) {
         $video_thumbnail_path = VideoThumbnailHelper::generate($file_path, $new_filename);
     }
-    
+
     $stmt = $conn->prepare("
-        INSERT INTO memories (user_id, title, description, file_path, video_thumbnail_path, file_type, file_size, privacy_level, memory_date, status) 
-        VALUES (:user_id, :title, :description, :file_path, :video_thumbnail_path, :file_type, :file_size, :privacy_level, :memory_date, 'active')
+        INSERT INTO memories (user_id, title, description, file_path, video_thumbnail_path, file_type, file_size, privacy_level, privacy_override, folder_id, memory_date, status)
+        VALUES (:user_id, :title, :description, :file_path, :video_thumbnail_path, :file_type, :file_size, :privacy_level, :privacy_override, :folder_id, :memory_date, 'active')
     ");
-    
+
     $stmt->execute([
         'user_id' => $_SESSION['user_id'],
         'title' => $title,
@@ -133,11 +141,13 @@ try {
         'file_type' => $file_type,
         'file_size' => $file_size,
         'privacy_level' => $privacy_level,
+        'privacy_override' => $privacy_override,
+        'folder_id' => $folder_id ?: null,
         'memory_date' => $memory_date ?: null
     ]);
-    
+
     echo json_encode([
-        'success' => true, 
+        'success' => true,
         'message' => $needs_conversion ? 'Memory uploaded and converted successfully' : 'Memory uploaded successfully',
         'memory_id' => $conn->lastInsertId(),
         'subdirectory' => $subdirectory,
@@ -145,7 +155,7 @@ try {
         'video_thumbnail_path' => $video_thumbnail_path,
         'converted' => $needs_conversion
     ]);
-    
+
 } catch (Exception $e) {
     error_log('Memory upload error: ' . $e->getMessage());
     if (file_exists($file_path)) unlink($file_path);
