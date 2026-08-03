@@ -77,6 +77,8 @@ async function loadProfile() {
 
         document.getElementById('profile-name').textContent = profile.full_name || "Unknown";
         document.getElementById('profile-bio').textContent = profile.bio || "No bio available.";
+        const aboutTabBio = document.getElementById('profile-about-tab-bio');
+        if (aboutTabBio) aboutTabBio.textContent = profile.bio || 'No bio available.';
 
         const profileImg = document.getElementById('profile-image');
         if (profile.profile_photo) {
@@ -249,12 +251,12 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
         const data = await response.json();
 
         if (data.success) {
-            alert('âœ… Tribute posted successfully!');
+            alert('Ã¢Å“â€¦ Tribute posted successfully!');
             e.target.reset();
             // Optionally refresh tribute list dynamically
             loadTributes();
         } else {
-            alert(`âŒ ${data.message || 'Failed to post tribute.'}`);
+            alert(`Ã¢ÂÅ’ ${data.message || 'Failed to post tribute.'}`);
         }
     } catch (error) {
         console.error('Error submitting tribute:', error);

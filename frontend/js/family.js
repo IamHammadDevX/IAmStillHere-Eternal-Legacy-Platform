@@ -185,7 +185,6 @@ function createGridMember(member) {
 
     details.appendChild(nameLink);
     details.appendChild(relationship);
-    details.appendChild(createActivityElement(member));
 
     memberItem.appendChild(imageWrap);
     memberItem.appendChild(details);
@@ -198,7 +197,7 @@ function createListMember(member) {
     const memberPhoto = getMemberPhoto(member);
 
     const row = document.createElement('div');
-    row.className = 'family-list-member d-flex align-items-center gap-3 p-3 border-bottom';
+    row.className = 'family-list-member d-flex align-items-center gap-2 py-2 px-3 border-bottom';
 
     const imageLink = document.createElement('a');
     imageLink.href = getMemberProfileUrl(member);
@@ -229,7 +228,6 @@ function createListMember(member) {
     topLine.appendChild(nameLink);
     topLine.appendChild(relationship);
     body.appendChild(topLine);
-    body.appendChild(createActivityElement(member, true));
 
     row.appendChild(imageLink);
     row.appendChild(body);

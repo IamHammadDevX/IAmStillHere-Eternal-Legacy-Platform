@@ -113,20 +113,73 @@ if (!is_logged_in()) {
 
       <!-- Main content -->
       <div class="col-md-8">
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
+        <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
+          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#about-tab">About</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
         </ul>
 
         <div class="tab-content">
-          <div class="tab-pane fade show active" id="timeline-tab">
+          <div class="tab-pane fade show active" id="posts-tab">
+            <div id="post-composer" class="card mb-4" style="display:none;">
+              <div class="card-body">
+                <form id="post-form">
+                  <textarea id="post-body" class="form-control mb-3" rows="3" maxlength="5000" placeholder="What's on your mind?"></textarea>
+                  <div class="d-flex flex-column flex-md-row gap-2 align-items-md-center">
+                    <select id="post-privacy" class="form-select form-select-sm" style="max-width: 150px;">
+                      <option value="public">Public</option>
+                      <option value="family">Family</option>
+                      <option value="private">Private</option>
+                    </select>
+                    <input type="file" id="post-media" class="form-control form-control-sm" accept="image/*,video/*">
+                    <button class="btn btn-primary btn-sm ms-md-auto" type="submit">Post</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div id="posts-container"></div>
+          </div>
+          <div class="tab-pane fade" id="about-tab">
+            <div class="card"><div class="card-body"><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
+          </div>
+          <div class="tab-pane fade" id="photos-tab">
+            <div id="photos-container" class="row g-3"><p class="text-muted">Photos from posts will appear here.</p></div>
+          </div>
+          <div class="tab-pane fade" id="videos-tab">
+            <div id="videos-container" class="row g-3"><p class="text-muted">Videos from posts will appear here.</p></div>
+          </div>
+          <div class="tab-pane fade" id="timeline-tab">
             <div id="timeline-container"></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div class="row" id="memories-grid"></div>
+          </div>
+          <div class="tab-pane fade" id="tributes-tab">
+            <div id="tribute-form" style="display:none;">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5>Leave a Tribute</h5>
+                  <form id="tributeForm">
+                    <div class="mb-3">
+                      <input type="text" class="form-control" id="tribute-name" placeholder="Your Name" required />
+                    </div>
+                    <div class="mb-3">
+                      <input type="email" class="form-control" id="tribute-email" placeholder="Your Email (optional)" />
+                    </div>
+                    <div class="mb-3">
+                      <textarea class="form-control" id="tribute-message" rows="4" placeholder="Share your memories..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Tribute</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div id="tributes-container"></div>
           </div>
           <div class="tab-pane fade" id="events-tab">
             <div id="events-container"></div>
@@ -303,7 +356,7 @@ if (!is_logged_in()) {
 
       <!-- Copyright -->
       <p class="mb-0 small">
-        Ã‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+        Ãƒâ€šÃ‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>
@@ -315,6 +368,7 @@ if (!is_logged_in()) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/posts.js"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 

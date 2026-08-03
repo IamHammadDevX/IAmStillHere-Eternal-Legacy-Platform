@@ -550,3 +550,65 @@ body {
         width: 84px;
     }
 }
+
+/* Social profile posts */
+.post-card {
+    border: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.post-body {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.post-image {
+    max-height: 420px;
+    object-fit: cover;
+}
+
+.post-media video {
+    max-height: 420px;
+    background: #111;
+}
+
+.post-comment-bubble {
+    background: #f1f3f5;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+}
+
+.post-comment-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+#post-composer textarea {
+    resize: vertical;
+}
+
+@media (max-width: 576px) {
+    .post-image,
+    .post-media video {
+        max-height: 300px;
+    }
+}
+
+/* Compact family grid/list nodes */
+.family-grid-view .family-grid-member p.fw-semibold {
+    max-width: 96px !important;
+    font-size: 0.76rem;
+}
+
+.family-grid-view .family-grid-member p.text-muted,
+.family-list-view .family-list-member .text-muted {
+    font-size: 0.7rem !important;
+}
+
+.family-list-view .family-list-member {
+    min-height: 58px;
+}
+
+.family-list-view .family-list-member .fw-semibold {
+    font-size: 0.85rem;
+}
