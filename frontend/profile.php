@@ -78,7 +78,7 @@ if (!is_logged_in()) {
             <h2 id="profile-name">Loading...</h2>
             <p class="mb-0" id="profile-dates"></p>
           </div>
-          <button id="edit-profile-btn" class="btn btn-light ms-auto mb-3" data-bs-toggle="modal"
+          <div class="ms-auto mb-3 d-flex gap-2 align-items-center"><div id="friend-action-area"></div><button id="edit-profile-btn" class="btn btn-light" data-bs-toggle="modal"
             data-bs-target="#editProfileModal">
             <i class="bi bi-pencil"></i> Edit Profile
           </button>
@@ -116,7 +116,8 @@ if (!is_logged_in()) {
         <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
           <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#about-tab">About</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
@@ -206,6 +207,19 @@ if (!is_logged_in()) {
               </div>
             </div>
             <div id="tributes-container"></div>
+          </div>
+
+          <div class="tab-pane fade" id="friends-tab">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="mb-0">Friends</h5>
+                  <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friend-requests-panel">Requests</button>
+                </div>
+                <div class="collapse mb-3" id="friend-requests-panel"><div id="friend-requests-container"></div></div>
+                <div id="friends-list" class="row g-3"></div>
+              </div>
+            </div>
           </div>
 
           <div class="tab-pane fade" id="family-tab">
@@ -356,7 +370,7 @@ if (!is_logged_in()) {
 
       <!-- Copyright -->
       <p class="mb-0 small">
-        Ãƒâ€šÃ‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+        ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>
@@ -369,6 +383,7 @@ if (!is_logged_in()) {
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
+  <script src="js/friends.js"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 

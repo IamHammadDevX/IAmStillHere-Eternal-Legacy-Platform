@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_friend_helpers.php';
+try { if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $d=friends_input(); $c=friends_connection(); if(!SessionHelper::isAuthenticated()){ApiResponse::unauthorized();exit;} if(!friends_require_active($c)){ApiResponse::forbidden('Active account required.');exit;} if(!friends_csrf($d)){ApiResponse::forbidden('Invalid CSRF token.');exit;} $uid=SessionHelper::getUserId(); $rid=(int)($d['request_id']??0); $s=$c->prepare("UPDATE friend_requests SET status='cancelled', responded_at=NOW() WHERE id=:id AND sender_id=:uid AND status='pending'");$s->execute(['id'=>$rid,'uid'=>$uid]); if($s->rowCount()<1){ApiResponse::notFound('Request not found.');exit;} ApiResponse::success([],'Request cancelled.'); } catch(Throwable $e){Logger::error('Friend cancel failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to cancel request.');}
+?>

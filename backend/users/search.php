@@ -16,7 +16,7 @@ try {
     $search_pattern = '%' . $search_term . '%';
 
     $stmt = $conn->prepare("
-        SELECT id, username, full_name, email, role, is_memorial, profile_photo
+        SELECT id, username, full_name, role, is_memorial, profile_photo
         FROM users 
         WHERE (username LIKE :search OR full_name LIKE :search OR email LIKE :search)
         AND role != 'admin'

@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_friend_helpers.php';
+try { if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $d=friends_input(); $c=friends_connection(); if(!SessionHelper::isAuthenticated()){ApiResponse::unauthorized();exit;} if(!friends_require_active($c)){ApiResponse::forbidden('Active account required.');exit;} if(!friends_csrf($d)){ApiResponse::forbidden('Invalid CSRF token.');exit;} $uid=SessionHelper::getUserId(); $fid=(int)($d['user_id']??0); if(!friends_are_friends($c,$uid,$fid)){ApiResponse::notFound('Friendship not found.');exit;} $s=$c->prepare("UPDATE friendships SET status='removed' WHERE (user_id=:a AND friend_id=:b) OR (user_id=:b AND friend_id=:a)");$s->execute(['a'=>$uid,'b'=>$fid]); ApiResponse::success([],'Friend removed.'); } catch(Throwable $e){Logger::error('Friend remove failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to remove friend.');}
+?>

@@ -79,6 +79,38 @@ function canViewProfile(PDO $conn, int $profileUserId, int $viewerId, string $vi
         return true;
     }
 
+    $blockStmt = $conn->prepare("
+        SELECT id
+        FROM friendships
+        WHERE ((user_id = :profile_user_id AND friend_id = :viewer_id)
+            OR (user_id = :viewer_id AND friend_id = :profile_user_id))
+          AND status = 'blocked'
+        LIMIT 1
+    ");
+    $blockStmt->execute([
+        'profile_user_id' => $profileUserId,
+        'viewer_id' => $viewerId
+    ]);
+    if ($blockStmt->fetch()) {
+        return false;
+    }
+
+    $friendStmt = $conn->prepare("
+        SELECT id
+        FROM friendships
+        WHERE user_id = :profile_user_id
+          AND friend_id = :viewer_id
+          AND status = 'accepted'
+        LIMIT 1
+    ");
+    $friendStmt->execute([
+        'profile_user_id' => $profileUserId,
+        'viewer_id' => $viewerId
+    ]);
+    if ($friendStmt->fetch()) {
+        return true;
+    }
+
     $stmt = $conn->prepare("
         SELECT id
         FROM family_members

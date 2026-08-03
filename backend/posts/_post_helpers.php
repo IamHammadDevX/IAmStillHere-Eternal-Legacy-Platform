@@ -55,11 +55,39 @@ function posts_is_family(PDO $connection, int $ownerId, int $viewerId): bool
     return (bool) $statement->fetch();
 }
 
+function posts_are_blocked(PDO $connection, int $firstUserId, int $secondUserId): bool
+{
+    $statement = $connection->prepare(
+        "SELECT id FROM friendships
+         WHERE ((user_id = :first_id AND friend_id = :second_id)
+             OR (user_id = :second_id AND friend_id = :first_id))
+           AND status = 'blocked'
+         LIMIT 1"
+    );
+    $statement->execute(['first_id' => $firstUserId, 'second_id' => $secondUserId]);
+    return (bool) $statement->fetch();
+}
+
+function posts_are_friends(PDO $connection, int $firstUserId, int $secondUserId): bool
+{
+    $statement = $connection->prepare(
+        "SELECT id FROM friendships
+         WHERE user_id = :first_id
+           AND friend_id = :second_id
+           AND status = 'accepted'
+         LIMIT 1"
+    );
+    $statement->execute(['first_id' => $firstUserId, 'second_id' => $secondUserId]);
+    return (bool) $statement->fetch();
+}
+
 function posts_can_view_profile(PDO $connection, int $profileUserId): bool
 {
     $viewerId = SessionHelper::getUserId();
     if ($viewerId === null) return false;
     if ($viewerId === $profileUserId || SessionHelper::isAdmin()) return true;
+    if (posts_are_blocked($connection, $profileUserId, $viewerId)) return false;
+    if (posts_are_friends($connection, $profileUserId, $viewerId)) return true;
     return posts_is_family($connection, $profileUserId, $viewerId);
 }
 
@@ -89,6 +117,10 @@ function posts_visible_privacy_condition(PDO $connection, int $profileUserId): s
     $viewerId = SessionHelper::getUserId();
     if ($viewerId === $profileUserId || SessionHelper::isAdmin()) {
         return "p.privacy_level IN ('public','family','private')";
+    }
+
+    if ($viewerId !== null && posts_are_blocked($connection, $profileUserId, $viewerId)) {
+        return "1 = 0";
     }
 
     if ($viewerId !== null && posts_is_family($connection, $profileUserId, $viewerId)) {
