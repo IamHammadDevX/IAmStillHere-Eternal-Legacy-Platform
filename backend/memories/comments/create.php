@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/_comment_helpers.php';
+require_once __DIR__ . '/../../services/NotificationService.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -59,19 +60,31 @@ try {
         "INSERT INTO memory_comments (memory_id, user_id, comment_text)
          VALUES (:memory_id, :user_id, :comment_text)"
     );
+    $actorUserId = SessionHelper::getUserId();
     $statement->execute([
         'memory_id' => $memoryId,
-        'user_id' => SessionHelper::getUserId(),
+        'user_id' => $actorUserId,
         'comment_text' => $commentText,
     ]);
+    $commentId = (int) $connection->lastInsertId();
+
+    NotificationService::createOnce(
+        $connection,
+        (int) $memory['user_id'],
+        $actorUserId,
+        NotificationService::TYPE_MEMORY_COMMENT,
+        'memory_comment',
+        $commentId,
+        'commented on your memory.'
+    );
 
     Logger::info('Memory comment created', [
         'memory_id' => $memoryId,
-        'comment_id' => $connection->lastInsertId(),
+        'comment_id' => $commentId,
     ]);
 
     ApiResponse::success([
-        'comment_id' => (int) $connection->lastInsertId(),
+        'comment_id' => $commentId,
     ], 'Comment posted.', 201);
 } catch (Throwable $exception) {
     Logger::error('Memory comment create failed', ['error' => $exception->getMessage()]);

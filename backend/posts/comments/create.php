@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../_post_helpers.php';
+require_once __DIR__ . '/../../services/NotificationService.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') { ApiResponse::send(false, [], 'Method not allowed.', [], 405); exit; }
@@ -16,9 +17,22 @@ try {
     if (mb_strlen($text) > POST_COMMENT_MAX_LENGTH) { ApiResponse::validation(['comment_text' => 'Comment cannot exceed 2000 characters.']); exit; }
     $post = posts_find_post($connection, $postId);
     if (!$post || !posts_can_view_post($connection, $post)) { ApiResponse::notFound('Post not found or not accessible.'); exit; }
+    $actorUserId = SessionHelper::getUserId();
     $stmt = $connection->prepare('INSERT INTO post_comments (post_id, user_id, comment_text) VALUES (:post_id, :user_id, :comment_text)');
-    $stmt->execute(['post_id' => $postId, 'user_id' => SessionHelper::getUserId(), 'comment_text' => $text]);
-    ApiResponse::success(['comment_id' => (int) $connection->lastInsertId()], 'Comment posted.', 201);
+    $stmt->execute(['post_id' => $postId, 'user_id' => $actorUserId, 'comment_text' => $text]);
+    $commentId = (int) $connection->lastInsertId();
+
+    NotificationService::createOnce(
+        $connection,
+        (int) $post['user_id'],
+        $actorUserId,
+        NotificationService::TYPE_POST_COMMENT,
+        'post_comment',
+        $commentId,
+        'commented on your post.'
+    );
+
+    ApiResponse::success(['comment_id' => $commentId], 'Comment posted.', 201);
 } catch (Throwable $e) {
     Logger::error('Post comment create failed', ['error' => $e->getMessage()]);
     ApiResponse::serverError('Unable to post comment.');
