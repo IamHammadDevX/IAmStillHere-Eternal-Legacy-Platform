@@ -695,3 +695,25 @@ du -sh data/uploads/*
 5. Start building!
 
 For questions or issues, please open an issue on GitHub or contact the development team.
+
+## Auto-sync repo changes to XAMPP
+
+During local development, keep this PowerShell watcher running from the project root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sync-to-xampp.ps1
+```
+
+It copies changed files from this repository to:
+
+```text
+C:\xampp\htdocs\IAmStillHere
+```
+
+After a change, refresh the browser. Stop the watcher with `Ctrl+C`.
+
+For a one-time sync only:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sync-to-xampp.ps1 -Once
+```

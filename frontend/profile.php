@@ -151,7 +151,20 @@
           <div class="tab-pane fade" id="family-tab">
             <div class="card mb-4">
               <div class="card-body">
-                <h5 class="mb-3">Family Members</h5>
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
+                  <h5 class="mb-0">Family Members</h5>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Family view toggle">
+                    <button type="button" class="btn btn-outline-secondary active" id="family-grid-view-btn" data-family-view="grid">
+                      <i class="bi bi-grid-3x3-gap"></i> Grid
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="family-list-view-btn" data-family-view="list">
+                      <i class="bi bi-list-ul"></i> List
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="family-tree-view-btn" data-family-view="tree">
+                      <i class="bi bi-diagram-3"></i> Tree
+                    </button>
+                  </div>
+                </div>
                 <div id="family-list" class="row g-3">
                 </div>
               </div>
@@ -283,7 +296,7 @@
 
       <!-- Copyright -->
       <p class="mb-0 small">
-        © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+        Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>

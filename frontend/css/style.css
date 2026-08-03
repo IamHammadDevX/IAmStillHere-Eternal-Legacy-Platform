@@ -307,3 +307,246 @@ body {
 .text-warning { color: #ffc107 !important; }
 .text-success { color: #198754 !important; }
 .text-secondary { color: #6c757d !important; }
+
+/* Family page enhancements */
+.family-grid-member {
+    width: 120px;
+}
+
+.family-member-avatar {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.family-grid-remove-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    top: -5px;
+    right: -5px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.family-recent-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.family-list-view .family-list-member:last-child {
+    border-bottom: 0 !important;
+}
+
+.family-list-avatar {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+}
+
+.family-list-remove-btn {
+    flex-shrink: 0;
+}
+
+.family-activity-compact .family-recent-badge {
+    margin-right: 0.35rem;
+}
+
+.min-width-0 {
+    min-width: 0;
+}
+
+@media (max-width: 576px) {
+    .family-members-card {
+        padding: 1rem !important;
+    }
+
+    .family-list-view .family-list-member {
+        align-items: flex-start !important;
+    }
+
+    .family-list-avatar {
+        width: 44px;
+        height: 44px;
+    }
+
+    .family-list-remove-btn {
+        padding: 0.2rem 0.45rem;
+    }
+}
+/* Expandable family tree */
+.family-tree-card {
+    overflow: hidden;
+}
+
+.family-tree-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.75rem 0.25rem 1rem;
+}
+
+.family-tree-compact {
+    min-width: 620px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.family-tree-root-area {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.family-tree-root-area::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -1.25rem;
+    width: 1px;
+    height: 1.25rem;
+    background: #d8dee4;
+}
+
+.family-tree-sections {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.family-tree-section {
+    width: 100%;
+    max-width: 760px;
+    text-align: center;
+    position: relative;
+}
+
+.family-tree-section-title {
+    letter-spacing: 0.06em;
+    margin-bottom: 0.65rem;
+}
+
+.family-tree-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.family-tree-row::before {
+    content: '';
+    position: absolute;
+    top: -0.45rem;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.family-tree-member-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.family-tree-member-wrap::before {
+    content: '';
+    position: absolute;
+    top: -0.45rem;
+    left: 50%;
+    width: 1px;
+    height: 0.45rem;
+    background: #e5e7eb;
+}
+
+.family-tree-person {
+    width: 96px;
+    text-align: center;
+}
+
+.family-tree-root-area .family-tree-avatar {
+    border-color: #764ba2;
+}
+
+.family-tree-person-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.family-tree-avatar {
+    width: 58px;
+    height: 58px;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.family-tree-name {
+    width: 96px;
+    font-size: 0.72rem;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.family-tree-relationship {
+    font-size: 0.68rem;
+    line-height: 1.1;
+}
+
+.family-tree-toggle {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .family-tree-compact {
+        min-width: 560px;
+        align-items: flex-start;
+    }
+
+    .family-tree-root-area,
+    .family-tree-section {
+        width: 560px;
+    }
+
+    .family-tree-person {
+        width: 88px;
+    }
+
+    .family-tree-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .family-tree-row {
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .family-tree-scroll {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .family-tree-compact {
+        min-width: 500px;
+    }
+
+    .family-tree-root-area,
+    .family-tree-section {
+        width: 500px;
+    }
+
+    .family-tree-person {
+        width: 84px;
+    }
+}
