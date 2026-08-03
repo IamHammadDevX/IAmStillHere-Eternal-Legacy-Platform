@@ -65,7 +65,11 @@ async function loadProfile() {
         const data = await response.json();
 
         if (!data.success) {
-            console.error('Profile not found:', data.message);
+            console.error('Profile access failed:', data.message);
+            showAlert(data.message || 'Unable to view this profile', 'danger');
+            setTimeout(() => {
+                window.location.href = currentUser ? 'dashboard.php' : 'login.php';
+            }, 1200);
             return;
         }
 
@@ -245,12 +249,12 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
         const data = await response.json();
 
         if (data.success) {
-            alert('✅ Tribute posted successfully!');
+            alert('âœ… Tribute posted successfully!');
             e.target.reset();
             // Optionally refresh tribute list dynamically
             loadTributes();
         } else {
-            alert(`❌ ${data.message || 'Failed to post tribute.'}`);
+            alert(`âŒ ${data.message || 'Failed to post tribute.'}`);
         }
     } catch (error) {
         console.error('Error submitting tribute:', error);

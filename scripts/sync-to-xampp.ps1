@@ -1,7 +1,8 @@
 param(
     [string]$Source = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
     [string]$Target = 'C:\xampp\htdocs\IAmStillHere',
-    [switch]$Once
+    [switch]$Once,
+    [int]$IntervalSeconds = 1
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,7 +20,9 @@ $excludeFilePatterns = @(
     '*.log',
     '*.bak',
     '*.swp',
-    '~$*'
+    '~$*',
+    'xampp-sync.pid',
+    'xampp-sync.log'
 )
 
 function Get-RelativeProjectPath {
@@ -57,6 +60,11 @@ function Test-IsExcludedPath {
     return $false
 }
 
+function Get-SyncableFiles {
+    Get-ChildItem -LiteralPath $Source -Recurse -File -Force |
+        Where-Object { -not (Test-IsExcludedPath -FullPath $_.FullName) }
+}
+
 function Copy-ChangedFile {
     param([string]$FullPath)
 
@@ -86,11 +94,13 @@ function Sync-All {
         New-Item -ItemType Directory -Path $Target -Force | Out-Null
     }
 
-    Get-ChildItem -LiteralPath $Source -Recurse -File -Force |
-        Where-Object { -not (Test-IsExcludedPath -FullPath $_.FullName) } |
-        ForEach-Object { Copy-ChangedFile -FullPath $_.FullName }
-
+    Get-SyncableFiles | ForEach-Object { Copy-ChangedFile -FullPath $_.FullName }
     Write-Host "Initial sync complete." -ForegroundColor Cyan
+}
+
+function Get-FileStampKey {
+    param([System.IO.FileInfo]$File)
+    return "$($File.LastWriteTimeUtc.Ticks):$($File.Length)"
 }
 
 Sync-All
@@ -99,50 +109,27 @@ if ($Once) {
     exit 0
 }
 
-Write-Host "Watching for changes. Keep this window open. Press Ctrl+C to stop." -ForegroundColor Yellow
+Write-Host "Watching by polling every $IntervalSeconds second(s). Keep this window open. Press Ctrl+C to stop." -ForegroundColor Yellow
+Write-Host "After sync, refresh browser with Ctrl+F5." -ForegroundColor Yellow
 
-$watcher = New-Object System.IO.FileSystemWatcher
-$watcher.Path = $Source
-$watcher.IncludeSubdirectories = $true
-$watcher.EnableRaisingEvents = $true
-
-$pending = @{}
-
-$action = {
-    $path = $Event.SourceEventArgs.FullPath
-    $changeType = $Event.SourceEventArgs.ChangeType
-
-    if ($changeType -eq [System.IO.WatcherChangeTypes]::Deleted) {
-        return
-    }
-
-    $script:pending[$path] = Get-Date
+$known = @{}
+Get-SyncableFiles | ForEach-Object {
+    $known[$_.FullName] = Get-FileStampKey -File $_
 }
 
-$subscriptions = @(
-    Register-ObjectEvent $watcher Changed -Action $action
-    Register-ObjectEvent $watcher Created -Action $action
-    Register-ObjectEvent $watcher Renamed -Action $action
-)
+while ($true) {
+    Start-Sleep -Seconds $IntervalSeconds
 
-try {
-    while ($true) {
-        Start-Sleep -Milliseconds 500
-        $now = Get-Date
-        $ready = @($pending.Keys | Where-Object { ($now - $pending[$_]).TotalMilliseconds -gt 400 })
-
-        foreach ($path in $ready) {
-            $pending.Remove($path)
-            try {
-                Copy-ChangedFile -FullPath $path
-            } catch {
-                Write-Host "Sync failed: $path - $($_.Exception.Message)" -ForegroundColor Red
+    try {
+        $files = @(Get-SyncableFiles)
+        foreach ($file in $files) {
+            $stamp = Get-FileStampKey -File $file
+            if (-not $known.ContainsKey($file.FullName) -or $known[$file.FullName] -ne $stamp) {
+                Copy-ChangedFile -FullPath $file.FullName
+                $known[$file.FullName] = $stamp
             }
         }
+    } catch {
+        Write-Host "Watcher scan failed: $($_.Exception.Message)" -ForegroundColor Red
     }
-} finally {
-    foreach ($subscription in $subscriptions) {
-        Unregister-Event -SubscriptionId $subscription.Id -ErrorAction SilentlyContinue
-    }
-    $watcher.Dispose()
 }

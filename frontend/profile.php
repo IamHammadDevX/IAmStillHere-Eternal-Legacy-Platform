@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+require_once __DIR__ . '/../config/config.php';
+
+if (!is_logged_in()) {
+  header('Location: login.php');
+  exit;
+}
+?><!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -296,7 +303,7 @@
 
       <!-- Copyright -->
       <p class="mb-0 small">
-        Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+        Ã‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>
