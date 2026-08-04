@@ -135,7 +135,7 @@ if (!is_logged_in()) {
                     <select id="post-privacy" class="form-select form-select-sm" style="max-width: 150px;">
                       <option value="public">Public</option>
                       <option value="family">Family</option>
-                      <option value="private">Private</option>
+                      <option value="private">Private</option><option value="friends">Friends</option><option value="specific_people">Specific People</option><option value="release_date">Release on Date</option><option value="release_event">Release on Event</option>
                     </select>
                     <input type="file" id="post-media" class="form-control form-control-sm" accept="image/*,video/*">
                     <button class="btn btn-primary btn-sm ms-md-auto" type="submit">Post</button>
@@ -381,12 +381,14 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/profile.js"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
   <script src="js/friends.js"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 
+<div class="modal fade" id="postEditModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit post</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><textarea id="post-edit-body" class="form-control mb-3" maxlength="5000"></textarea><div id="post-edit-privacy"></div><div id="post-edit-error" class="small text-danger mt-2"></div></div><div class="modal-footer"><button type="button" class="btn btn-primary" id="post-edit-save">Save</button></div></div></div></div>
+<div class="modal fade" id="profileEditMemoryModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit memory</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="profileEditMemoryForm"><input type="hidden" id="profile-edit-memory-id"><label class="form-label">Title</label><input id="profile-edit-memory-title" class="form-control mb-2" maxlength="255" required><label class="form-label">Description</label><textarea id="profile-edit-memory-description" class="form-control mb-2" maxlength="10000"></textarea><label class="form-label">Memory date</label><input id="profile-edit-memory-date" type="date" class="form-control mb-2"><label class="form-label">Folder</label><select id="profile-edit-memory-folder" class="form-select mb-3"><option value="0">No folder</option></select><div id="profile-edit-memory-privacy"></div><div id="profile-edit-memory-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="profileEditMemoryForm" id="profile-edit-memory-save" class="btn btn-primary">Save changes</button></div></div></div></div>
 </body>
 
 </html>

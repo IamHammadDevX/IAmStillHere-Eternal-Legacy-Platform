@@ -1,5 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const profileUserId = urlParams.get('user_id');
+let profileMemoriesCache = [];
+let profileMemoryFoldersCache = [];
+let profileMemoryPrivacyWidget = null;
 let currentUser = null;
 let csrfToken = null;
 
@@ -358,6 +361,7 @@ async function loadMemories() {
         const data = await response.json();
         const grid = document.getElementById('memories-grid');
 
+        profileMemoriesCache = data.memories || [];
         if (data.success && data.memories.length > 0) {
             grid.innerHTML = '';
             data.memories.forEach(memory => {
@@ -468,7 +472,7 @@ async function loadMemories() {
                                     ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
                                 </small>
                                 ${downloadButton}
-                                ${canDelete ? `<button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
+                                ${canDelete ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="editProfileMemory(${memory.id})" title="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
                                     <i class="bi bi-trash"></i>
                                 </button>` : ''}
                                 
@@ -1013,3 +1017,34 @@ function showAlert(message, type = 'info') {
     document.body.appendChild(alertDiv);
     setTimeout(() => alertDiv.remove(), 3000);
 }
+
+async function editProfileMemory(memoryId) {
+    const memory = profileMemoriesCache.find(item => Number(item.id) === Number(memoryId));
+    if (!memory || !currentUser || Number(currentUser.id) !== Number(profileUserId)) return;
+    const modal=document.getElementById('profileEditMemoryModal');
+    document.getElementById('profile-edit-memory-id').value=memory.id;
+    document.getElementById('profile-edit-memory-title').value=memory.title||'';
+    document.getElementById('profile-edit-memory-description').value=memory.description||'';
+    document.getElementById('profile-edit-memory-date').value=memory.memory_date||'';
+    const folder=document.getElementById('profile-edit-memory-folder'); folder.innerHTML='<option value="0">No folder</option>';
+    try { const result=await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${encodeURIComponent(profileUserId)}`).then(r=>r.json()); profileMemoryFoldersCache=result.data?.folders||[]; profileMemoryFoldersCache.forEach(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.name;folder.appendChild(option);}); } catch(e) {}
+    folder.value=memory.folder_id||0;
+    if(!profileMemoryPrivacyWidget){profileMemoryPrivacyWidget=privacyComponent('profile-memory-edit',Number(profileUserId));document.getElementById('profile-edit-memory-privacy').appendChild(profileMemoryPrivacyWidget);}
+    profileMemoryPrivacyWidget.querySelector('.privacy-type').value=memory.privacy_level||'public';
+    await profileMemoryPrivacyWidget.loadRule('memory',memory.id);
+    bootstrap.Modal.getOrCreateInstance(modal).show();
+}
+document.getElementById('profileEditMemoryForm')?.addEventListener('submit',async event=>{event.preventDefault();if(!currentUser||Number(currentUser.id)!==Number(profileUserId))return;const error=document.getElementById('profile-edit-memory-error');const save=document.getElementById('profile-edit-memory-save');error.textContent='';save.disabled=true;try{const rule=profileMemoryPrivacyWidget.getRule();const response=await fetch('http://localhost/IAmStillHere/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('profile-edit-memory-id').value),title:document.getElementById('profile-edit-memory-title').value.trim(),description:document.getElementById('profile-edit-memory-description').value,memory_date:document.getElementById('profile-edit-memory-date').value,folder_id:Number(document.getElementById('profile-edit-memory-folder').value),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update memory.');await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule);bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal')).hide();loadMemories();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}});
+// Preserve the selected profile tab across refreshes.
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"][href^="#"]');
+    const saved = window.location.hash;
+    if (saved) {
+        const target = document.querySelector(`[data-bs-toggle="tab"][href="${CSS.escape(saved)}"]`);
+        if (target && window.bootstrap) bootstrap.Tab.getOrCreateInstance(target).show();
+    }
+    tabs.forEach(tab => tab.addEventListener('shown.bs.tab', event => {
+        const href = event.target.getAttribute('href');
+        if (href) history.replaceState(null, '', `${window.location.pathname}${window.location.search}${href}`);
+    }));
+});

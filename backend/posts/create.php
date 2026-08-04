@@ -12,13 +12,14 @@ try {
     $userId = SessionHelper::getUserId();
     $body = trim((string) ($_POST['body'] ?? ''));
     $privacy = (string) ($_POST['privacy_level'] ?? 'public');
-    if (!in_array($privacy, ['public', 'family', 'private'], true)) $privacy = 'public';
+    if (!in_array($privacy, ['public', 'family', 'friends', 'specific_people', 'private', 'release_date', 'release_event'], true)) $privacy = 'public';
+    $legacyPrivacy = in_array($privacy, ['public','family','private'], true) ? $privacy : 'private';
     if ($body === '' && empty($_FILES['media']['name'])) { ApiResponse::validation(['body' => 'Post text or media is required.']); exit; }
     if (mb_strlen($body) > POST_BODY_MAX_LENGTH) { ApiResponse::validation(['body' => 'Post cannot exceed 5000 characters.']); exit; }
 
     $connection->beginTransaction();
     $stmt = $connection->prepare('INSERT INTO posts (user_id, body, privacy_level) VALUES (:user_id, :body, :privacy_level)');
-    $stmt->execute(['user_id' => $userId, 'body' => $body, 'privacy_level' => $privacy]);
+    $stmt->execute(['user_id' => $userId, 'body' => $body, 'privacy_level' => $legacyPrivacy]);
     $postId = (int) $connection->lastInsertId();
 
     if (!empty($_FILES['media']['name'])) {

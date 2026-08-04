@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../services/PrivacyService.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 header('Content-Type: application/json');
 
@@ -33,7 +35,7 @@ try {
     $stmt = $conn->prepare("SELECT * FROM milestones WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions ORDER BY milestone_date ASC");
     $stmt->execute(['user_id' => $user_id]);
     
-    $milestones = $stmt->fetchAll();
+    $milestones = array_values(array_filter($stmt->fetchAll(), static function (array $milestone) use ($conn) { return PrivacyService::canView($conn, 'milestone', (int) $milestone['id'], (int) $milestone['user_id'], SessionHelper::getUserId(), (string) $milestone['privacy_level']); }));
     
     echo json_encode(['success' => true, 'milestones' => $milestones]);
     

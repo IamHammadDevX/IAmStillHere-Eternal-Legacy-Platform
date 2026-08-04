@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../helpers/RequestContext.php';
 require_once __DIR__ . '/../../helpers/Logger.php';
 require_once __DIR__ . '/../../helpers/SessionHelper.php';
 require_once __DIR__ . '/../../helpers/CsrfHelper.php';
+require_once __DIR__ . '/../../services/PrivacyService.php';
 
 function folder_connection(): PDO
 {

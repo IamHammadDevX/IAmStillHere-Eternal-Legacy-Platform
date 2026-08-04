@@ -6,6 +6,7 @@ require_once __DIR__ . '/../helpers/RequestContext.php';
 require_once __DIR__ . '/../helpers/Logger.php';
 require_once __DIR__ . '/../helpers/SessionHelper.php';
 require_once __DIR__ . '/../helpers/CsrfHelper.php';
+require_once __DIR__ . '/../services/PrivacyService.php';
 
 const POST_BODY_MAX_LENGTH = 5000;
 const POST_COMMENT_MAX_LENGTH = 2000;
@@ -94,22 +95,7 @@ function posts_can_view_profile(PDO $connection, int $profileUserId): bool
 function posts_can_view_post(PDO $connection, array $post): bool
 {
     if (($post['status'] ?? '') !== 'active') return false;
-
-    $viewerId = SessionHelper::getUserId();
-    if ($viewerId === null) return false;
-
-    $ownerId = (int) $post['user_id'];
-    if ($viewerId === $ownerId || SessionHelper::isAdmin()) return true;
-
-    if ($post['privacy_level'] === 'public') {
-        return posts_can_view_profile($connection, $ownerId);
-    }
-
-    if ($post['privacy_level'] === 'family') {
-        return posts_is_family($connection, $ownerId, $viewerId);
-    }
-
-    return false;
+    return PrivacyService::canView($connection, 'post', (int) $post['id'], (int) $post['user_id'], SessionHelper::getUserId(), (string) $post['privacy_level']);
 }
 
 function posts_visible_privacy_condition(PDO $connection, int $profileUserId): string

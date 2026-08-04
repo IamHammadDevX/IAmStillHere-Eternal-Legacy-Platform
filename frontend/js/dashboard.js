@@ -2,6 +2,10 @@ let currentUserId = null;
 let loggedInUser = null;
 let csrfToken = null;
 let currentMemoryFolderId = 0;
+let memoryPrivacyWidget = null;
+let milestonePrivacyWidget = null;
+let milestoneCache = [];
+let editMilestonePrivacyWidget = null;
 
 async function init() {
     const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
@@ -14,6 +18,10 @@ async function init() {
     loggedInUser = data.user;
 
     currentUserId = data.user.id;
+    const savedFolder = Number(localStorage.getItem('memoryFolder_' + currentUserId) || 0);
+    currentMemoryFolderId = Number.isFinite(savedFolder) && savedFolder > 0 ? savedFolder : 0;
+    const memoryPrivacy = document.getElementById('memory-privacy'); if(memoryPrivacy && typeof privacyComponent==='function'){ memoryPrivacy.style.display='none'; memoryPrivacyWidget=privacyComponent('memory',currentUserId); memoryPrivacy.parentElement.appendChild(memoryPrivacyWidget); }
+    const milestonePrivacy = document.getElementById('milestone-privacy'); if(milestonePrivacy && typeof privacyComponent==='function'){ milestonePrivacy.style.display='none'; milestonePrivacyWidget=privacyComponent('milestone',currentUserId); milestonePrivacy.parentElement.appendChild(milestonePrivacyWidget); }
     await loadCsrfToken();
 
     loadMemories();
@@ -68,12 +76,13 @@ async function loadTributeCount(userId) {
 
 async function loadMemories() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}`);
+        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}&_=${Date.now()}`);
         const data = await response.json();
 
         const grid = document.getElementById('memories-grid');
         grid.innerHTML = '';
 
+        window.lastLoadedMemories = data.memories || [];
         if (data.success && data.memories.length > 0) {
             data.memories.forEach((memory, index) => {
                 const col = document.createElement('div');
@@ -184,7 +193,7 @@ async function loadMemories() {
                                     ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
                                 </small>
                                 ${downloadButton}
-                                ${canDelete ? `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="moveMemory(${memory.id})" title="Move memory"><i class="bi bi-folder2-open"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
+                                ${canDelete ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="editMemory(${memory.id})" title="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-secondary ms-1" onclick="moveMemory(${memory.id})" title="Move memory"><i class="bi bi-folder2-open"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
                                     <i class="bi bi-trash"></i>
                                 </button>` : ''}
                                 
@@ -467,6 +476,7 @@ async function loadTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
 
+        milestoneCache = data.milestones || [];
         if (data.success && data.milestones.length > 0) {
             data.milestones.forEach((milestone, index) => {
                 const item = document.createElement('div');
@@ -498,7 +508,7 @@ async function loadTimeline() {
                                     <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
                                 </small>
                             </div>
-                            ${canDelete ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
+                            ${canDelete ? `<button class="btn btn-sm btn-outline-primary me-1" onclick="editMilestone(${milestone.id})" title="Edit milestone"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
                                 <i class="bi bi-trash"></i>
                             </button>` : ''}
                             
@@ -732,7 +742,7 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     formData.append('title', document.getElementById('memory-title').value);
     formData.append('description', document.getElementById('memory-description').value);
     formData.append('memory_date', document.getElementById('memory-date').value);
-    formData.append('privacy_level', document.getElementById('memory-privacy').value);
+    formData.append('privacy_level', memoryPrivacyWidget?.getRule().visibility_type || document.getElementById('memory-privacy').value);
     if (currentMemoryFolderId) { formData.append('folder_id', currentMemoryFolderId); formData.append('privacy_override', '0'); }
     formData.append('file', document.getElementById('memory-file').files[0]);
 
@@ -745,6 +755,7 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (data.success) {
+            try { if (memoryPrivacyWidget) await savePrivacyRule(csrfToken, 'memory', data.memory_id, memoryPrivacyWidget.getRule()); } catch (privacyError) { showAlert('Memory uploaded, but privacy settings were not saved: ' + privacyError.message, 'warning'); return; }
             showAlert('Memory uploaded successfully!', 'success');
             document.getElementById('memoryForm').reset();
             bootstrap.Modal.getInstance(document.getElementById('uploadMemoryModal')).hide();
@@ -765,7 +776,7 @@ document.getElementById('milestoneForm').addEventListener('submit', async (e) =>
         description: document.getElementById('milestone-description').value,
         milestone_date: document.getElementById('milestone-date').value,
         category: document.getElementById('milestone-category').value,
-        privacy_level: document.getElementById('milestone-privacy').value
+        privacy_level: milestonePrivacyWidget?.getRule().visibility_type || document.getElementById('milestone-privacy').value
     };
 
     try {
@@ -778,6 +789,7 @@ document.getElementById('milestoneForm').addEventListener('submit', async (e) =>
         const data = await response.json();
 
         if (data.success) {
+            try { if (milestonePrivacyWidget && data.milestone_id) await savePrivacyRule(csrfToken, 'milestone', data.milestone_id, milestonePrivacyWidget.getRule()); } catch (privacyError) { showAlert('Milestone created, but privacy settings were not saved: ' + privacyError.message, 'warning'); return; }
             showAlert('Milestone added successfully!', 'success');
             document.getElementById('milestoneForm').reset();
             bootstrap.Modal.getInstance(document.getElementById('addMilestoneModal')).hide();
@@ -826,20 +838,25 @@ document.addEventListener('DOMContentLoaded', init);
 async function loadMemoryFolders(search = '') {
     const box = document.getElementById('memory-folders');
     if (!box) return;
-    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}`);
+    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}&_=${Date.now()}`);
     const data = await response.json();
     box.innerHTML = '';
     const folders = data.success ? data.data.folders : [];
+    window.lastMemoryFolders = folders;
+    const activeFolder = folders.find(folder => Number(folder.id) === Number(currentMemoryFolderId));
+    const breadcrumb = document.getElementById('memory-folder-breadcrumb');
+    if (breadcrumb) breadcrumb.textContent = activeFolder ? activeFolder.name : 'All memories';
+    if (currentMemoryFolderId && !activeFolder) { currentMemoryFolderId = 0; localStorage.removeItem('memoryFolder_' + currentUserId); }
     const all = document.createElement('button');
     all.className = 'btn btn-sm btn-outline-dark'; all.textContent = 'All';
-    all.onclick = () => { currentMemoryFolderId = 0; document.getElementById('memory-folder-breadcrumb').textContent = 'All memories'; loadMemories(); loadMemoryFolders(search); };
+    all.onclick = () => { currentMemoryFolderId = 0; localStorage.removeItem('memoryFolder_' + currentUserId); document.getElementById('memory-folder-breadcrumb').textContent = 'All memories'; loadMemories(); loadMemoryFolders(search); };
     box.appendChild(all);
     folders.forEach(folder => {
         const button = document.createElement('button');
         button.className = `btn btn-sm ${currentMemoryFolderId === folder.id ? 'btn-primary' : 'btn-outline-secondary'}`;
         button.textContent = `${folder.name} (${folder.memory_count})`;
-        button.onclick = () => { currentMemoryFolderId = folder.id; document.getElementById('memory-folder-breadcrumb').textContent = folder.name; loadMemories(); loadMemoryFolders(search); };
-        const renameButton = document.createElement('button'); renameButton.className='btn btn-sm btn-outline-secondary'; renameButton.textContent='Rename'; renameButton.onclick=()=>renameFolder(folder);
+        button.onclick = () => { currentMemoryFolderId = Number(folder.id); localStorage.setItem('memoryFolder_' + currentUserId, currentMemoryFolderId); document.getElementById('memory-folder-breadcrumb').textContent = folder.name; loadMemories(); loadMemoryFolders(search); };
+        const renameButton = document.createElement('button'); renameButton.className='btn btn-sm btn-outline-secondary'; renameButton.textContent='Edit'; renameButton.onclick=()=>editFolder(folder);
         const childButton = document.createElement('button'); childButton.className='btn btn-sm btn-outline-secondary'; childButton.textContent='+ Child'; childButton.onclick=()=>createChildFolder(folder);
         const deleteButton = document.createElement('button'); deleteButton.className='btn btn-sm btn-outline-danger'; deleteButton.textContent='Delete'; deleteButton.onclick=()=>deleteFolder(folder);
         box.appendChild(button); box.append(renameButton, childButton, deleteButton);
@@ -864,4 +881,42 @@ async function folderPost(endpoint, payload) {
 async function renameFolder(folder) { const name=prompt('New folder name',folder.name); if(!name)return; const data=await folderPost('update',{folder_id:folder.id,name}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to rename folder','danger'); }
 async function createChildFolder(parent) { const name=prompt('Child folder name'); if(!name)return; const data=await folderPost('create',{name,parent_folder_id:parent.id,privacy_level:parent.privacy_level}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to create child folder','danger'); }
 async function deleteFolder(folder) { if(!confirm(`Delete empty folder "${folder.name}"?`))return; const data=await folderPost('delete',{folder_id:folder.id}); if(data.success){if(currentMemoryFolderId===folder.id){currentMemoryFolderId=0;loadMemories();}loadMemoryFolders();}else showAlert(data.message||'Folder must be empty','danger'); }
-async function moveMemory(memoryId) { const folders=await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}`).then(r=>r.json()); const options=(folders.data?.folders||[]).map(f=>`${f.id}: ${f.name}`).join('\n'); const choice=prompt(`Enter folder ID. Enter 0 to remove folder.\n${options}`,'0'); if(choice===null)return; const data=await folderPost('move_memory',{memory_id:memoryId,folder_id:parseInt(choice,10)||0}); if(data.success)loadMemories();else showAlert(data.message||'Unable to move memory','danger'); }
+async function moveMemory(memoryId) {
+    const folders = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&_=${Date.now()}`).then(r => r.json());
+    const available = folders.data?.folders || [];
+    const options = available.map(f => `${f.id}: ${f.name}`).join('\\n');
+    const choice = prompt(`Enter folder ID or exact folder name. Enter 0 to remove folder.\\n${options}`, '0');
+    if (choice === null) return;
+    const input = choice.trim();
+    const selected = available.find(f => String(f.id) === input || String(f.name).toLowerCase() === input.toLowerCase());
+    const folderId = input === '0' ? 0 : (selected ? Number(selected.id) : parseInt(input, 10) || 0);
+    const data = await folderPost('move_memory', { memory_id: memoryId, folder_id: folderId });
+    if (data.success) { showAlert('Memory moved successfully', 'success'); loadMemories(); loadMemoryFolders(); }
+    else showAlert(data.message || 'Unable to move memory', 'danger');
+}
+let editMemoryPrivacyWidget = null;
+async function editMemory(memoryId) {
+    const memory = (window.lastLoadedMemories || []).find(item => Number(item.id) === Number(memoryId));
+    if (!memory) { showAlert('Memory data unavailable. Refresh and try again.', 'danger'); return; }
+    document.getElementById('edit-memory-id').value = memory.id;
+    document.getElementById('edit-memory-title').value = memory.title || '';
+    document.getElementById('edit-memory-description').value = memory.description || '';
+    document.getElementById('edit-memory-date').value = memory.memory_date || '';
+    const folder = document.getElementById('edit-memory-folder');
+    folder.innerHTML = '<option value="0">No folder</option>';
+    (window.lastMemoryFolders || []).forEach(item => { const option=document.createElement('option'); option.value=item.id; option.textContent=item.name; folder.appendChild(option); });
+    folder.value = memory.folder_id || 0;
+    if (!editMemoryPrivacyWidget) { editMemoryPrivacyWidget = privacyComponent('memory-edit', currentUserId); document.getElementById('edit-memory-privacy').appendChild(editMemoryPrivacyWidget); }
+    editMemoryPrivacyWidget.querySelector('.privacy-type').value = memory.privacy_level || 'public';
+    await editMemoryPrivacyWidget.loadRule('memory', memory.id);
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('editMemoryModal')).show();
+}
+document.getElementById('editMemoryForm')?.addEventListener('submit', async event => {
+    event.preventDefault(); const error=document.getElementById('edit-memory-error'); error.textContent=''; const save=document.getElementById('edit-memory-save'); save.disabled=true;
+    try { const rule=editMemoryPrivacyWidget.getRule(); const response=await fetch('http://localhost/IAmStillHere/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('edit-memory-id').value),title:document.getElementById('edit-memory-title').value.trim(),description:document.getElementById('edit-memory-description').value,memory_date:document.getElementById('edit-memory-date').value,folder_id:Number(document.getElementById('edit-memory-folder').value),privacy_level:rule.visibility_type})}); const data=await response.json(); if(!data.success)throw new Error(data.message||'Unable to update memory.'); try { await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule); } catch (privacyError) { error.textContent='Memory updated, but privacy settings were not saved: '+privacyError.message; return; } bootstrap.Modal.getInstance(document.getElementById('editMemoryModal')).hide(); loadMemories(); loadMemoryFolders(); } catch(e){ error.textContent=e.message; } finally { save.disabled=false; }
+});
+async function editMilestone(milestoneId){const m=milestoneCache.find(x=>Number(x.id)===Number(milestoneId));if(!m)return;document.getElementById('edit-milestone-id').value=m.id;document.getElementById('edit-milestone-title').value=m.title||'';document.getElementById('edit-milestone-description').value=m.description||'';document.getElementById('edit-milestone-date').value=m.milestone_date||'';document.getElementById('edit-milestone-category').value=m.category||'';if(!editMilestonePrivacyWidget){editMilestonePrivacyWidget=privacyComponent('milestone-edit',currentUserId);document.getElementById('edit-milestone-privacy').appendChild(editMilestonePrivacyWidget);}editMilestonePrivacyWidget.querySelector('.privacy-type').value=m.privacy_level||'public';await editMilestonePrivacyWidget.loadRule('milestone',m.id);bootstrap.Modal.getOrCreateInstance(document.getElementById('editMilestoneModal')).show();}
+document.getElementById('editMilestoneForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-milestone-error');const save=document.getElementById('edit-milestone-save');error.textContent='';save.disabled=true;try{const rule=editMilestonePrivacyWidget.getRule();const response=await fetch('http://localhost/IAmStillHere/backend/milestones/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({milestone_id:Number(document.getElementById('edit-milestone-id').value),title:document.getElementById('edit-milestone-title').value.trim(),description:document.getElementById('edit-milestone-description').value,milestone_date:document.getElementById('edit-milestone-date').value,category:document.getElementById('edit-milestone-category').value.trim(),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update milestone');await savePrivacyRule(csrfToken,'milestone',data.data.milestone_id,rule);bootstrap.Modal.getInstance(document.getElementById('editMilestoneModal')).hide();loadTimeline();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});
+let editFolderPrivacyWidget = null;
+async function editFolder(folder){try{document.getElementById('edit-folder-id').value=folder.id;document.getElementById('edit-folder-name').value=folder.name||'';document.getElementById('edit-folder-description').value=folder.description||'';const parent=document.getElementById('edit-folder-parent');parent.innerHTML='<option value="0">No parent</option>';window.lastMemoryFolders.filter(x=>Number(x.id)!==Number(folder.id)).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;parent.appendChild(o);});parent.value=folder.parent_folder_id||0;if(!editFolderPrivacyWidget){editFolderPrivacyWidget=privacyComponent('folder-edit',currentUserId);document.getElementById('edit-folder-privacy').appendChild(editFolderPrivacyWidget);}editFolderPrivacyWidget.querySelector('.privacy-type').value=folder.privacy_level||'private';bootstrap.Modal.getOrCreateInstance(document.getElementById('editFolderModal')).show();await editFolderPrivacyWidget.loadRule('memory_folder',folder.id);}catch(error){showAlert(error.message||'Unable to open folder editor','danger');}}
+document.getElementById('editFolderForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-folder-error');const save=document.getElementById('edit-folder-save');error.textContent='';save.disabled=true;try{const rule=editFolderPrivacyWidget.getRule();const advanced=['specific_people','release_date','release_event'].includes(rule.visibility_type);const legacy=['public','family','friends','private'].includes(rule.visibility_type)?rule.visibility_type:'private';const data=await folderPost('update',{folder_id:Number(document.getElementById('edit-folder-id').value),name:document.getElementById('edit-folder-name').value.trim(),description:document.getElementById('edit-folder-description').value,parent_folder_id:Number(document.getElementById('edit-folder-parent').value),privacy_level:legacy});if(!data.success)throw new Error(data.message||'Unable to update folder');try{await savePrivacyRule(csrfToken,'memory_folder',Number(document.getElementById('edit-folder-id').value),rule);}catch(privacyError){error.textContent='Folder updated, but privacy settings were not saved: '+privacyError.message;return;}bootstrap.Modal.getInstance(document.getElementById('editFolderModal')).hide();loadMemoryFolders();if(currentMemoryFolderId)loadMemories();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/folders/_folder_helpers.php';
+require_once __DIR__ . '/../services/PrivacyService.php';
 
 header('Content-Type: application/json');
 
@@ -51,11 +52,11 @@ try {
     $stmt->bindValue(':folder_id', $folder_id, PDO::PARAM_INT);
     $stmt->execute();
     
-    $memories = $stmt->fetchAll();
+    $memories = array_values(array_filter($stmt->fetchAll(), static function (array $memory) use ($conn) { return PrivacyService::canView($conn, 'memory', (int) $memory['id'], (int) $memory['user_id'], SessionHelper::getUserId(), (string) $memory['privacy_level'], isset($memory['folder_id']) ? (int) $memory['folder_id'] : null); }));
     
     $countStmt = $conn->prepare("SELECT COUNT(*) as total FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id)");
     $countStmt->execute(['user_id' => $user_id, 'folder_id' => $folder_id]);
-    $total = $countStmt->fetch()['total'];
+    $total = count($memories);
     
     echo json_encode([
         'success' => true,
