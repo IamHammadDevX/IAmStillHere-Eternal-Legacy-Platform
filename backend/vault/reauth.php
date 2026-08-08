@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_vault_helpers.php';
+try{ if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $db=vault_db(); $actor=vault_require_auth(); $d=vault_input(); vault_require_csrf($d); $password=(string)($d['password']??''); if($password===''){ApiResponse::validation(['password'=>'Password required.']);exit;} $s=$db->prepare('SELECT password_hash FROM users WHERE id=:id AND status=\'active\' LIMIT 1'); $s->execute(['id'=>$actor]); $hash=$s->fetchColumn(); if(!$hash || !password_verify($password,(string)$hash)){ApiResponse::forbidden('Invalid password.');exit;} $_SESSION['vault_verified_at']=time(); ApiResponse::success(['verified_until'=>gmdate('c',time()+VAULT_VERIFY_SECONDS)],'Vault verified.'); }catch(Throwable $e){Logger::error('Vault reauth failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to verify vault access.');}
+?>

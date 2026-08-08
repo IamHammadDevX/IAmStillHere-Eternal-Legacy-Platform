@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_vault_helpers.php';
+try{ if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $db=vault_db(); $actor=vault_require_auth(); $d=vault_input(); vault_require_csrf($d); vault_require_verified(); $id=(int)($d['document_id']??0); $doc=vault_require_document_access($db,$id,$actor); if((int)$doc['owner_id']!==$actor){ApiResponse::forbidden('Only owner can delete vault document.');exit;} $s=$db->prepare('UPDATE vault_documents SET deleted_at=NOW() WHERE id=:id AND owner_id=:owner'); $s->execute(['id'=>$id,'owner'=>$actor]); vault_log($db,$actor,$actor,$id,'delete'); ApiResponse::success([],'Vault document deleted.'); }catch(Throwable $e){Logger::error('Vault delete failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to delete vault document.');}
+?>

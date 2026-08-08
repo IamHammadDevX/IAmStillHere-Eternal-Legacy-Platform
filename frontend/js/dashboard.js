@@ -1,4 +1,4 @@
-let currentUserId = null;
+﻿let currentUserId = null;
 let loggedInUser = null;
 let csrfToken = null;
 let currentMemoryFolderId = 0;
@@ -873,7 +873,7 @@ document.getElementById('new-folder-button')?.addEventListener('click', async ()
     const privacy = prompt('Privacy: public, family, friends, or private', 'private');
     const response = await fetch('http://localhost/IAmStillHere/backend/memories/folders/create.php', { method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-Token':csrfToken}, body: JSON.stringify({name, privacy_level: privacy || 'private'}) });
     const data = await response.json();
-    if (data.success) loadMemoryFolders(); else showAlert(data.message || 'Unable to create folder', 'danger');
+    if (data.success) loadMemoryFolders(); else vaultStatus(data.message || 'Unable to create folder', 'danger');
 });
 async function folderPost(endpoint, payload) {
     const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/${endpoint}.php`, {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify(payload)});
@@ -989,7 +989,7 @@ function createOnThisDayCard(item) {
     body.className = 'card-body';
     const meta = document.createElement('div');
     meta.className = 'small text-muted mb-1 text-capitalize';
-    meta.textContent = `${item.source_type} · ${item.years_ago} years ago`;
+    meta.textContent = `${item.source_type} ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${item.years_ago} years ago`;
     const title = document.createElement('h6');
     title.className = 'mb-1';
     title.textContent = item.title || 'Untitled';
@@ -1004,3 +1004,251 @@ function createOnThisDayCard(item) {
     col.appendChild(link);
     return col;
 }
+let vaultCurrentFolderId = 0;
+let vaultOwnerId = null;
+let vaultIsVerified = false;
+function vaultStatus(message, type = 'success') { const box = document.getElementById('vault-status'); if (box) { box.className = 'alert alert-' + type; box.textContent = message; setTimeout(() => { box.className = 'alert d-none'; box.textContent = ''; }, 4500); } if (typeof showAlert === 'function') showAlert(message, type); }
+
+function initVaultFeature() {
+    document.getElementById('vault-refresh-btn')?.addEventListener('click', () => loadVault());
+    document.getElementById('vault-reauth-form')?.addEventListener('submit', vaultReauth);
+    document.getElementById('vault-upload-form')?.addEventListener('submit', vaultUpload);
+    document.getElementById('vault-folder-create')?.addEventListener('click', vaultCreateFolder);
+    document.getElementById('vault-grant')?.addEventListener('click', () => vaultPermission('grant'));
+    document.getElementById('vault-revoke')?.addEventListener('click', () => vaultPermission('revoke'));
+    loadVault();
+}
+
+async function vaultJson(endpoint, payload) {
+    const response = await fetch(`http://localhost/IAmStillHere/backend/vault/${endpoint}.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+        body: JSON.stringify({ ...payload, csrf_token: csrfToken })
+    });
+    return response.json();
+}
+
+async function loadVault() {
+    const docs = document.getElementById('vault-document-list');
+    if (!docs || !currentUserId) return;
+    docs.innerHTML = '<div class="text-muted">Loading vault...</div>';
+    try {
+        const ownerInput = Number(document.getElementById('vault-owner-id')?.value || 0);
+        const ownerParam = ownerInput > 0 ? `&owner_id=${ownerInput}` : '';
+        const response = await fetch(`http://localhost/IAmStillHere/backend/vault/list.php?folder_id=${vaultCurrentFolderId}${ownerParam}`);
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Unable to load vault.');
+        vaultOwnerId = data.data.owner_id;
+        const ownerLabel = document.getElementById('vault-current-owner-label');
+        if (ownerLabel) ownerLabel.textContent = ownerInput > 0 ? 'Viewing Vault Owner ID: ' + vaultOwnerId : 'Your Vault ID: ' + vaultOwnerId;
+        vaultIsVerified = Boolean(data.data.vault_verified);
+        document.getElementById('vault-reauth-box').style.display = vaultIsVerified ? 'none' : '';
+        renderVaultFolders(data.data.folders || []);
+        renderVaultDocuments(data.data.documents || []);
+        renderVaultPermissions(data.data.permissions || []);
+        setVaultLockedState(vaultIsVerified, data.data.vault_verified_until);
+        loadVaultLogs();
+    } catch (error) {
+        docs.innerHTML = `<div class="alert alert-danger">${escapeHtml(error.message)}</div>`;
+    }
+}
+
+
+function setVaultLockedState(isVerified, verifiedUntil) {
+    const sensitive = [
+        'vault-folder-name', 'vault-folder-create', 'vault-display-name', 'vault-file',
+        'vault-counsel-user-id', 'vault-grant', 'vault-revoke'
+    ];
+    sensitive.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !isVerified;
+    });
+    document.querySelectorAll('#vault-document-list button, #vault-document-list a').forEach(el => {
+        el.classList.toggle('disabled', !isVerified);
+        if ('disabled' in el) el.disabled = !isVerified;
+        if (!isVerified && el.tagName === 'A') el.addEventListener('click', vaultBlockLockedClick, { once: true });
+    });
+    const uploadButton = document.querySelector('#vault-upload-form button[type="submit"]');
+    if (uploadButton) uploadButton.disabled = !isVerified;
+}
+
+function vaultBlockLockedClick(event) {
+    if (!vaultIsVerified) {
+        event.preventDefault();
+        vaultStatus('Unlock Vault first.', 'warning');
+    }
+}
+function renderVaultFolders(folders) {
+    const box = document.getElementById('vault-folder-list');
+    if (!box) return;
+    box.innerHTML = '';
+    const all = document.createElement('button');
+    all.className = `list-group-item list-group-item-action ${vaultCurrentFolderId === 0 ? 'active' : ''}`;
+    all.textContent = 'All documents';
+    all.onclick = () => { vaultCurrentFolderId = 0; loadVault(); };
+    box.appendChild(all);
+    folders.forEach(folder => {
+        const row = document.createElement('div');
+        row.className = 'list-group-item d-flex justify-content-between align-items-center gap-2';
+        const open = document.createElement('button');
+        open.className = `btn btn-sm ${vaultCurrentFolderId === folder.id ? 'btn-primary' : 'btn-link'} text-start flex-grow-1`;
+        open.textContent = folder.name;
+        open.onclick = () => { vaultCurrentFolderId = folder.id; loadVault(); };
+        const del = document.createElement('button');
+        del.className = 'btn btn-sm btn-outline-danger';
+        del.textContent = 'Delete';
+        del.onclick = () => vaultDeleteFolder(folder.id);
+        row.append(open, del);
+        box.appendChild(row);
+    });
+}
+
+function renderVaultDocuments(documents) {
+    const box = document.getElementById('vault-document-list');
+    box.innerHTML = '';
+    if (!documents.length) {
+        box.innerHTML = '<div class="col-12 text-muted">No vault documents here.</div>';
+        return;
+    }
+    documents.forEach(doc => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6';
+        const card = document.createElement('div');
+        card.className = 'card h-100';
+        const body = document.createElement('div');
+        body.className = 'card-body';
+        const title = document.createElement('h6');
+        title.textContent = doc.display_name;
+        const meta = document.createElement('div');
+        meta.className = 'small text-muted mb-2';
+        meta.textContent = `${doc.mime_type} - ${Math.ceil(doc.file_size / 1024)} KB`;
+        const hash = document.createElement('div');
+        hash.className = 'small text-muted text-truncate mb-2';
+        hash.title = doc.sha256;
+        hash.textContent = `SHA-256 ${doc.sha256}`;
+        const actions = document.createElement('div');
+        actions.className = 'd-flex flex-wrap gap-2';
+        const down = document.createElement('a');
+        down.className = 'btn btn-sm btn-outline-primary';
+        down.textContent = 'Download';
+        down.href = `http://localhost/IAmStillHere/backend/vault/download.php?document_id=${doc.id}`;
+        const rename = document.createElement('button');
+        rename.className = 'btn btn-sm btn-outline-secondary';
+        rename.textContent = 'Rename';
+        rename.onclick = () => vaultRename(doc);
+        const del = document.createElement('button');
+        del.className = 'btn btn-sm btn-outline-danger';
+        del.textContent = 'Delete';
+        del.onclick = () => vaultDeleteDocument(doc.id);
+        actions.append(down, rename, del);
+        body.append(title, meta, hash, actions);
+        card.appendChild(body);
+        col.appendChild(card);
+        box.appendChild(col);
+    });
+}
+
+function renderVaultPermissions(permissions) {
+    const box = document.getElementById('vault-permission-list');
+    if (!box) return;
+    box.innerHTML = permissions.length ? '' : 'No legal counsel users authorized.';
+    permissions.forEach(p => {
+        const row = document.createElement('div');
+        row.textContent = `${p.full_name || p.username} (#${p.authorized_user_id}) - ${p.status}`;
+        box.appendChild(row);
+    });
+}
+
+async function loadVaultLogs() {
+    const box = document.getElementById('vault-log-list');
+    if (!box) return;
+    try {
+        const ownerInput = Number(document.getElementById('vault-owner-id')?.value || 0);
+        const ownerParam = ownerInput > 0 ? `?owner_id=${ownerInput}` : '';
+        const response = await fetch(`http://localhost/IAmStillHere/backend/vault/logs.php${ownerParam}`);
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Unable to load logs.');
+        box.innerHTML = '';
+        (data.data.logs || []).slice(0, 8).forEach(log => {
+            const row = document.createElement('div');
+            row.textContent = `${log.created_at} - ${log.action}`;
+            box.appendChild(row);
+        });
+        if (!box.children.length) box.textContent = 'No audit logs yet.';
+    } catch (error) {
+        box.textContent = 'Unable to load logs.';
+    }
+}
+
+async function vaultReauth(event) {
+    event.preventDefault();
+    const password = document.getElementById('vault-password').value;
+    const data = await vaultJson('reauth', { password });
+    if (data.success) { document.getElementById('vault-password').value = ''; vaultStatus('Vault unlocked.', 'success'); loadVault(); }
+    else vaultStatus(data.message || 'Unable to unlock vault', 'danger');
+}
+
+async function vaultUpload(event) {
+    event.preventDefault();
+    const file = document.getElementById('vault-file').files[0];
+    if (!file) return vaultStatus('Choose a file first.', 'danger');
+    const form = new FormData();
+    form.append('csrf_token', csrfToken);
+    form.append('folder_id', vaultCurrentFolderId);
+    form.append('display_name', document.getElementById('vault-display-name').value.trim() || file.name.replace(/\.[^/.]+$/, ''));
+    form.append('file', file);
+    const response = await fetch('http://localhost/IAmStillHere/backend/vault/upload.php', { method: 'POST', body: form, headers: { 'X-CSRF-Token': csrfToken } });
+    const data = await response.json();
+    if (data.success) { document.getElementById('vault-upload-form').reset(); vaultStatus('Vault document uploaded.', 'success'); loadVault(); }
+    else vaultStatus(data.message || 'Upload failed', 'danger');
+}
+
+async function vaultCreateFolder() {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    const name = document.getElementById('vault-folder-name').value.trim();
+    if (!name) return;
+    const data = await vaultJson('folders', { action: 'create', name, parent_folder_id: vaultCurrentFolderId });
+    if (data.success) { document.getElementById('vault-folder-name').value = ''; vaultStatus('Vault folder created.', 'success'); loadVault(); }
+    else vaultStatus(data.message || 'Unable to create folder', 'danger');
+}
+
+async function vaultDeleteFolder(folderId) {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    if (!confirm('Delete empty vault folder?')) return;
+    const data = await vaultJson('folders', { action: 'delete', folder_id: folderId });
+    if (data.success) { if (vaultCurrentFolderId === folderId) vaultCurrentFolderId = 0; vaultStatus('Vault folder deleted.', 'success'); loadVault(); }
+    else vaultStatus(data.message || 'Unable to delete folder', 'danger');
+}
+
+async function vaultRename(doc) {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    const name = prompt('New vault document name', doc.display_name);
+    if (name === null) return;
+    const cleanName = name.trim();
+    if (!cleanName) return vaultStatus('Document name is required.', 'danger');
+    const data = await vaultJson('update', { document_id: doc.id, display_name: cleanName, folder_id: doc.folder_id || 0 });
+    if (data.success) { doc.display_name = data.data?.display_name || cleanName; vaultStatus(data.message || 'Vault document renamed.', 'success'); loadVault(); } else vaultStatus(data.message || 'Unable to rename document', 'danger');
+}
+
+async function vaultDeleteDocument(id) {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    if (!confirm('Delete this vault document?')) return;
+    const data = await vaultJson('delete', { document_id: id });
+    if (data.success) { vaultStatus('Vault document deleted.', 'success'); loadVault(); } else vaultStatus(data.message || 'Unable to delete document', 'danger');
+}
+
+async function vaultPermission(action) {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    const userValue = document.getElementById('vault-counsel-user-id').value.trim();
+    if (!userValue) return vaultStatus('Enter legal counsel ID, username, or name.', 'danger');
+    const data = await vaultJson('permissions', { action, user_identifier: userValue });
+    if (data.success) { vaultStatus(data.message || 'Permission updated.', 'success'); loadVault(); }
+    else vaultStatus(data.message || 'Unable to update permission', 'danger');
+}
+
+document.addEventListener('DOMContentLoaded', () => setTimeout(initVaultFeature, 500));
+
+
+
+
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -142,6 +142,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#vault-tab">Vault</a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -155,7 +158,22 @@
             <div class="tab-pane fade" id="events-tab">
                 <div id="events-container"></div>
             </div>
-        </div>
+            <div class="tab-pane fade" id="vault-tab">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                            <div><h5 class="mb-1">Secure Vault</h5><div class="small text-muted">Encrypted private storage for confidential documents.</div></div>
+                            <div class="d-flex flex-column align-items-md-end gap-1"><div class="small fw-semibold text-primary" id="vault-current-owner-label">Your Vault ID will appear here</div><div class="d-flex gap-2"><input id="vault-owner-id" type="number" min="1" class="form-control form-control-sm" style="max-width: 160px;" placeholder="View owner ID"><button class="btn btn-sm btn-outline-secondary" id="vault-refresh-btn" type="button">Refresh</button></div><div class="small text-muted text-md-end">Leave empty for your own vault. Counsel enters owner ID here.</div></div>
+                        </div>
+                        <div id="vault-status" class="alert d-none" role="alert"></div><div id="vault-reauth-box" class="alert alert-warning"><form id="vault-reauth-form" class="d-flex flex-column flex-md-row gap-2"><input id="vault-password" type="password" class="form-control" placeholder="Confirm password to unlock Vault"><button class="btn btn-warning" type="submit">Unlock</button></form></div>
+                        <div class="row g-3">
+                            <div class="col-lg-4"><div class="border rounded p-3 h-100"><h6>Folders</h6><div class="input-group input-group-sm mb-2"><input id="vault-folder-name" class="form-control" placeholder="Folder name"><button id="vault-folder-create" class="btn btn-outline-primary" type="button">Create</button></div><div id="vault-folder-list" class="list-group small"></div></div></div>
+                            <div class="col-lg-8"><div class="border rounded p-3 mb-3"><h6>Upload Document</h6><form id="vault-upload-form" class="row g-2"><div class="col-md-5"><input id="vault-display-name" class="form-control form-control-sm" placeholder="Display name"></div><div class="col-md-5"><input id="vault-file" type="file" class="form-control form-control-sm" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.odt,.jpg,.jpeg,.png"></div><div class="col-md-2"><button class="btn btn-sm btn-primary w-100" type="submit">Upload</button></div></form></div><div id="vault-document-list" class="row g-3"></div></div>
+                        </div>
+                        <div class="row g-3 mt-1"><div class="col-lg-6"><div class="border rounded p-3"><h6>Legal Counsel Access</h6><div class="input-group input-group-sm mb-2"><input id="vault-counsel-user-id" type="text" class="form-control" placeholder="Counsel ID / username / name"><button id="vault-grant" class="btn btn-outline-success" type="button">Grant</button><button id="vault-revoke" class="btn btn-outline-danger" type="button">Revoke</button></div><div id="vault-permission-list" class="small text-muted"></div></div></div><div class="col-lg-6"><div class="border rounded p-3"><h6>Audit Log</h6><div id="vault-log-list" class="small text-muted"></div></div></div></div>
+                    </div>
+                </div>
+            </div>        </div>
     </div>
 
     <div class="modal fade" id="uploadMemoryModal" tabindex="-1">
@@ -335,3 +353,4 @@
 </body>
 
 </html>
+
