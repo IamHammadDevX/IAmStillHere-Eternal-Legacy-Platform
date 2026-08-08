@@ -29,6 +29,7 @@ async function init() {
     loadTimeline();
     loadEvents();
     loadRequestCount();
+    loadOnThisDay();
 }
 
 async function loadCsrfToken() {
@@ -920,3 +921,86 @@ document.getElementById('editMilestoneForm')?.addEventListener('submit',async e=
 let editFolderPrivacyWidget = null;
 async function editFolder(folder){try{document.getElementById('edit-folder-id').value=folder.id;document.getElementById('edit-folder-name').value=folder.name||'';document.getElementById('edit-folder-description').value=folder.description||'';const parent=document.getElementById('edit-folder-parent');parent.innerHTML='<option value="0">No parent</option>';window.lastMemoryFolders.filter(x=>Number(x.id)!==Number(folder.id)).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;parent.appendChild(o);});parent.value=folder.parent_folder_id||0;if(!editFolderPrivacyWidget){editFolderPrivacyWidget=privacyComponent('folder-edit',currentUserId);document.getElementById('edit-folder-privacy').appendChild(editFolderPrivacyWidget);}editFolderPrivacyWidget.querySelector('.privacy-type').value=folder.privacy_level||'private';bootstrap.Modal.getOrCreateInstance(document.getElementById('editFolderModal')).show();await editFolderPrivacyWidget.loadRule('memory_folder',folder.id);}catch(error){showAlert(error.message||'Unable to open folder editor','danger');}}
 document.getElementById('editFolderForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-folder-error');const save=document.getElementById('edit-folder-save');error.textContent='';save.disabled=true;try{const rule=editFolderPrivacyWidget.getRule();const advanced=['specific_people','release_date','release_event'].includes(rule.visibility_type);const legacy=['public','family','friends','private'].includes(rule.visibility_type)?rule.visibility_type:'private';const data=await folderPost('update',{folder_id:Number(document.getElementById('edit-folder-id').value),name:document.getElementById('edit-folder-name').value.trim(),description:document.getElementById('edit-folder-description').value,parent_folder_id:Number(document.getElementById('edit-folder-parent').value),privacy_level:legacy});if(!data.success)throw new Error(data.message||'Unable to update folder');try{await savePrivacyRule(csrfToken,'memory_folder',Number(document.getElementById('edit-folder-id').value),rule);}catch(privacyError){error.textContent='Folder updated, but privacy settings were not saved: '+privacyError.message;return;}bootstrap.Modal.getInstance(document.getElementById('editFolderModal')).hide();loadMemoryFolders();if(currentMemoryFolderId)loadMemories();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});
+async function loadOnThisDay(page = 1) {
+    const container = document.getElementById('on-this-day-container');
+    if (!container) return;
+    container.innerHTML = '<div class="text-muted">Loading On This Day...</div>';
+    try {
+        const response = await fetch(`http://localhost/IAmStillHere/backend/on_this_day/list.php?page=${page}&limit=8`);
+        const data = await response.json();
+        if (!data.success) {
+            container.innerHTML = `<div class="alert alert-danger">${escapeHtml(data.message || 'Unable to load On This Day.')}</div>`;
+            return;
+        }
+        renderOnThisDay(data.data.items || [], data.data.pagination || {});
+    } catch (error) {
+        container.innerHTML = '<div class="alert alert-danger">Unable to load On This Day.</div>';
+    }
+}
+
+function renderOnThisDay(items, pagination) {
+    const container = document.getElementById('on-this-day-container');
+    container.innerHTML = '';
+    if (!items.length) {
+        const empty = document.createElement('div');
+        empty.className = 'col-12 text-muted';
+        empty.textContent = 'Nothing from past years on this date yet.';
+        container.appendChild(empty);
+        return;
+    }
+    items.forEach(item => container.appendChild(createOnThisDayCard(item)));
+    if ((pagination.total_pages || 0) > 1) {
+        const controls = document.createElement('div');
+        controls.className = 'col-12 d-flex justify-content-between align-items-center mt-2';
+        const prev = document.createElement('button');
+        prev.className = 'btn btn-sm btn-outline-secondary';
+        prev.textContent = 'Previous';
+        prev.disabled = Number(pagination.current_page || 1) <= 1;
+        prev.onclick = () => loadOnThisDay(Number(pagination.current_page) - 1);
+        const next = document.createElement('button');
+        next.className = 'btn btn-sm btn-outline-secondary';
+        next.textContent = 'Next';
+        next.disabled = Number(pagination.current_page || 1) >= Number(pagination.total_pages || 1);
+        next.onclick = () => loadOnThisDay(Number(pagination.current_page) + 1);
+        const label = document.createElement('span');
+        label.className = 'small text-muted';
+        label.textContent = `Page ${pagination.current_page} of ${pagination.total_pages}`;
+        controls.append(prev, label, next);
+        container.appendChild(controls);
+    }
+}
+
+function createOnThisDayCard(item) {
+    const col = document.createElement('div');
+    col.className = 'col-md-6 col-xl-3';
+    const link = document.createElement('a');
+    link.className = 'card h-100 text-decoration-none text-body on-this-day-card';
+    link.href = item.url || 'profile.php';
+    if (item.thumbnail_url) {
+        const img = document.createElement('img');
+        img.className = 'card-img-top';
+        img.alt = '';
+        img.src = item.thumbnail_url;
+        img.style.height = '130px';
+        img.style.objectFit = 'cover';
+        link.appendChild(img);
+    }
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    const meta = document.createElement('div');
+    meta.className = 'small text-muted mb-1 text-capitalize';
+    meta.textContent = `${item.source_type} · ${item.years_ago} years ago`;
+    const title = document.createElement('h6');
+    title.className = 'mb-1';
+    title.textContent = item.title || 'Untitled';
+    const preview = document.createElement('p');
+    preview.className = 'small text-muted mb-2';
+    preview.textContent = item.preview || '';
+    const date = document.createElement('div');
+    date.className = 'small fw-semibold';
+    date.textContent = item.original_date;
+    body.append(meta, title, preview, date);
+    link.appendChild(body);
+    col.appendChild(link);
+    return col;
+}

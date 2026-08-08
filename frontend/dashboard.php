@@ -117,6 +117,21 @@
             </div>
         </div>
 
+
+        <section class="card mb-4" id="on-this-day-section">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                    <div>
+                        <h5 class="mb-1">News About You</h5>
+                        <div class="small text-muted">Memories, posts, milestones, and journey moments from past years.</div>
+                    </div>
+                    <a class="btn btn-sm btn-outline-secondary" href="profile.php">Open Profile</a>
+                </div>
+                <div id="on-this-day-container" class="row g-3">
+                    <div class="text-muted">Loading On This Day...</div>
+                </div>
+            </div>
+        </section>
         <ul class="nav nav-tabs mb-4" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#memories-tab">Memories</a>
@@ -300,8 +315,7 @@
             </div>
 
             <!-- Copyright -->
-            <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+            <p class="mb-0 small">                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>
