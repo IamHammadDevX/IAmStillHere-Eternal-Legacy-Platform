@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_journey_helpers.php';
+try{ if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $db=journeys_db(); $uid=journeys_require_auth(); if($uid===null)exit; $d=journeys_input(); if(!journeys_csrf($d)){ApiResponse::forbidden('Invalid CSRF token.');exit;} $id=(int)($d['journey_id']??0); $j=$id>0?journeys_find($db,$id):null; if(!$j){ApiResponse::notFound('Journey not found.');exit;} if(!journeys_can_manage($db,$j,$uid)){ApiResponse::forbidden('Only owner can delete journey.');exit;} $s=$db->prepare('UPDATE journeys SET deleted_at=NOW() WHERE id=:id'); $s->execute(['id'=>$id]); ApiResponse::success([],'Journey deleted.'); }catch(Throwable $e){Logger::error('Journey delete failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to delete journey.');}
+?>

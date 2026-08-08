@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/_journey_helpers.php';
+try{ if($_SERVER['REQUEST_METHOD']!=='GET'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;} $db=journeys_db(); $uid=journeys_require_auth(); if($uid===null)exit; $mem=$db->prepare("SELECT id,title,'memory' AS item_type,memory_date AS item_date FROM memories WHERE user_id=:u AND status='active' ORDER BY upload_date DESC LIMIT 100"); $mem->execute(['u'=>$uid]); $mil=$db->prepare("SELECT id,title,'milestone' AS item_type,milestone_date AS item_date FROM milestones WHERE user_id=:u AND status='active' ORDER BY milestone_date DESC LIMIT 100"); $mil->execute(['u'=>$uid]); ApiResponse::success(['items'=>array_merge($mem->fetchAll(PDO::FETCH_ASSOC),$mil->fetchAll(PDO::FETCH_ASSOC))],'Content loaded.'); }catch(Throwable $e){Logger::error('Journey content list failed',['error'=>$e->getMessage()]);ApiResponse::serverError('Unable to load content.');}
+?>

@@ -117,6 +117,7 @@ if (!is_logged_in()) {
           <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#about-tab">About</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
           <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
@@ -147,6 +148,9 @@ if (!is_logged_in()) {
           </div>
           <div class="tab-pane fade" id="about-tab">
             <div class="card"><div class="card-body"><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
+          </div>
+          <div class="tab-pane fade" id="journeys-tab">
+            <div class="card mb-4"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Shared Journeys</h5><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
           </div>
           <div class="tab-pane fade" id="photos-tab">
             <div id="photos-container" class="row g-3"><p class="text-muted">Photos from posts will appear here.</p></div>
@@ -370,7 +374,7 @@ if (!is_logged_in()) {
 
       <!-- Copyright -->
       <p class="mb-0 small">
-        ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+        ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>
@@ -383,10 +387,14 @@ if (!is_logged_in()) {
   <script src="js/auth.js"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
+  <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 
+<div class="modal fade" id="journeyModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Shared journey</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="journeyForm"><input type="hidden" id="journey-id"><label class="form-label">Title</label><input id="journey-title" class="form-control mb-2" maxlength="180" required><label class="form-label">Description</label><textarea id="journey-description" class="form-control mb-2" maxlength="5000"></textarea><div class="row"><div class="col-md-6"><label class="form-label">Start date</label><input id="journey-start" type="date" class="form-control mb-2"></div><div class="col-md-6"><label class="form-label">End date</label><input id="journey-end" type="date" class="form-control mb-2"></div></div><label class="form-label">Status</label><select id="journey-status" class="form-select mb-3"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select><div id="journey-privacy"></div><div id="journey-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="journeyForm" class="btn btn-primary" id="journey-save">Save</button></div></div></div></div>
+<div class="modal fade" id="journeyInviteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Invite participant</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input id="journey-invite-search" class="form-control mb-2" placeholder="Search friends/family"><div id="journey-invite-results" class="list-group small"></div></div></div></div></div>
+<div class="modal fade" id="journeyItemModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Add journey item</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><select id="journey-item-select" class="form-select mb-2"></select><div class="text-center text-muted my-2">or add event note</div><input id="journey-item-title" class="form-control mb-2" placeholder="Event title"><textarea id="journey-item-description" class="form-control mb-2" placeholder="Description"></textarea><input id="journey-item-date" type="date" class="form-control mb-2"><div id="journey-item-error" class="small text-danger"></div></div><div class="modal-footer"><button id="journey-item-save" class="btn btn-primary" type="button">Add</button></div></div></div></div>
 <div class="modal fade" id="postEditModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit post</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><textarea id="post-edit-body" class="form-control mb-3" maxlength="5000"></textarea><div id="post-edit-privacy"></div><div id="post-edit-error" class="small text-danger mt-2"></div></div><div class="modal-footer"><button type="button" class="btn btn-primary" id="post-edit-save">Save</button></div></div></div></div>
 <div class="modal fade" id="profileEditMemoryModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit memory</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="profileEditMemoryForm"><input type="hidden" id="profile-edit-memory-id"><label class="form-label">Title</label><input id="profile-edit-memory-title" class="form-control mb-2" maxlength="255" required><label class="form-label">Description</label><textarea id="profile-edit-memory-description" class="form-control mb-2" maxlength="10000"></textarea><label class="form-label">Memory date</label><input id="profile-edit-memory-date" type="date" class="form-control mb-2"><label class="form-label">Folder</label><select id="profile-edit-memory-folder" class="form-select mb-3"><option value="0">No folder</option></select><div id="profile-edit-memory-privacy"></div><div id="profile-edit-memory-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="profileEditMemoryForm" id="profile-edit-memory-save" class="btn btn-primary">Save changes</button></div></div></div></div>
 </body>

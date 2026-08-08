@@ -80,6 +80,10 @@ class NotificationService
             return "profile.php#posts-tab";
         }
 
+        if ($resourceType === 'journey' && $resourceId > 0) {
+            return "profile.php#journeys-tab";
+        }
+
         return 'profile.php';
     }
 }
