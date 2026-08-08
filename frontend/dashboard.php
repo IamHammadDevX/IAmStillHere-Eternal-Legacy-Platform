@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -141,6 +141,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a>
+            </li>            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#automations-tab">Automations</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#vault-tab">Vault</a>
@@ -157,6 +159,8 @@
             </div>
             <div class="tab-pane fade" id="events-tab">
                 <div id="events-container"></div>
+            </div>            <div class="tab-pane fade" id="automations-tab">
+                <div class="card shadow-sm"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Event Automations</h5><button class="btn btn-primary btn-sm" type="button" onclick="openAutomationModal()">New automation</button></div><div id="automations-container"></div></div></div>
             </div>
             <div class="tab-pane fade" id="vault-tab">
                 <div class="card mb-3">
@@ -298,6 +302,31 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="automationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Event Automation</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="automationForm"><input type="hidden" id="automation-id">
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label">Title</label><input id="automation-title" class="form-control" maxlength="255" required></div>
+                            <div class="col-md-6"><label class="form-label">Status</label><select id="automation-status" class="form-select"><option value="scheduled">Scheduled</option><option value="draft">Draft</option></select></div>
+                            <div class="col-12"><label class="form-label">Description / message</label><textarea id="automation-description" class="form-control" rows="3"></textarea></div>
+                            <div class="col-md-6"><label class="form-label">Trigger</label><select id="automation-trigger" class="form-select"><option value="specific_datetime">Specific date/time</option><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="custom_recurring">Custom recurring date</option><option value="linked_milestone_event">Linked milestone/event</option></select></div>
+                            <div class="col-md-6 automation-datetime"><label class="form-label">Run at</label><input id="automation-datetime" type="datetime-local" class="form-control"></div>
+                            <div class="col-md-3 automation-recurring d-none"><label class="form-label">Month</label><input id="automation-month" type="number" min="1" max="12" class="form-control"></div>
+                            <div class="col-md-3 automation-recurring d-none"><label class="form-label">Day</label><input id="automation-day" type="number" min="1" max="31" class="form-control"></div>
+                            <div class="col-md-3 automation-linked d-none"><label class="form-label">Linked type</label><select id="automation-linked-type" class="form-select"><option value="event">Event</option><option value="milestone">Milestone</option></select></div>
+                            <div class="col-md-3 automation-linked d-none"><label class="form-label">Linked ID</label><input id="automation-linked-id" type="number" min="1" class="form-control"></div>
+                            <div class="col-12"><label class="form-label">Actions</label><div class="d-flex flex-wrap gap-3"><label><input type="checkbox" class="automation-action" value="notification" checked> In-app notification</label><label><input type="checkbox" class="automation-action" value="wall_post"> Scheduled wall post</label><label><input type="checkbox" class="automation-action" value="email"> Email/message</label></div></div>
+                            <div class="col-12"><div id="automation-error" class="small text-danger"></div></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button><button id="automation-save" class="btn btn-primary" form="automationForm" type="submit">Save automation</button></div>
+            </div>
+        </div>
+    </div>
     <!-- Search Users Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog">
@@ -353,4 +382,6 @@
 </body>
 
 </html>
+
+
 
