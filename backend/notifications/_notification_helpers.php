@@ -34,7 +34,7 @@ function notifications_require_csrf(array $data): bool
     return CsrfHelper::validate(CsrfHelper::getTokenFromRequest($data));
 }
 
-function notifications_format(array $row): array
+function notifications_format(array $row, ?PDO $connection = null): array
 {
     $row['id'] = (int) $row['id'];
     $row['recipient_user_id'] = (int) $row['recipient_user_id'];
@@ -43,6 +43,6 @@ function notifications_format(array $row): array
     $row['is_read'] = (bool) $row['is_read'];
     $row['actor_name'] = $row['actor_name'] ?: 'Someone';
     $row['actor_profile_photo'] = $row['actor_profile_photo'] ?: null;
-    $row['link'] = NotificationService::linkFor($row);
+    $row['link'] = NotificationService::linkFor($row, $connection);
     return $row;
 }

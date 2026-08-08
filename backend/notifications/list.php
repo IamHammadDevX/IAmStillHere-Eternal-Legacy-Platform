@@ -28,7 +28,7 @@ try {
     $statement->bindValue(':offset', $offset, PDO::PARAM_INT);
     $statement->execute();
 
-    $notifications = array_map('notifications_format', $statement->fetchAll(PDO::FETCH_ASSOC));
+    $notifications = array_map(fn($row) => notifications_format($row, $connection), $statement->fetchAll(PDO::FETCH_ASSOC));
 
     ApiResponse::success([
         'notifications' => $notifications,

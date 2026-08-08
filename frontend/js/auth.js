@@ -194,9 +194,10 @@ function renderNotificationItem(notification, compact = false) {
     const message = notificationEl('div', 'small', `${notification.actor_name || 'Someone'} ${notification.message || ''}`.trim());
     const meta = notificationEl('div', 'text-muted small', new Date(notification.created_at).toLocaleString());
     link.append(message, meta);
-
-    link.addEventListener('click', async () => {
+    link.addEventListener('click', async (event) => {
+        event.preventDefault();
         await markNotificationRead(notification.id);
+        window.location.href = link.href;
     });
 
     return link;
