@@ -1,0 +1,3 @@
+<?php
+require_once __DIR__ . '/_ai_helpers.php';
+try{if(!ai_method('POST'))exit;$db=ai_db();$viewer=ai_require_user($db);if($viewer===null)exit;$data=ai_input();$owner=(int)($data['owner_id']??$viewer);$query=trim((string)($data['query']??''));$limit=max(1,min(20,(int)($data['limit']??5)));if($owner<=0||$query===''){ApiResponse::validation(['query'=>'Query is required.']);exit;}$results=(new AIKnowledgeService($db))->searchForUser($owner,$viewer,$query,$limit);ApiResponse::success(['results'=>$results,'count'=>count($results)],'Search complete.');}catch(InvalidArgumentException $e){ApiResponse::validation(['query'=>'Valid query required.']);}catch(Throwable $e){ai_safe_error($e,'search');}

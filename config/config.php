@@ -8,6 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Define base paths
 define('BASE_PATH', dirname(__DIR__));
+require_once BASE_PATH . '/backend/bootstrap/EnvironmentLoader.php';
+$externalEnv = dirname(dirname(BASE_PATH)) . '/IAmStillHere.env';
+EnvironmentLoader::load(is_file($externalEnv) ? $externalEnv : BASE_PATH . '/.env');
 define('FRONTEND_PATH', BASE_PATH . '/frontend');
 define('BACKEND_PATH', BASE_PATH . '/backend');
 define('DATA_PATH', BASE_PATH . '/data');

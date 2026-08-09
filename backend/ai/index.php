@@ -1,0 +1,3 @@
+<?php
+require_once __DIR__ . '/_ai_helpers.php';
+try{if(!ai_method('POST'))exit;$db=ai_db();$user=ai_require_user($db);if($user===null)exit;$data=ai_input();if(!ai_require_csrf($data))exit;$type=trim((string)($data['resource_type']??''));$id=(int)($data['resource_id']??0);$enabled=filter_var($data['enabled']??true,FILTER_VALIDATE_BOOL);$service=new AIKnowledgeService($db);if(!$enabled){$service->disableSource($user,$type,$id);ApiResponse::success([],'AI access disabled for source.');exit;}$result=$service->approveSource($user,$type,$id);ApiResponse::success($result,'Source approved and queued.',202);}catch(InvalidArgumentException $e){ApiResponse::validation(['source'=>$e->getMessage()]);}catch(Throwable $e){ai_safe_error($e,'index');}
