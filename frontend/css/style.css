@@ -722,3 +722,26 @@ body {
 .autobio-timeline-dot { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #f2e8fb; color: #9b59b6; flex: 0 0 56px; }
 .autobio-timeline-body { min-width: 0; }
 @media (max-width: 576px) { .autobio-timeline-item { padding: .6rem; } .autobio-timeline-thumb, .autobio-timeline-dot { width: 44px; height: 44px; flex-basis: 44px; } }
+
+/* Notification dropdown: keep long AI/automation messages readable */
+.notification-dropdown {
+  width: min(92vw, 420px) !important;
+  max-width: 92vw;
+  overflow: hidden;
+}
+.notification-dropdown-list {
+  max-height: 360px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.notification-dropdown .dropdown-item,
+.notification-dropdown-message {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+.notification-dropdown-meta { white-space: normal !important; }
+@media (max-width: 576px) {
+  .notification-dropdown { width: calc(100vw - 1rem) !important; }
+}

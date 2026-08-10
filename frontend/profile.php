@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=2026081101" />
 </head>
 
 <body>
@@ -261,6 +261,32 @@ if (!is_logged_in()) {
             <div id="tributes-container"></div>
           </div>
           <div class="tab-pane fade" id="events-tab">
+            <div class="card mb-4" id="personalized-messages-card">
+              <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                  <div><h5 class="mb-1">Personalized AI Messages</h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
+                  <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-message-form-wrap">New message</button>
+                </div>
+                <div class="collapse show" id="personalized-message-form-wrap">
+                  <form id="personalized-message-form" class="row g-2 mb-3">
+                    <input type="hidden" id="pm-id">
+                    <div class="col-md-4"><label class="form-label small">Recipient</label><select id="pm-recipient-user" class="form-select"><option value="">External email / wall post</option></select></div>
+                    <div class="col-md-4"><label class="form-label small">Recipient email</label><input id="pm-recipient-email" type="email" class="form-control" placeholder="email@example.com"></div>
+                    <div class="col-md-4"><label class="form-label small">Recipient name</label><input id="pm-recipient-name" class="form-control" placeholder="Name"></div>
+                    <div class="col-md-3"><label class="form-label small">Relationship</label><input id="pm-relationship" class="form-control" placeholder="Daughter, friend..."></div>
+                    <div class="col-md-3"><label class="form-label small">Event</label><select id="pm-event-type" class="form-select"><option value="birthday">Birthday</option><option value="graduation">Graduation</option><option value="wedding">Wedding</option><option value="anniversary">Anniversary</option><option value="new_job">New Job</option><option value="new_baby">New Baby</option><option value="custom">Custom</option></select></div>
+                    <div class="col-md-3"><label class="form-label small">Trigger date</label><input id="pm-trigger-at" type="datetime-local" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label small">Delivery</label><select id="pm-delivery" class="form-select"><option value="notification">Platform notification</option><option value="email">Email</option><option value="wall_post">Wall post</option></select></div>
+                    <div class="col-md-4"><label class="form-label small">Tone/style</label><input id="pm-tone" class="form-control" value="Warm and sincere"></div>
+                    <div class="col-md-8"><label class="form-label small">Optional instructions</label><input id="pm-instructions" class="form-control" placeholder="Mention pride, keep it short..."></div>
+                    <div class="col-12"><label class="form-label small">Draft message</label><textarea id="pm-message" class="form-control" rows="6" placeholder="Generate a draft first, then edit before scheduling."></textarea></div>
+                    <div class="col-12 d-flex flex-wrap gap-2"><button id="pm-generate" class="btn btn-primary" type="button">Generate Draft</button><button id="pm-save" class="btn btn-outline-primary" type="button">Save Draft</button><button id="pm-schedule" class="btn btn-outline-success" type="button">Schedule</button><button id="pm-cancel" class="btn btn-outline-danger" type="button">Cancel Message</button></div>
+                  </form>
+                </div>
+                <div id="pm-status" class="small text-muted mb-2"></div>
+                <div id="personalized-messages-list" class="row g-2"></div>
+              </div>
+            </div>
             <div id="events-container"></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
@@ -457,11 +483,12 @@ if (!is_logged_in()) {
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/auth.js?v=2026081101"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
+  <script src="js/personalized_messages.js?v=2026081101"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>

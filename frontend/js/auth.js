@@ -103,7 +103,7 @@ function setupNotificationBell() {
 
     const menu = notificationEl('div', 'dropdown-menu dropdown-menu-end shadow notification-dropdown p-0');
     menu.setAttribute('aria-labelledby', 'notificationDropdown');
-    menu.style.minWidth = '320px';
+    menu.style.minWidth = '0';
 
     const header = notificationEl('div', 'd-flex justify-content-between align-items-center px-3 py-2 border-bottom');
     header.appendChild(notificationEl('strong', '', 'Notifications'));
@@ -191,8 +191,8 @@ function renderNotificationItem(notification, compact = false) {
     link.href = notification.link || 'profile.php';
     if (!notification.is_read) link.classList.add('fw-semibold');
 
-    const message = notificationEl('div', 'small', `${notification.actor_name || 'Someone'} ${notification.message || ''}`.trim());
-    const meta = notificationEl('div', 'text-muted small', new Date(notification.created_at).toLocaleString());
+    const message = notificationEl('div', 'small notification-dropdown-message', `${notification.actor_name || 'Someone'} ${notification.message || ''}`.trim());
+    const meta = notificationEl('div', 'text-muted small notification-dropdown-meta', new Date(notification.created_at).toLocaleString());
     link.append(message, meta);
     link.addEventListener('click', async (event) => {
         event.preventDefault();
