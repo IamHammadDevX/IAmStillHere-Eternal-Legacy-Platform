@@ -113,17 +113,18 @@ if (!is_logged_in()) {
 
       <!-- Main content -->
       <div class="col-md-8">
-        <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
-          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#about-tab">About</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#family-tab">Family</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
-          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#events-tab">Events</a></li>
+        <ul class="nav nav-tabs profile-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
+          <li class="nav-item"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#family-tab">Family</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">Events</a></li>
         </ul>
 
         <div class="tab-content">
@@ -145,6 +146,51 @@ if (!is_logged_in()) {
               </div>
             </div>
             <div id="posts-container"></div>
+          </div>
+          <div class="tab-pane fade" id="ai-avatar-tab">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <img id="ai-avatar-photo" src="images/default-profile.png" alt="AI Avatar" class="rounded-circle" style="width:42px;height:42px;object-fit:cover;">
+                    <div>
+                      <h5 class="mb-0">AI Avatar</h5>
+                      <div class="small text-muted">Grounded in approved memories and profile knowledge.</div>
+                    </div>
+                  </div>
+                  <button type="button" id="ai-avatar-delete" class="btn btn-outline-danger btn-sm">Clear</button>
+                </div>
+                <div class="border rounded p-3 mb-3 bg-white ai-knowledge-panel">
+                  <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-center mb-3">
+                    <div>
+                      <strong>Knowledge sources</strong>
+                      <div class="small text-muted">Pick what AI Avatar can learn. You stay in control.</div>
+                    </div>
+                    <button type="button" id="ai-avatar-build" class="btn btn-outline-primary btn-sm">Build selected</button>
+                  </div>
+                  <div class="d-flex flex-column flex-lg-row gap-2 mb-2">
+                    <input id="ai-avatar-source-search" class="form-control form-control-sm" placeholder="Search sources">
+                    <div class="btn-group btn-group-sm flex-wrap" id="ai-avatar-source-filters" role="group">
+                      <button type="button" class="btn btn-outline-secondary active" data-filter="all">All</button>
+                      <button type="button" class="btn btn-outline-secondary" data-filter="profile">Bio</button>
+                      <button type="button" class="btn btn-outline-secondary" data-filter="memory">Memories</button>
+                      <button type="button" class="btn btn-outline-secondary" data-filter="milestone">Milestones</button>
+                      <button type="button" class="btn btn-outline-secondary" data-filter="post">Posts</button>
+                      <button type="button" class="btn btn-outline-secondary" data-filter="journey">Journeys</button>
+                    </div>
+                    <button type="button" id="ai-avatar-select-visible" class="btn btn-outline-secondary btn-sm text-nowrap">Select visible</button>
+                  </div>
+                  <div id="ai-avatar-source-summary" class="small text-muted mb-2"></div>
+                  <div id="ai-avatar-sources" class="small text-muted ai-source-list">Loading sources...</div>
+                </div>
+                <div id="ai-avatar-messages" class="border rounded p-3 mb-3 bg-light" style="min-height:260px;max-height:460px;overflow:auto;"></div>
+                <form id="ai-avatar-form" class="d-flex flex-column flex-md-row gap-2">
+                  <input id="ai-avatar-question" class="form-control" maxlength="1200" placeholder="Ask about career, marriage, school life, memories...">
+                  <button id="ai-avatar-send" class="btn btn-primary" type="submit">Send</button>
+                </form>
+                <div id="ai-avatar-status" class="small text-muted mt-2"></div>
+              </div>
+            </div>
           </div>
           <div class="tab-pane fade" id="about-tab">
             <div class="card"><div class="card-body"><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
@@ -386,6 +432,8 @@ if (!is_logged_in()) {
   <script src="js/auth.js"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
+  <script src="js/ai_avatar.js?v=2026081011"></script>
+  <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>
   <script src="js/family.js"></script>

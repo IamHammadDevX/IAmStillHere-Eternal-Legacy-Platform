@@ -249,6 +249,11 @@ body {
     color: #666;
 }
 
+.profile-tabs .nav-link {
+    white-space: nowrap;
+    min-width: max-content;
+}
+
 .nav-tabs .nav-link.active {
     color: #667eea;
     font-weight: 600;
@@ -611,4 +616,101 @@ body {
 
 .family-list-view .family-list-member .fw-semibold {
     font-size: 0.85rem;
+}
+
+#ai-avatar-messages {
+    min-height: 260px;
+    max-height: 460px;
+    overflow: auto;
+}
+
+.ai-avatar-bubble {
+    max-width: min(76%, 520px);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+}
+
+.ai-avatar-user {
+    background: #9b59b6;
+    color: #fff;
+}
+
+.ai-avatar-answer {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    color: #212529;
+}
+
+@media (max-width: 576px) {
+    .ai-avatar-bubble {
+        max-width: 92%;
+    }
+
+    #ai-avatar-form .btn {
+        width: 100%;
+    }
+}
+.ai-knowledge-panel .btn-group {
+    overflow-x: auto;
+}
+
+.ai-source-list {
+    max-height: 240px;
+    overflow: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+}
+
+.ai-source-row {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem 0.625rem;
+    border-bottom: 1px solid #f1f3f5;
+    cursor: pointer;
+}
+
+.ai-source-row:last-child {
+    border-bottom: 0;
+}
+
+.ai-source-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ai-source-status {
+    white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+    .ai-source-row {
+        grid-template-columns: auto auto minmax(0, 1fr);
+    }
+
+    .ai-source-status {
+        grid-column: 3;
+        font-size: 0.75rem;
+    }
+}
+.ai-knowledge-panel .form-control-sm {
+    min-height: 32px;
+    height: 32px;
+}
+
+.ai-knowledge-panel .d-flex.flex-column.flex-lg-row {
+    align-items: flex-start;
+}
+
+.ai-knowledge-panel #ai-avatar-source-filters {
+    max-width: 100%;
+}
+
+.ai-knowledge-panel #ai-avatar-select-visible {
+    min-height: 32px;
 }
