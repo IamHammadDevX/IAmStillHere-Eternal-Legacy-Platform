@@ -714,3 +714,11 @@ body {
 .ai-knowledge-panel #ai-avatar-select-visible {
     min-height: 32px;
 }
+/* AI Autobiography */
+.autobio-section-card textarea { resize: vertical; min-height: 150px; }
+.autobio-timeline { display: grid; gap: .75rem; }
+.autobio-timeline-item { display: flex; gap: .75rem; align-items: flex-start; padding: .75rem; border: 1px solid #e9ecef; border-radius: .75rem; background: #fff; }
+.autobio-timeline-thumb { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex: 0 0 56px; }
+.autobio-timeline-dot { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #f2e8fb; color: #9b59b6; flex: 0 0 56px; }
+.autobio-timeline-body { min-width: 0; }
+@media (max-width: 576px) { .autobio-timeline-item { padding: .6rem; } .autobio-timeline-thumb, .autobio-timeline-dot { width: 44px; height: 44px; flex-basis: 44px; } }

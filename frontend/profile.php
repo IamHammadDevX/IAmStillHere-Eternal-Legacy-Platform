@@ -116,6 +116,7 @@ if (!is_logged_in()) {
         <ul class="nav nav-tabs profile-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
           <li class="nav-item"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#autobiography-tab">Autobiography</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
@@ -189,6 +190,33 @@ if (!is_logged_in()) {
                   <button id="ai-avatar-send" class="btn btn-primary" type="submit">Send</button>
                 </form>
                 <div id="ai-avatar-status" class="small text-muted mt-2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="autobiography-tab">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
+                  <div>
+                    <h5 class="mb-1">AI Autobiography</h5>
+                    <div class="small text-muted">Build a structured life story from approved AI knowledge sources.</div>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button type="button" id="autobio-generate" class="btn btn-primary btn-sm">Generate</button>
+                    <button type="button" id="autobio-save" class="btn btn-outline-primary btn-sm">Save draft</button>
+                    <button type="button" id="autobio-publish" class="btn btn-outline-success btn-sm">Publish</button>
+                  </div>
+                </div>
+                <input id="autobio-title" class="form-control mb-3" maxlength="180" value="My Life Story" aria-label="Autobiography title">
+                <div id="autobio-status" class="small text-muted mb-3"></div>
+                <div id="autobio-sections" class="autobio-sections mb-4">
+                  <div class="text-muted text-center py-4">Generate your autobiography after building AI knowledge.</div>
+                </div>
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-1 align-items-md-center mb-2">
+                  <h6 class="mb-0">Life Timeline / Pictograph</h6>
+                  <span class="small text-muted">Existing dated memories, milestones, posts, and journeys</span>
+                </div>
+                <div id="autobio-timeline" class="autobio-timeline"></div>
               </div>
             </div>
           </div>
@@ -433,6 +461,7 @@ if (!is_logged_in()) {
   <script src="js/privacy.js"></script><script src="js/profile.js"></script>
   <script src="js/posts.js"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
+  <script src="js/ai_autobiography.js?v=2026081002"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>
