@@ -60,76 +60,36 @@
     <div class="container mt-4">
         <h2 class="mb-4">Admin Dashboard</h2>
 
-        <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#users-tab">Users</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#activity-tab">Activity Log</a>
-            </li>
+        <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#overview-tab">Overview</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#users-tab">Users</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#content-tab">Content</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#automations-tab">Automations</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#ai-tab">AI</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#system-tab">System</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#activity-tab">Activity</a></li>
         </ul>
 
+        <div id="admin-alert"></div>
         <div class="tab-content">
-            <!-- USERS TAB -->
-            <div class="tab-pane fade show active" id="users-tab">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>User Management</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Full Name</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Joined</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="users-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
+            <div class="tab-pane fade show active" id="overview-tab">
+                <div id="admin-overview-cards" class="row g-3 mb-4"></div>
+                <div class="row g-3">
+                    <div class="col-lg-6"><div class="card h-100"><div class="card-header">Failed Jobs</div><div class="card-body" id="admin-failed-jobs">Loading...</div></div></div>
+                    <div class="col-lg-6"><div class="card h-100"><div class="card-header">Recent System Activity</div><div class="card-body" id="admin-recent-activity">Loading...</div></div></div>
                 </div>
             </div>
-
-            <!-- ACTIVITY LOG TAB -->
-            <div class="tab-pane fade" id="activity-tab">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Recent Activity</h5>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="loadActivityLog()">Refresh</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>User</th>
-                                        <th>Action</th>
-                                        <th>Details</th>
-                                        <th>IP Address</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="activity-log-body">
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted">Loading activity log...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div class="tab-pane fade" id="users-tab">
+                <div class="card"><div class="card-header d-flex flex-column flex-md-row gap-2 justify-content-between"><h5 class="mb-0">Users</h5><div class="d-flex gap-2"><input id="admin-user-search" class="form-control form-control-sm" placeholder="Search users"><select id="admin-user-status" class="form-select form-select-sm"><option value="">All</option><option value="active">Active</option><option value="suspended">Suspended</option></select><button class="btn btn-sm btn-outline-secondary" id="admin-user-refresh">Refresh</button></div></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-table-body"><tr><td colspan="7">Loading...</td></tr></tbody></table></div></div></div>
             </div>
+            <div class="tab-pane fade" id="content-tab"><div class="card"><div class="card-header">Content / Moderation</div><div class="card-body" id="admin-content-status">Loading...</div></div></div>
+            <div class="tab-pane fade" id="journeys-tab"><div class="card"><div class="card-header">Journeys</div><div class="card-body" id="admin-journey-status">Loading...</div></div></div>
+            <div class="tab-pane fade" id="automations-tab"><div class="card"><div class="card-header">Automations</div><div class="card-body" id="admin-automation-status">Loading...</div></div></div>
+            <div class="tab-pane fade" id="ai-tab"><div class="card"><div class="card-header">AI Usage / Status</div><div class="card-body" id="admin-ai-status">Loading...</div></div></div>
+            <div class="tab-pane fade" id="system-tab"><div class="card"><div class="card-header">System / Integration Health</div><div class="card-body" id="admin-system-status">Loading...</div></div></div>
+            <div class="tab-pane fade" id="activity-tab"><div class="card"><div class="card-header d-flex justify-content-between"><h5 class="mb-0">Activity / Audit Logs</h5><button class="btn btn-sm btn-outline-secondary" onclick="loadAdminOverview()">Refresh</button></div><div class="card-body"><div class="table-responsive"><table class="table table-striped"><tbody id="activity-log-body"><tr><td>Loading...</td></tr></tbody></table></div></div></div></div>
         </div>
-    </div>
     <!-- Search Users Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog">
@@ -179,136 +139,8 @@
     <script src="js/auth.js"></script>
     <script src="js/search.js"></script>
 
-    <script>
-        async function loadUsers() {
-            try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/admin/users.php');
-                const data = await response.json();
-
-                if (data.success) {
-                    const tbody = document.getElementById('users-table-body');
-                    tbody.innerHTML = '';
-
-                    data.users.forEach(user => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${user.id}</td>
-                            <td>${user.username}</td>
-                            <td>${user.email}</td>
-                            <td>${user.full_name}</td>
-                            <td><span class="badge bg-${user.role === 'admin' ? 'danger' : 'primary'}">${user.role}</span></td>
-                            <td><span class="badge bg-${user.status === 'active' ? 'success' : 'secondary'}">${user.status}</span></td>
-                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                            <td>
-                                ${user.role !== 'admin' ? `
-                                    <select class="form-select form-select-sm d-inline w-auto me-2" onchange="updateUserStatus(${user.id}, this.value)">
-                                        <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
-                                        <option value="suspended" ${user.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                                    </select>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                ` : '-'}
-                            </td>
-
-                        `;
-                        tbody.appendChild(row);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        }
-
-        async function loadActivityLog() {
-            try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/admin/activity_log.php');
-                const data = await response.json();
-                const tbody = document.getElementById('activity-log-body');
-                tbody.innerHTML = '';
-
-                if (data.success && data.logs.length > 0) {
-                    data.logs.forEach(log => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${log.id}</td>
-                            <td>${log.username || 'Unknown'}</td>
-                            <td>${log.action}</td>
-                            <td>${log.details || '-'}</td>
-                            <td>${log.ip_address || '-'}</td>
-                            <td>${new Date(log.created_at).toLocaleString()}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No activity found</td></tr>`;
-                }
-            } catch (error) {
-                console.error('Error loading activity log:', error);
-            }
-        }
-
-        async function updateUserStatus(userId, status) {
-            try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/admin/users.php', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId, status: status })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showAlert('User status updated successfully', 'success');
-                    loadActivityLog(); // Refresh log after update
-                } else {
-                    showAlert(data.message, 'danger');
-                }
-            } catch (error) {
-                showAlert('Failed to update user status', 'danger');
-            }
-        }
-
-        async function deleteUser(userId) {
-            if (!confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost/IAmStillHere/backend/admin/users.php`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showAlert('User deleted successfully', 'success');
-                    loadUsers();
-                    loadActivityLog();
-                } else {
-                    showAlert(data.message || 'Failed to delete user', 'danger');
-                }
-            } catch (error) {
-                showAlert('Error deleting user', 'danger');
-                console.error('Delete error:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
-            const data = await response.json();
-
-            if (!data.logged_in || data.user.role !== 'admin') {
-                window.location.href = 'login.php';
-                return;
-            }
-
-            loadUsers();
-            loadActivityLog();
-        });
-    </script>
+        <script src="js/admin_dashboard.js?v=2026081101"></script>
 </body>
 
 </html>
+

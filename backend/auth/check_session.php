@@ -10,18 +10,40 @@ if (is_logged_in()) {
         echo json_encode(['logged_in' => false, 'message' => 'Session expired']);
         exit;
     }
-    
-    $_SESSION['last_activity'] = time();
-    
-    echo json_encode([
-        'logged_in' => true,
-        'user' => [
-            'id' => $_SESSION['user_id'],
-            'username' => $_SESSION['username'],
-            'full_name' => $_SESSION['full_name'],
-            'role' => $_SESSION['user_role']
-        ]
-    ]);
+
+    try {
+        $db = new Database();
+        $conn = $db->getConnection();
+        $stmt = $conn->prepare("SELECT id, username, full_name, role, status FROM users WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => (int) $_SESSION['user_id']]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user || $user['status'] !== 'active') {
+            session_destroy();
+            echo json_encode(['logged_in' => false, 'message' => 'Account unavailable']);
+            exit;
+        }
+
+        $_SESSION['user_id'] = (int) $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['full_name'] = $user['full_name'];
+        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['last_activity'] = time();
+
+        echo json_encode([
+            'logged_in' => true,
+            'user' => [
+                'id' => (int) $user['id'],
+                'username' => $user['username'],
+                'full_name' => $user['full_name'],
+                'role' => $user['role']
+            ]
+        ]);
+    } catch (Throwable $e) {
+        error_log('Session check failed: ' . $e->getMessage());
+        echo json_encode(['logged_in' => false]);
+    }
 } else {
     echo json_encode(['logged_in' => false]);
 }
