@@ -287,6 +287,26 @@ if (!is_logged_in()) {
                 <div id="personalized-messages-list" class="row g-2"></div>
               </div>
             </div>
+            <div class="card mb-4" id="gifts-card">
+              <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                  <div><h5 class="mb-1">Gift / Phoolwala</h5><div class="small text-muted">Schedule gifts for birthdays, anniversaries, and special occasions. Payment stays with provider.</div></div>
+                  <button class="btn btn-outline-primary btn-sm" type="button" id="gift-load-catalog">Load catalog</button>
+                </div>
+                <form id="gift-order-form" class="row g-2 mb-3">
+                  <div class="col-md-3"><label class="form-label small">Gift</label><select id="gift-catalog" class="form-select"><option value="">Load catalog first</option></select></div>
+                  <div class="col-md-3"><label class="form-label small">Recipient name</label><input id="gift-recipient-name" class="form-control" placeholder="Name"></div>
+                  <div class="col-md-3"><label class="form-label small">Recipient email</label><input id="gift-recipient-email" type="email" class="form-control" placeholder="email@example.com"></div>
+                  <div class="col-md-3"><label class="form-label small">Delivery date</label><input id="gift-delivery-at" type="datetime-local" class="form-control"></div>
+                  <div class="col-md-3"><label class="form-label small">Occasion</label><select id="gift-occasion" class="form-select"><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="graduation">Graduation</option><option value="wedding">Wedding</option><option value="custom">Custom</option></select></div>
+                  <div class="col-md-9"><label class="form-label small">Delivery address</label><input id="gift-address" class="form-control" placeholder="Delivery address"></div>
+                  <div class="col-12"><label class="form-label small">Optional approved/personal message</label><textarea id="gift-message" class="form-control" rows="3" placeholder="Paste approved AI message or write your own."></textarea></div>
+                  <div class="col-12 d-flex gap-2"><button id="gift-create" type="button" class="btn btn-primary">Create order</button><button id="gift-refresh" type="button" class="btn btn-outline-secondary">Refresh orders</button></div>
+                </form>
+                <div id="gift-status" class="small text-muted mb-2"></div>
+                <div id="gift-orders-list" class="row g-2"></div>
+              </div>
+            </div>
             <div id="events-container"></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
@@ -489,6 +509,7 @@ if (!is_logged_in()) {
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>
+  <script src="js/gifts.js?v=2026081101"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>
@@ -503,4 +524,5 @@ if (!is_logged_in()) {
 </body>
 
 </html>
+
 
