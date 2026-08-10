@@ -194,6 +194,6 @@ function get_file_icon($file_type) {
 }
 
 // ===== Email Configuration =====
-define('SMTP_FROM_EMAIL', 'noreply@iamalwayshere.com');
+define('SMTP_FROM_EMAIL', 'noreply@https://www.iamhammaddevx.app/');
 define('SMTP_FROM_NAME', 'IamAlwaysHere');
 define('VERIFICATION_CODE_EXPIRY', 15); // minutes

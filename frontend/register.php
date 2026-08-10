@@ -8,10 +8,10 @@
     <title>Register - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081109">
 </head>
 
-<body>
+<body class="auth-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
@@ -20,12 +20,14 @@
         </div>
     </nav>
 
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
+    <main class="auth-shell"><div class="container">
+        <div class="row justify-content-center align-items-center min-vh-auth">
             <div class="col-md-8 col-lg-6">
-                <div class="card">
+                <div class="card auth-card">
                     <div class="card-body p-5">
-                        <h2 class="text-center mb-4">Create Account</h2>
+                        <div class="auth-icon"><i class="bi bi-person-plus-fill"></i></div>
+                        <h2 class="text-center mb-2">Create Account</h2>
+                        <p class="text-center text-muted mb-4">Start your private digital legacy space.</p>
                         <form id="registerForm">
                             <div class="mb-3">
                                 <label for="full_name" class="form-label">Full Name</label>
@@ -63,16 +65,16 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div></main>
 
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="bg-dark text-light py-4 auth-footer">
         <div class="container text-center">
             <div class="mb-2">
                 <!-- Social Links -->
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2"
                     title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
@@ -80,7 +82,7 @@
 
             <!-- Copyright -->
             <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>

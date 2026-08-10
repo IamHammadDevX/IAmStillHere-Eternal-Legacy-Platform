@@ -16,10 +16,10 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081101" />
+  <link rel="stylesheet" href="css/style.css?v=2026081120" />
 </head>
 
-<body>
+<body class="profile-page app-page">
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -36,7 +36,8 @@ if (!is_logged_in()) {
               <i class="bi bi-search"></i>
             </a>
           </li>
-          <a href="memorials.php" class="nav-link">Memorials</a>
+          <li class="nav-item">
+            <a href="memorials.php" class="nav-link">Memorials</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
@@ -85,6 +86,7 @@ if (!is_logged_in()) {
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- Main -->
@@ -480,20 +482,20 @@ if (!is_logged_in()) {
     </div>
   </div>
 
-  <footer class="bg-dark text-light py-4 mt-5">
+  <footer class="bg-dark text-light py-4 app-footer">
     <div class="container text-center">
       <div class="mb-2">
         <!-- Social Links -->
         <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
           <i class="bi bi-github fs-4"></i>
         </a>
-        <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2" title="Portfolio">
+        <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2" title="Portfolio">
           <i class="bi bi-globe fs-4"></i>
         </a>
       </div>
 
       <!-- Copyright -->
-      <p class="mb-0 small">        &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+      <p class="mb-0 small">&copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
       </p>
     </div>
   </footer>
@@ -504,7 +506,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081101"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081120"></script>
   <script src="js/posts.js?v=2026081102"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
@@ -524,5 +526,3 @@ if (!is_logged_in()) {
 </body>
 
 </html>
-
-

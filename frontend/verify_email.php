@@ -8,10 +8,10 @@
     <title>Verify Email - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081109">
 </head>
 
-<body>
+<body class="auth-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
@@ -20,12 +20,12 @@
         </div>
     </nav>
 
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
+    <main class="auth-shell"><div class="container">
+        <div class="row justify-content-center align-items-center min-vh-auth">
             <div class="col-md-6 col-lg-5">
-                <div class="card">
+                <div class="card auth-card">
                     <div class="card-body p-5 text-center">
-                        <i class="bi bi-envelope-check display-1 text-primary mb-4"></i>
+                        <div class="auth-icon"><i class="bi bi-envelope-check-fill"></i></div>
                         <h2 class="mb-3">Verify Your Email</h2>
                         <p class="text-muted mb-4">We've sent a 6-digit code to <strong id="user-email"></strong></p>
                         <p class="text-muted small">Check your spam folder if not in inbox.</p>
@@ -56,12 +56,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div></main>
 
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="bg-dark text-light py-4 auth-footer">
         <div class="container text-center">
             <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>

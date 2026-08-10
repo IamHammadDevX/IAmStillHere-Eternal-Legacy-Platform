@@ -87,7 +87,7 @@ function setupNotificationBell() {
     const item = notificationEl('li', 'nav-item dropdown');
     item.id = 'nav-notifications';
 
-    const toggle = notificationEl('a', 'nav-link position-relative');
+    const toggle = notificationEl('a', 'nav-link notification-toggle position-relative');
     toggle.href = '#';
     toggle.id = 'notificationDropdown';
     toggle.setAttribute('role', 'button');
@@ -95,6 +95,7 @@ function setupNotificationBell() {
     toggle.setAttribute('aria-expanded', 'false');
 
     const icon = notificationEl('i', 'bi bi-bell');
+    toggle.setAttribute('aria-label', 'Notifications');
     const badge = notificationEl('span', 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger');
     badge.id = 'notification-count-badge';
     badge.style.display = 'none';
@@ -103,7 +104,7 @@ function setupNotificationBell() {
 
     const menu = notificationEl('div', 'dropdown-menu dropdown-menu-end shadow notification-dropdown p-0');
     menu.setAttribute('aria-labelledby', 'notificationDropdown');
-    menu.style.minWidth = '0';
+    menu.style.width = 'min(380px, calc(100vw - 1.5rem))';
 
     const header = notificationEl('div', 'd-flex justify-content-between align-items-center px-3 py-2 border-bottom');
     header.appendChild(notificationEl('strong', '', 'Notifications'));
@@ -191,7 +192,7 @@ function renderNotificationItem(notification, compact = false) {
     link.href = notification.link || 'profile.php';
     if (!notification.is_read) link.classList.add('fw-semibold');
 
-    const message = notificationEl('div', 'small notification-dropdown-message', `${notification.actor_name || 'Someone'} ${notification.message || ''}`.trim());
+    const message = notificationEl('div', 'small notification-dropdown-message text-wrap', `${notification.actor_name || 'Someone'} ${notification.message || ''}`.trim());
     const meta = notificationEl('div', 'text-muted small notification-dropdown-meta', new Date(notification.created_at).toLocaleString());
     link.append(message, meta);
     link.addEventListener('click', async (event) => {

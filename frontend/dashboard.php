@@ -8,10 +8,10 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081118">
 </head>
 
-<body>
+<body class="dashboard-page app-page">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -57,8 +57,15 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">My Dashboard</h2>
+    <main class="dashboard-shell"><div class="container py-4 py-lg-5">
+        <section class="dashboard-hero mb-4">
+            <div>
+                <span class="dashboard-kicker"><i class="bi bi-stars"></i> Your legacy workspace</span>
+                <h2 class="mb-2 mt-3">My Dashboard</h2>
+                <p class="text-muted mb-0">Upload memories, organize folders, manage milestones, automations, and your private vault.</p>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadMemoryModal"><i class="bi bi-cloud-arrow-up me-1"></i> Upload Memory</button>
+        </section>
 
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
@@ -178,7 +185,7 @@
                     </div>
                 </div>
             </div>        </div>
-    </div>
+    </div></main>
 
     <div class="modal fade" id="uploadMemoryModal" tabindex="-1">
         <div class="modal-dialog">
@@ -348,21 +355,21 @@
         </div>
     </div>
 
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="bg-dark text-light py-4 app-footer">
         <div class="container text-center">
             <div class="mb-2">
                 <!-- Social Links -->
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2"
                     title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
             </div>
 
             <!-- Copyright -->
-            <p class="mb-0 small">                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+            <p class="mb-0 small">&copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>
@@ -382,6 +389,3 @@
 </body>
 
 </html>
-
-
-

@@ -8,10 +8,10 @@
     <title>Admin Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081118">
 </head>
 
-<body>
+<body class="admin-page">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -57,8 +57,15 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Admin Dashboard</h2>
+    <main class="admin-shell"><div class="container py-4 py-lg-5">
+        <div class="admin-hero mb-4">
+            <div>
+                <span class="admin-kicker"><i class="bi bi-speedometer2"></i> Control center</span>
+                <h2 class="mb-2 mt-3">Admin Dashboard</h2>
+                <p class="text-muted mb-0">Monitor users, content, AI, automation jobs, Vault metadata, and system health.</p>
+            </div>
+            <div class="admin-hero-icon"><i class="bi bi-shield-check"></i></div>
+        </div>
 
         <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
             <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#overview-tab">Overview</a></li>
@@ -89,7 +96,7 @@
             <div class="tab-pane fade" id="ai-tab"><div class="card"><div class="card-header">AI Usage / Status</div><div class="card-body" id="admin-ai-status">Loading...</div></div></div>
             <div class="tab-pane fade" id="system-tab"><div class="card"><div class="card-header">System / Integration Health</div><div class="card-body" id="admin-system-status">Loading...</div></div></div>
             <div class="tab-pane fade" id="activity-tab"><div class="card"><div class="card-header d-flex justify-content-between"><h5 class="mb-0">Activity / Audit Logs</h5><button class="btn btn-sm btn-outline-secondary" onclick="loadAdminOverview()">Refresh</button></div><div class="card-body"><div class="table-responsive"><table class="table table-striped"><tbody id="activity-log-body"><tr><td>Loading...</td></tr></tbody></table></div></div></div></div>
-        </div>
+        </div></main>
     <!-- Search Users Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog">
@@ -118,7 +125,7 @@
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2"
                     title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
@@ -126,7 +133,7 @@
 
             <!-- Copyright -->
             <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>
@@ -143,5 +150,3 @@
 </body>
 
 </html>
-
-

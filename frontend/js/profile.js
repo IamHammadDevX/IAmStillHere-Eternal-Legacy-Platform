@@ -1048,3 +1048,132 @@ document.addEventListener('DOMContentLoaded', () => {
         if (href) history.replaceState(null, '', `${window.location.pathname}${window.location.search}${href}`);
     }));
 });
+
+// Responsive profile tabs: keep visible tabs, move overflow to More dropdown.
+function initResponsiveProfileTabs() {
+    const tabs = document.querySelector('.profile-tabs');
+    if (!tabs || tabs.dataset.responsiveReady === '1') return;
+    tabs.dataset.responsiveReady = '1';
+
+    const originalItems = Array.from(tabs.querySelectorAll(':scope > li.nav-item'));
+    const moreItem = document.createElement('li');
+    moreItem.className = 'nav-item dropdown profile-tabs-more';
+    moreItem.innerHTML = `
+        <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More profile sections">
+            <i class="bi bi-three-dots"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end profile-tabs-more-menu"></ul>
+    `;
+    const moreMenu = moreItem.querySelector('.profile-tabs-more-menu');
+    tabs.appendChild(moreItem);
+
+    function moveAllBack() {
+        originalItems.forEach((item) => {
+            const link = item.querySelector('a.nav-link, a.dropdown-item');
+            if (link) {
+                link.classList.remove('dropdown-item');
+                link.classList.add('nav-link');
+            }
+            tabs.insertBefore(item, moreItem);
+        });
+        moreMenu.textContent = '';
+    }
+
+    function moveToMenu(item) {
+        const link = item.querySelector('a.nav-link, a.dropdown-item');
+        if (link) {
+            link.classList.remove('nav-link');
+            link.classList.add('dropdown-item');
+        }
+        moreMenu.insertBefore(item, moreMenu.firstChild);
+    }
+
+    function fitTabs() {
+        moveAllBack();
+        moreItem.style.display = 'none';
+        const available = tabs.clientWidth;
+        if (!available) return;
+
+        moreItem.style.display = 'block';
+        let guard = 0;
+        while (tabs.scrollWidth > available + 2 && originalItems.length > guard) {
+            const visibleItems = originalItems.filter((item) => item.parentElement === tabs);
+            if (visibleItems.length <= 3) break;
+            moveToMenu(visibleItems[visibleItems.length - 1]);
+            guard++;
+        }
+        moreItem.style.display = moreMenu.children.length ? 'block' : 'none';
+    }
+
+    moreMenu.addEventListener('click', (event) => {
+        const link = event.target.closest('[data-bs-toggle="tab"]');
+        if (!link) return;
+        const dropdown = bootstrap.Dropdown.getOrCreateInstance(moreItem.querySelector('[data-bs-toggle="dropdown"]'));
+        dropdown.hide();
+    });
+
+    window.addEventListener('resize', () => window.requestAnimationFrame(fitTabs));
+    window.addEventListener('load', fitTabs);
+    setTimeout(fitTabs, 100);
+}
+
+document.addEventListener('DOMContentLoaded', initResponsiveProfileTabs);
+
+// Keep profile tab highlight correct, including tabs inside More dropdown.
+function syncProfileTabActiveState() {
+    const tabs = document.querySelector('.profile-tabs');
+    if (!tabs) return;
+    const moreItem = tabs.querySelector('.profile-tabs-more');
+    const moreButton = moreItem?.querySelector('button.nav-link');
+    const activePane = document.querySelector('.tab-pane.active.show, .tab-pane.active');
+    const activeHref = activePane ? `#${activePane.id}` : (window.location.hash || '#posts-tab');
+
+    tabs.querySelectorAll('a[data-bs-toggle="tab"]').forEach((link) => {
+        const isActive = link.getAttribute('href') === activeHref;
+        link.classList.toggle('active', isActive);
+        link.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    if (moreButton && moreItem) {
+        const activeInMore = !!moreItem.querySelector(`.dropdown-menu a[href="${activeHref}"]`);
+        moreButton.classList.toggle('active', activeInMore);
+        moreButton.classList.toggle('profile-more-has-active', activeInMore);
+    }
+}
+
+document.addEventListener('shown.bs.tab', (event) => {
+    if (event.target.closest('.profile-tabs')) {
+        setTimeout(syncProfileTabActiveState, 0);
+    }
+});
+window.addEventListener('resize', () => setTimeout(syncProfileTabActiveState, 80));
+window.addEventListener('load', () => setTimeout(syncProfileTabActiveState, 250));
+document.addEventListener('DOMContentLoaded', () => setTimeout(syncProfileTabActiveState, 250));
+
+// Hard fallback: immediately highlight clicked profile tab, visible or inside More.
+function setProfileActiveTabByHref(activeHref) {
+    const tabs = document.querySelector('.profile-tabs');
+    if (!tabs || !activeHref) return;
+    const moreItem = tabs.querySelector('.profile-tabs-more');
+    const moreButton = moreItem?.querySelector('button.nav-link');
+
+    tabs.querySelectorAll('a[data-bs-toggle="tab"]').forEach((link) => {
+        const isActive = link.getAttribute('href') === activeHref;
+        link.classList.toggle('active', isActive);
+        link.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    if (moreButton && moreItem) {
+        const activeInMore = !!moreItem.querySelector(`.dropdown-menu a[href="${activeHref}"]`);
+        moreButton.classList.toggle('active', activeInMore);
+        moreButton.classList.toggle('profile-more-has-active', activeInMore);
+    }
+}
+
+document.addEventListener('click', (event) => {
+    const link = event.target.closest('.profile-tabs a[data-bs-toggle="tab"]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    setProfileActiveTabByHref(href);
+    setTimeout(() => setProfileActiveTabByHref(href), 80);
+});

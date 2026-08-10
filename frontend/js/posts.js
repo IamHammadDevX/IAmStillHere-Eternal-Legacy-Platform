@@ -62,7 +62,7 @@ async function loadScheduledPosts(){
 }
 function renderScheduledPostRow(p){
     const actions=p.status==='scheduled'?`<button class="btn btn-link btn-sm p-0 me-2" onclick="editScheduledPost(${p.id})">Edit</button><button class="btn btn-link btn-sm p-0 me-2" onclick="publishScheduledPostNow(${p.id})">Publish now</button><button class="btn btn-link btn-sm p-0 text-danger" onclick="cancelScheduledPost(${p.id})">Cancel</button>`:'';
-    return `<div class="border rounded p-2 mb-2"><div class="d-flex justify-content-between gap-2"><strong>${escapeHtml(p.body).slice(0,80)}</strong><span class="badge bg-secondary">${escapeHtml(p.status)}</span></div><div>${escapeHtml(postUtcToLocal(p.trigger_at))} · ${escapeHtml(p.privacy_level)}</div>${actions}</div>`;
+    return `<div class="border rounded p-2 mb-2"><div class="d-flex justify-content-between gap-2"><strong>${escapeHtml(p.body).slice(0,80)}</strong><span class="badge bg-secondary">${escapeHtml(p.status)}</span></div><div>${escapeHtml(postUtcToLocal(p.trigger_at))}  -  ${escapeHtml(p.privacy_level)}</div>${actions}</div>`;
 }
 function editScheduledPost(id){
     const p=scheduledPostsCache.find(item=>Number(item.id)===Number(id)); if(!p)return;

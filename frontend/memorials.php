@@ -8,10 +8,10 @@
     <title>View Memorials - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081118">
 </head>
 
-<body>
+<body class="memorials-page app-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
@@ -56,9 +56,12 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Memorial Pages</h2>
-        <p class="text-muted">Honoring the lives and memories of loved ones</p>
+    <main class="memorials-shell"><div class="container py-4 py-lg-5">
+        <section class="memorials-hero mb-4">
+            <span class="dashboard-kicker"><i class="bi bi-flower1"></i> Public memorials</span>
+            <h2 class="mb-2 mt-3">Memorial Pages</h2>
+            <p class="text-muted mb-0">Discover public legacy profiles, memories, tributes, and life stories shared with care.</p>
+        </section>
 
         <div class="row" id="memorials-grid">
             <div class="col-12 text-center py-5">
@@ -67,7 +70,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div></main>
     <!-- Search Users Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog">
@@ -89,14 +92,14 @@
         </div>
     </div>
 
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="bg-dark text-light py-4 app-footer">
         <div class="container text-center">
             <div class="mb-2">
                 <!-- Social Links -->
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2"
+                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2"
                     title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
@@ -104,7 +107,7 @@
 
             <!-- Copyright -->
             <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>
@@ -142,7 +145,7 @@
                             : null;
 
                         col.innerHTML = `
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 shadow-sm memorial-card-modern">
                         ${coverPhoto ? `<img src="${coverPhoto}" class="card-img-top" alt="Cover Photo" style="height: 150px; object-fit: cover;">` : ''}
                         <div class="card-body text-center">
                             <img src="${profilePhoto}" class="profile-photo mb-3 rounded-circle border" 

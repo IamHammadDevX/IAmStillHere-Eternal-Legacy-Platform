@@ -62,7 +62,7 @@ async function generateAutobiography(overwriteManual) {
     const manual = document.querySelectorAll('.autobio-section-text[data-manual="1"]').length > 0;
     if (manual && !overwriteManual && !confirm('Manual edits will be preserved. Regenerate only empty/non-manual sections?')) return;
     aiAutobioBusy = true;
-    autobioSetStatus('Generating your autobiography... please wait, this can take 20–60 seconds.', 'primary');
+    autobioSetStatus('Generating your autobiography... please wait, this can take 20-60 seconds.', 'primary');
     setAutobioButtons(true);
     try {
         const response = await fetch(`${AI_AUTOBIO_API}/generate.php`, {

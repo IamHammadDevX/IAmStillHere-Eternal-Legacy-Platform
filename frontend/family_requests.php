@@ -8,7 +8,7 @@
     <title>Family Requests - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2026081109">
 </head>
 
 <body>
@@ -138,12 +138,12 @@
                 <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2 footer-link" title="GitHub">
                     <i class="bi bi-github fs-4"></i>
                 </a>
-                <a href="https://thisishammaddevx.netlify.app" target="_blank" class="text-light mx-2 footer-link" title="Portfolio">
+                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2 footer-link" title="Portfolio">
                     <i class="bi bi-globe fs-4"></i>
                 </a>
             </div>
             <p class="mb-0 small">
-                © <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
             </p>
         </div>
     </footer>

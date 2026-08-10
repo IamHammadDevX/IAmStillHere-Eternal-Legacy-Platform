@@ -426,6 +426,6 @@ Low:
 - Should uploaded media remain web-accessible or move behind controlled download endpoints?
 - Should SVG uploads be allowed?
 - What PHP version is production cPanel running?
-- What is the production base URL: `iamalwayshere.com`, subfolder, or another path?
+- What is the production base URL: `https://www.iamhammaddevx.app/`, subfolder, or another path?
 - Which registration flow is canonical: direct register or email verification?
 - Should cron send emails only once, or retry failed sends?
