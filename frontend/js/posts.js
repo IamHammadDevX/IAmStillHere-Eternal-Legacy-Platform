@@ -2,6 +2,9 @@ const POSTS_API = 'http://localhost/IAmStillHere/backend/posts';
 let postPage = 1;
 let postTotalPages = 1;
 let postPrivacyWidget = null;
+let scheduledPostsLoaded = false;
+let scheduledPostsCache = [];
+let editingScheduledPostId = 0;
 
 function postMediaUrl(media) {
     const folder = media.media_type === 'video' ? 'videos' : 'photos';
@@ -26,10 +29,49 @@ function initPostsFeature() {
     }
 
     const oldPrivacy = document.getElementById('post-privacy'); if(oldPrivacy && typeof privacyComponent==='function'){oldPrivacy.style.display='none';postPrivacyWidget=privacyComponent('post',currentUser.id);oldPrivacy.parentElement.appendChild(postPrivacyWidget);}
+    enhancePostComposerForScheduling();
     document.getElementById('post-form')?.addEventListener('submit', submitPost);
     loadPosts(1);
+    loadScheduledPosts();
 }
 
+function postLocalToIso(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toISOString();}
+function postUtcToLocal(value){if(!value)return 'not scheduled';const d=new Date(String(value).replace(' ','T')+'Z');return Number.isNaN(d.getTime())?value:d.toLocaleString();}
+function enhancePostComposerForScheduling(){
+    const form=document.getElementById('post-form'); if(!form||form.dataset.scheduleReady==='1')return; form.dataset.scheduleReady='1';
+    const toolbar=form.querySelector('.d-flex'); if(!toolbar)return;
+    const wrap=document.createElement('div'); wrap.className='border rounded p-2 my-2 bg-light';
+    wrap.innerHTML='<div class="d-flex flex-wrap gap-2 align-items-center mb-2"><div class="btn-group btn-group-sm" role="group"><input type="radio" class="btn-check" name="post-mode" id="post-mode-now" value="now" checked><label class="btn btn-outline-primary" for="post-mode-now">Post Now</label><input type="radio" class="btn-check" name="post-mode" id="post-mode-schedule" value="schedule"><label class="btn btn-outline-primary" for="post-mode-schedule">Schedule</label></div></div><div id="post-schedule-fields" class="row g-2 d-none"><div class="col-md-4"><label class="form-label small">Trigger</label><select id="post-schedule-trigger" class="form-select form-select-sm"><option value="specific_datetime">Specific date/time</option><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="custom_recurring">Recurring date</option><option value="linked_milestone_event">Milestone/Event</option></select></div><div class="col-md-4"><label class="form-label small">Date/time</label><input id="post-schedule-at" type="datetime-local" class="form-control form-control-sm"></div><div class="col-md-4"><label class="form-label small">Linked ID optional</label><input id="post-linked-id" type="number" min="1" class="form-control form-control-sm" placeholder="event/milestone id"></div></div>';
+    toolbar.parentNode.insertBefore(wrap,toolbar);
+    document.querySelectorAll('[name="post-mode"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('post-schedule-fields').classList.toggle('d-none',document.querySelector('[name="post-mode"]:checked').value!=='schedule')));
+}
+async function submitScheduledPost(form){
+    const fd=new FormData(); const rule=postPrivacyWidget?postPrivacyWidget.getRule():{visibility_type:document.getElementById('post-privacy').value,user_ids:[],release_at:'',release_event_id:0};
+    fd.append('body',document.getElementById('post-body').value.trim()); fd.append('privacy_level',rule.visibility_type); fd.append('csrf_token',csrfToken);
+    fd.append('trigger_type',document.getElementById('post-schedule-trigger').value); fd.append('trigger_at',postLocalToIso(document.getElementById('post-schedule-at').value));
+    const linked=Number(document.getElementById('post-linked-id').value||0); if(linked>0){fd.append('linked_resource_type','event');fd.append('linked_resource_id',linked);} const media=document.getElementById('post-media').files[0]; if(media)fd.append('media',media);
+    const endpoint=editingScheduledPostId?POSTS_API+'/reschedule.php':POSTS_API+'/schedule.php';
+    if(editingScheduledPostId)fd.append('scheduled_post_id',editingScheduledPostId);
+    const response=await fetch(endpoint,{method:'POST',body:fd}); const data=await response.json(); if(!data.success)throw new Error(data.message||'Unable to save scheduled post.');
+    editingScheduledPostId=0; form.reset(); showAlert(data.message||'Wall post scheduled.','success'); scheduledPostsLoaded=false; loadScheduledPosts();
+}
+async function loadScheduledPosts(){
+    const container=document.getElementById('posts-container'); if(!container||!currentUser||String(currentUser.id)!==String(profileUserId)||scheduledPostsLoaded)return; scheduledPostsLoaded=true;
+    let panel=document.getElementById('scheduled-posts-panel'); if(!panel){panel=document.createElement('div');panel.id='scheduled-posts-panel';panel.className='card mb-3';panel.innerHTML='<div class="card-body"><h6>Scheduled Posts</h6><div id="scheduled-posts-list" class="small text-muted">Loading...</div></div>';container.parentNode.insertBefore(panel,container);}
+    try{const data=await fetch(POSTS_API+'/scheduled_list.php',{cache:'no-store'}).then(r=>r.json());const list=document.getElementById('scheduled-posts-list');const rows=data.data?.scheduled_posts||[];scheduledPostsCache=rows;list.innerHTML=rows.length?rows.map(renderScheduledPostRow).join(''):'No scheduled posts.';}catch(e){document.getElementById('scheduled-posts-list').textContent='Unable to load scheduled posts.';}
+}
+function renderScheduledPostRow(p){
+    const actions=p.status==='scheduled'?`<button class="btn btn-link btn-sm p-0 me-2" onclick="editScheduledPost(${p.id})">Edit</button><button class="btn btn-link btn-sm p-0 me-2" onclick="publishScheduledPostNow(${p.id})">Publish now</button><button class="btn btn-link btn-sm p-0 text-danger" onclick="cancelScheduledPost(${p.id})">Cancel</button>`:'';
+    return `<div class="border rounded p-2 mb-2"><div class="d-flex justify-content-between gap-2"><strong>${escapeHtml(p.body).slice(0,80)}</strong><span class="badge bg-secondary">${escapeHtml(p.status)}</span></div><div>${escapeHtml(postUtcToLocal(p.trigger_at))} · ${escapeHtml(p.privacy_level)}</div>${actions}</div>`;
+}
+function editScheduledPost(id){
+    const p=scheduledPostsCache.find(item=>Number(item.id)===Number(id)); if(!p)return;
+    editingScheduledPostId=Number(p.id||0); document.getElementById('post-body').value=p.body||''; document.getElementById('post-mode-schedule').checked=true; document.getElementById('post-schedule-fields').classList.remove('d-none'); document.getElementById('post-schedule-trigger').value=p.trigger_type||'specific_datetime';
+    const d=p.trigger_at?new Date(String(p.trigger_at).replace(' ','T')+'Z'):null; if(d&&!Number.isNaN(d.getTime())){const pad=n=>String(n).padStart(2,'0');document.getElementById('post-schedule-at').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+    showAlert('Editing scheduled post. Submit again to save changes.','info'); document.getElementById('post-body').scrollIntoView({behavior:'smooth',block:'center'});
+}
+async function cancelScheduledPost(id){if(!confirm('Cancel scheduled post?'))return;const data=await fetch(`${POSTS_API}/cancel_scheduled.php`,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({scheduled_post_id:id,csrf_token:csrfToken})}).then(r=>r.json());showAlert(data.message||'Done',data.success?'success':'danger');scheduledPostsLoaded=false;loadScheduledPosts();}
+async function publishScheduledPostNow(id){const data=await fetch(`${POSTS_API}/publish_now.php`,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({scheduled_post_id:id,csrf_token:csrfToken})}).then(r=>r.json());showAlert(data.message||'Done',data.success?'success':'danger');scheduledPostsLoaded=false;loadScheduledPosts();}
 async function loadPosts(page = 1) {
     const container = document.getElementById('posts-container');
     if (!container || !profileUserId) return;
@@ -173,6 +215,7 @@ async function submitPost(event) {
     if (media) form.append('media', media);
 
     try {
+        if (document.querySelector('[name="post-mode"]:checked')?.value === 'schedule') { await submitScheduledPost(event.target); return; }
         const response = await fetch(`${POSTS_API}/create.php`, { method: 'POST', body: form });
         const data = await response.json();
         if (data.success) {

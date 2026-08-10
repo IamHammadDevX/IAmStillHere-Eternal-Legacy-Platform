@@ -24,14 +24,18 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
         return;
     }
     if($action['action_type']==='wall_post'){
+        $scheduledId=(int)($payload['scheduled_wall_post_id']??0);
+        if($scheduledId>0){$lock=$db->prepare("UPDATE scheduled_wall_posts SET status='processing' WHERE id=:id AND owner_id=:owner AND status='scheduled'");$lock->execute(['id'=>$scheduledId,'owner'=>(int)$rule['owner_id']]);if($lock->rowCount()<1)return;}
         $body=trim((string)($payload['body']??$rule['description']??$rule['title']));
         if($body==='') throw new RuntimeException('Wall post body empty.');
         $privacy=in_array(($payload['privacy_level']??'private'),['public','family','private'],true)?$payload['privacy_level']:'private';
         $s=$db->prepare('INSERT INTO posts(user_id,body,privacy_level) VALUES(:u,:body,:privacy)');
         $s->execute(['u'=>(int)$rule['owner_id'],'body'=>$body,'privacy'=>$privacy]);
+        $postId=(int)$db->lastInsertId();
+        if(!empty($payload['media_file_path']) && in_array(($payload['media_type']??''),['image','video'],true)){$m=$db->prepare('INSERT INTO post_media(post_id,file_path,file_type,file_size,media_type) VALUES(:p,:path,:type,:size,:media)');$m->execute(['p'=>$postId,'path'=>$payload['media_file_path'],'type'=>$payload['media_file_type']??'','size'=>(int)($payload['media_file_size']??0),'media'=>$payload['media_type']]);}
+        if($scheduledId>0)$db->prepare("UPDATE scheduled_wall_posts SET status='published', published_post_id=:post, updated_at=UTC_TIMESTAMP() WHERE id=:id")->execute(['post'=>$postId,'id'=>$scheduledId]);
         return;
-    }
-    if($action['action_type']==='email'){
+    }    if($action['action_type']==='email'){
         $u=$db->prepare('SELECT email,full_name FROM users WHERE id=:id LIMIT 1');$u->execute(['id'=>(int)$rule['owner_id']]);$user=$u->fetch(PDO::FETCH_ASSOC);
         if(!$user) throw new RuntimeException('Owner not found.');
         $event=['title'=>$rule['title'],'event_type'=>$rule['trigger_type'],'scheduled_date'=>$rule['next_run_at'],'message'=>$payload['message']??$rule['description']??'','user_id'=>(int)$rule['owner_id']];
