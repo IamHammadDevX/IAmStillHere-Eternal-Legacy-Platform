@@ -254,12 +254,12 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
         const data = await response.json();
 
         if (data.success) {
-            alert('Ã¢Å“â€¦ Tribute posted successfully!');
+            alert('Tribute posted successfully!');
             e.target.reset();
             // Optionally refresh tribute list dynamically
             loadTributes();
         } else {
-            alert(`Ã¢ÂÅ’ ${data.message || 'Failed to post tribute.'}`);
+            alert(data.message || 'Failed to post tribute.');
         }
     } catch (error) {
         console.error('Error submitting tribute:', error);
