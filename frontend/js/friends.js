@@ -91,6 +91,10 @@ function renderFriendAction(area, status) {
     }));
   }
 
+  if (state === 'family') {
+    area.appendChild(makeFriendButton('Family', 'btn-success', () => {}));
+  }
+
   if (state === 'friends') {
     area.appendChild(makeFriendButton('Remove Friend', 'btn-outline-danger me-1', async () => {
       if (confirm('Remove friend?')) {

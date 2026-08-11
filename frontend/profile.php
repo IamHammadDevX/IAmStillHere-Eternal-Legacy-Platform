@@ -512,7 +512,7 @@ if (!is_logged_in()) {
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
-  <script src="js/friends.js"></script>
+  <script src="js/friends.js?v=2026081201"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 

@@ -32,6 +32,9 @@ function friends_status(PDO $conn, int $viewer, int $target): array {
     if ($viewer === $target) return ['state'=>'self'];
     if (friends_are_blocked($conn,$viewer,$target)) return ['state'=>'blocked'];
     if (friends_are_friends($conn,$viewer,$target)) return ['state'=>'friends'];
+    $family = $conn->prepare("SELECT id FROM family_members WHERE ((user_id=:viewer AND family_member_id=:target) OR (user_id=:target AND family_member_id=:viewer)) AND status='active' AND approved=1 LIMIT 1");
+    $family->execute(['viewer'=>$viewer,'target'=>$target]);
+    if ($family->fetch()) return ['state'=>'family'];
     $p=friends_pending($conn,$viewer,$target);
     if ($p) return ['state'=>((int)$p['sender_id']===$viewer?'pending_sent':'pending_received'), 'request_id'=>(int)$p['id']];
     return ['state'=>'none'];
