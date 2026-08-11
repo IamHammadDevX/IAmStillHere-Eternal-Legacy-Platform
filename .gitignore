@@ -16,6 +16,12 @@ data/uploads/documents/*
 .idea/
 *.swp
 *.swo
+.claude/
+.codebuddy/
+.gemini/
+.qoder/
+*.mcp.json
+opencode.jsonc
 *~
 
 # OS
@@ -150,3 +156,5 @@ error_log
 # Editor temp files
 *~
 
+# Added by code-review-graph
+.code-review-graph/

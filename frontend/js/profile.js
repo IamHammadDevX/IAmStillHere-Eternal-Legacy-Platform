@@ -144,50 +144,57 @@ async function loadProfile() {
 // ---------- Profile Update ----------
 document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const saveButton = document.getElementById('profile-save-btn') || form.querySelector('button[type="submit"]');
+    const status = document.getElementById('profile-save-status');
+    const originalLabel = saveButton?.textContent || 'Save Changes';
+    if (saveButton?.disabled) return;
+
+    const setStatus = (message, type = 'muted') => {
+        if (status) {
+            status.className = `small mt-2 text-${type}`;
+            status.textContent = message;
+        }
+    };
+
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+    }
+    setStatus('Saving changes...', 'muted');
 
     const formData = new FormData();
-    const profilePhoto = document.getElementById('profile-photo-upload').files[0];
-    const coverPhoto = document.getElementById('cover-photo-upload').files[0];
-
+    const profilePhoto = document.getElementById('profile-photo-upload')?.files?.[0];
+    const coverPhoto = document.getElementById('cover-photo-upload')?.files?.[0];
     if (profilePhoto) formData.append('profile_photo', profilePhoto);
     if (coverPhoto) formData.append('cover_photo', coverPhoto);
-
-    formData.append('bio', document.getElementById('bio-input').value);
-    formData.append('date_of_birth', document.getElementById('dob-input').value);
+    formData.append('bio', document.getElementById('bio-input')?.value || '');
+    formData.append('date_of_birth', document.getElementById('dob-input')?.value || '');
 
     try {
-        const response = await fetch('/backend/users/update_profile.php', {
-            method: 'POST',
-            body: formData
-        });
+        const response = await fetch('/backend/users/update_profile.php', { method: 'POST', body: formData });
+        const raw = await response.text();
+        let data;
+        try { data = JSON.parse(raw); } catch (_) { throw new Error(`Server returned invalid response (${response.status}).`); }
+        if (!response.ok || !data.success) throw new Error(data.message || `Save failed (${response.status}).`);
 
-        const data = await response.json();
-
-        if (data.success) {
-            showAlert('Profile updated successfully!', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
-
-            if (data.user.profile_photo) {
-                document.getElementById('profile-image').src = data.user.profile_photo;
-            }
-            if (data.user.cover_photo) {
-                const coverImg = document.getElementById('cover-image');
-                coverImg.src = data.user.cover_photo;
-                coverImg.style.display = 'block';
-            }
-            if (data.user.bio) {
-                document.getElementById('profile-bio').textContent = data.user.bio;
-            }
-
-        } else {
-            showAlert(data.message, 'danger');
-        }
+        showAlert(data.message || 'Profile updated successfully!', 'success');
+        setStatus('Saved successfully.', 'success');
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('editProfileModal')).hide();
+        if (data.user?.profile_photo) document.getElementById('profile-image').src = `${data.user.profile_photo}?v=${Date.now()}`;
+        if (data.user?.cover_photo) { const coverImg = document.getElementById('cover-image'); coverImg.src = `${data.user.cover_photo}?v=${Date.now()}`; coverImg.style.display = 'block'; }
+        const bio = document.getElementById('profile-bio');
+        if (bio) bio.textContent = data.user?.bio || 'No bio available.';
+        const about = document.getElementById('profile-about-tab-bio');
+        if (about) about.textContent = data.user?.bio || 'No bio available.';
     } catch (error) {
         console.error('Error updating profile:', error);
-        showAlert('Failed to update profile', 'danger');
+        setStatus(error.message || 'Failed to update profile.', 'danger');
+        showAlert(error.message || 'Failed to update profile.', 'danger');
+    } finally {
+        if (saveButton) { saveButton.disabled = false; saveButton.textContent = originalLabel; }
     }
 });
-
 // ---------- Memorial Settings Update ----------
 document.getElementById('memorialSettingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();

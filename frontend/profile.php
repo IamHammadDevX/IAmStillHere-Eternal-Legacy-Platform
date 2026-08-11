@@ -125,6 +125,7 @@ if (!is_logged_in()) {
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#family-tab">Family</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">Events</a></li>
@@ -413,7 +414,7 @@ if (!is_logged_in()) {
               <label class="form-label">Date of Birth</label>
               <input type="date" class="form-control" id="dob-input" />
             </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary" id="profile-save-btn">Save Changes</button><div id="profile-save-status" class="small mt-2" role="status" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -503,7 +504,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081120"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081124"></script>
   <script src="js/posts.js?v=2026081122"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
