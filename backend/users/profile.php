@@ -95,36 +95,9 @@ function canViewProfile(PDO $conn, int $profileUserId, int $viewerId, string $vi
         return false;
     }
 
-    $friendStmt = $conn->prepare("
-        SELECT id
-        FROM friendships
-        WHERE user_id = :profile_user_id
-          AND friend_id = :viewer_id
-          AND status = 'accepted'
-        LIMIT 1
-    ");
-    $friendStmt->execute([
-        'profile_user_id' => $profileUserId,
-        'viewer_id' => $viewerId
-    ]);
-    if ($friendStmt->fetch()) {
-        return true;
-    }
-
-    $stmt = $conn->prepare("
-        SELECT id
-        FROM family_members
-        WHERE user_id = :profile_user_id
-          AND family_member_id = :viewer_id
-          AND status = 'active'
-          AND approved = 1
-        LIMIT 1
-    ");
-    $stmt->execute([
-        'profile_user_id' => $profileUserId,
-        'viewer_id' => $viewerId
-    ]);
-
-    return (bool) $stmt->fetch();
+    // Profiles are discoverable by authenticated users unless either user has
+    // blocked the other. Individual posts, memories, milestones, comments and
+    // folders still enforce their own PrivacyService rules before data is shown.
+    return true;
 }
 ?>
