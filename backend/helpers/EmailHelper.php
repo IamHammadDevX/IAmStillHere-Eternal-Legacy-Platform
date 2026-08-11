@@ -6,7 +6,6 @@ require_once __DIR__ . '/../phpmailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
 
 class EmailHelper
 {
@@ -37,39 +36,69 @@ class EmailHelper
         ];
     }
 
-    private static function configureMailer(PHPMailer $mail): bool
+    private static function envValue(string $name, ?string $fallback = null): ?string
     {
-        $validation = self::validateConfiguration();
-
-        if (!$validation['valid']) {
-            error_log('Mail configuration missing required variables: ' . implode(', ', $validation['missing']));
-            return false;
+        $value = getenv($name);
+        if ($value === false || trim((string)$value) === '') {
+            return $fallback;
         }
-
-        $mail->isSMTP();
-        $mail->Host = (string) getenv('MAIL_HOST');
-        $mail->SMTPAuth = true;
-        $mail->Username = (string) getenv('MAIL_USERNAME');
-        $mail->Password = (string) getenv('MAIL_PASSWORD');
-        $mail->Port = (int) getenv('MAIL_PORT');
-
-        $encryption = strtolower((string) getenv('MAIL_ENCRYPTION'));
-        if ($encryption === 'tls' || $encryption === 'starttls') {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        } elseif ($encryption === 'ssl' || $encryption === 'smtps') {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        } elseif ($encryption === 'none') {
-            $mail->SMTPSecure = '';
-            $mail->SMTPAutoTLS = false;
-        } else {
-            error_log('Mail configuration has unsupported MAIL_ENCRYPTION value.');
-            return false;
-        }
-
-        $mail->setFrom((string) getenv('MAIL_FROM_ADDRESS'), (string) getenv('MAIL_FROM_NAME'));
-        return true;
+        return trim((string)$value);
     }
 
+    private static function defaultFromAddress(): string
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? 'iamalwayshere.com';
+        $host = preg_replace('/:\d+$/', '', (string)$host);
+        if (!preg_match('/^[a-z0-9.-]+$/i', $host)) {
+            $host = 'iamalwayshere.com';
+        }
+        return 'noreply@' . $host;
+    }
+
+    private static function configureMailer(PHPMailer $mail): bool
+    {
+        $fromAddress = self::envValue('MAIL_FROM_ADDRESS', defined('SMTP_FROM_EMAIL') ? SMTP_FROM_EMAIL : self::defaultFromAddress());
+        $fromName = self::envValue('MAIL_FROM_NAME', defined('SMTP_FROM_NAME') ? SMTP_FROM_NAME : 'IamAlwaysHere');
+
+        if (!$fromAddress || !filter_var($fromAddress, FILTER_VALIDATE_EMAIL)) {
+            $fromAddress = self::defaultFromAddress();
+        }
+
+        $host = self::envValue('MAIL_HOST');
+        $username = self::envValue('MAIL_USERNAME');
+        $password = self::envValue('MAIL_PASSWORD');
+        $port = self::envValue('MAIL_PORT');
+
+        if ($host && $username && $password && $port) {
+            $mail->isSMTP();
+            $mail->Host = $host;
+            $mail->SMTPAuth = true;
+            $mail->Username = $username;
+            $mail->Password = $password;
+            $mail->Port = (int)$port;
+
+            $encryption = strtolower((string) self::envValue('MAIL_ENCRYPTION', 'tls'));
+            if ($encryption === 'tls' || $encryption === 'starttls') {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            } elseif ($encryption === 'ssl' || $encryption === 'smtps') {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            } elseif ($encryption === 'none') {
+                $mail->SMTPSecure = '';
+                $mail->SMTPAutoTLS = false;
+            } else {
+                error_log('Mail configuration has unsupported MAIL_ENCRYPTION value.');
+                return false;
+            }
+        } else {
+            // cPanel fallback: use server mail transport when SMTP env vars are not configured.
+            $mail->isMail();
+        }
+
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'base64';
+        $mail->setFrom($fromAddress, $fromName);
+        return true;
+    }
     public static function sendVerificationEmail($toEmail, $toName, $verificationCode)
     {
         $mail = new PHPMailer(true);
@@ -181,8 +210,8 @@ class EmailHelper
                     </div>
                     
                     <div class='button-container'>
-                        <a href='$approveUrl' class='button btn-accept'>✓ Accept Request</a>
-                        <a href='$rejectUrl' class='button btn-reject'>✗ Decline Request</a>
+                        <a href='$approveUrl' class='button btn-accept'>Accept Request</a>
+                        <a href='$rejectUrl' class='button btn-reject'>Decline Request</a>
                     </div>
                     
                     <p style='font-size: 14px; color: #666; text-align: center;'>You can also respond to this request by logging into your account.</p>
@@ -197,7 +226,7 @@ class EmailHelper
         </html>
         ";
 
-        $alt_body = "Hello $toName,\n\n$requesterName would like to add you as family on IamAlwaysHere.\n\nRelationship: $relationship\n\nApprove: $approveUrl\nReject: $rejectUrl\n\nIf you accept, they’ll be able to view family-only content and post on your memorial page.\n\n— IamAlwaysHere Team";
+        $alt_body = "Hello $toName,\n\n$requesterName would like to add you as family on IamAlwaysHere.\n\nRelationship: $relationship\n\nApprove: $approveUrl\nReject: $rejectUrl\n\nIf you accept, theyll be able to view family-only content and post on your memorial page.\n\n IamAlwaysHere Team";
 
         try {
             if (!self::configureMailer($mail)) {
@@ -274,7 +303,7 @@ class EmailHelper
     ";
 
         // --- Plain text version ---
-        $alt_body = "Hello $toName,\n\nWe received a request to reset your password. Use the following code to reset it:\n\nReset Code: $resetCode\n\nYou can also click this link to reset your password:\n$resetUrl\n\nThis code is valid for 30 minutes.\n\nIf you didn’t request this, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
+        $alt_body = "Hello $toName,\n\nWe received a request to reset your password. Use the following code to reset it:\n\nReset Code: $resetCode\n\nYou can also click this link to reset your password:\n$resetUrl\n\nThis code is valid for 30 minutes.\n\nIf you didnt request this, please ignore this email.\n\nBest regards,\nThe IamAlwaysHere Team";
 
         try {
             // --- SMTP Configuration ---
@@ -389,7 +418,7 @@ class EmailHelper
 
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= "From: IamAlwaysHere <noreply@https://www.iamhammaddevx.app/>" . "\r\n";
+        $headers .= "From: IamAlwaysHere <noreply@iamalwayshere.com>" . "\r\n";
 
         try {
             // --- SMTP Configuration ---

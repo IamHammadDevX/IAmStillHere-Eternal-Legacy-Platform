@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081120" />
+  <link rel="stylesheet" href="css/style.css?v=2026081121" />
 </head>
 
 <body class="profile-page app-page">
@@ -291,22 +291,19 @@ if (!is_logged_in()) {
             </div>
             <div class="card mb-4" id="gifts-card">
               <div class="card-body">
-                <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-                  <div><h5 class="mb-1">Gift / Phoolwala</h5><div class="small text-muted">Schedule gifts for birthdays, anniversaries, and special occasions. Payment stays with provider.</div></div>
-                  <button class="btn btn-outline-primary btn-sm" type="button" id="gift-load-catalog">Load catalog</button>
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                  <div>
+                    <span class="badge rounded-pill text-bg-light border mb-2"><i class="bi bi-gift me-1"></i> External gift partner</span>
+                    <h5 class="mb-1">Gifts for Special Occasions</h5>
+                    <div class="small text-muted">Browse birthday, anniversary, wedding, and celebration gifts on Phoolwala. Purchase and checkout happen securely on Phoolwala.</div>
+                  </div>
+                  <a id="phoolwala-gift-link" class="btn btn-primary" href="https://www.phoolwala.com" target="_blank" rel="noopener noreferrer external">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Browse Gifts on Phoolwala
+                  </a>
                 </div>
-                <form id="gift-order-form" class="row g-2 mb-3">
-                  <div class="col-md-3"><label class="form-label small">Gift</label><select id="gift-catalog" class="form-select"><option value="">Load catalog first</option></select></div>
-                  <div class="col-md-3"><label class="form-label small">Recipient name</label><input id="gift-recipient-name" class="form-control" placeholder="Name"></div>
-                  <div class="col-md-3"><label class="form-label small">Recipient email</label><input id="gift-recipient-email" type="email" class="form-control" placeholder="email@example.com"></div>
-                  <div class="col-md-3"><label class="form-label small">Delivery date</label><input id="gift-delivery-at" type="datetime-local" class="form-control"></div>
-                  <div class="col-md-3"><label class="form-label small">Occasion</label><select id="gift-occasion" class="form-select"><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="graduation">Graduation</option><option value="wedding">Wedding</option><option value="custom">Custom</option></select></div>
-                  <div class="col-md-9"><label class="form-label small">Delivery address</label><input id="gift-address" class="form-control" placeholder="Delivery address"></div>
-                  <div class="col-12"><label class="form-label small">Optional approved/personal message</label><textarea id="gift-message" class="form-control" rows="3" placeholder="Paste approved AI message or write your own."></textarea></div>
-                  <div class="col-12 d-flex gap-2"><button id="gift-create" type="button" class="btn btn-primary">Create order</button><button id="gift-refresh" type="button" class="btn btn-outline-secondary">Refresh orders</button></div>
-                </form>
-                <div id="gift-status" class="small text-muted mb-2"></div>
-                <div id="gift-orders-list" class="row g-2"></div>
+                <div class="alert alert-light border small text-muted mt-3 mb-0">
+                  IAmStillHere does not process gift payments, store customer/payment details, sync products, or track Phoolwala orders.
+                </div>
               </div>
             </div>
             <div id="events-container"></div>
@@ -511,7 +508,7 @@ if (!is_logged_in()) {
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>
-  <script src="js/gifts.js?v=2026081101"></script>
+  <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js"></script>

@@ -1,4 +1,0 @@
-<?php
-require_once __DIR__ . '/_gift_helpers.php';
-try{if($_SERVER['REQUEST_METHOD']!=='POST'){ApiResponse::send(false,[],'Method not allowed.',[],405);exit;}$db=gifts_db();$user=gifts_user();$data=gifts_input();gifts_csrf($data);$order=gifts_service($db)->createOrder($user,$data);ApiResponse::success(['order'=>$order],'Gift order created.',201);}catch(InvalidArgumentException $e){ApiResponse::validation(['gift'=>$e->getMessage()]);}catch(Throwable $e){Logger::error('Gift order create failed',['error'=>$e->getMessage()]);$m=$e->getMessage()==='gift_provider_not_configured'?'Gift provider not configured.':'Unable to create gift order.';ApiResponse::serverError($m);}
-?>
