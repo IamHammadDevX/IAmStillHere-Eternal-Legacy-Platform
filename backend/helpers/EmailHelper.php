@@ -45,6 +45,23 @@ class EmailHelper
         return trim((string)$value);
     }
 
+
+    private static function appUrl(): string
+    {
+        $url = self::envValue('APP_URL');
+        if ($url && filter_var($url, FILTER_VALIDATE_URL)) {
+            return rtrim($url, '/');
+        }
+
+        $host = $_SERVER['HTTP_HOST'] ?? 'iamalwayshere.com';
+        $host = preg_replace('/:\d+$/', '', (string) $host);
+        if (!preg_match('/^[a-z0-9.-]+$/i', $host)) {
+            $host = 'iamalwayshere.com';
+        }
+
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'https';
+        return $scheme . '://' . $host;
+    }
     private static function defaultFromAddress(): string
     {
         $host = $_SERVER['HTTP_HOST'] ?? 'iamalwayshere.com';
@@ -175,8 +192,8 @@ class EmailHelper
         $subject = "Family Connection Request - IamAlwaysHere";
 
         // NOTE: Update URLs if not running locally
-        $approveUrl = "/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
-        $rejectUrl = "/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
+        $approveUrl = self::appUrl() . "/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
+        $rejectUrl = self::appUrl() . "/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
 
         $html_message = "
         <html>
@@ -252,7 +269,7 @@ class EmailHelper
     {
         $mail = new PHPMailer(true);
         $subject = "Password Reset Request - IamAlwaysHere";
-        $resetUrl = "/frontend/reset_password.php?token=" . $resetToken;
+        $resetUrl = self::appUrl() . "/frontend/reset_password.php?token=" . $resetToken;
 
         // --- HTML body ---
         $html_message = "

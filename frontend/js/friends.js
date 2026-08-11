@@ -216,4 +216,12 @@ function createRequestRow(request) {
   return row;
 }
 
-document.addEventListener('DOMContentLoaded', () => setTimeout(initFriendsFeature, 500));
+function initFriendsFeatureWhenReady(attempt = 0) {
+  if (typeof profileUserId === 'undefined' || !profileUserId || typeof currentUser === 'undefined' || !currentUser) {
+    if (attempt < 30) setTimeout(() => initFriendsFeatureWhenReady(attempt + 1), 150);
+    return;
+  }
+  initFriendsFeature();
+}
+
+document.addEventListener('DOMContentLoaded', () => initFriendsFeatureWhenReady());

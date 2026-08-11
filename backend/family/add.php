@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../helpers/EmailHelper.php';
+require_once __DIR__ . '/../services/NotificationService.php';
 header('Content-Type: application/json');
 
 try {
@@ -90,6 +91,16 @@ try {
         $relationship,
         $request_id
     );
+    NotificationService::createOnce(
+        $conn,
+        (int) $family_member_id,
+        (int) $user_id,
+        NotificationService::TYPE_FRIEND_REQUEST,
+        'family_request',
+        (int) $request_id,
+        'sent you a family connection request.'
+    );
+
 
     if (!$emailSent) {
         error_log("Failed to send family request email to: " . $familyMember['email']);
