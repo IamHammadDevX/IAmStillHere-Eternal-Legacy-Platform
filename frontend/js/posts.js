@@ -113,7 +113,10 @@ function renderPosts(posts, pagination) {
         return;
     }
 
-    posts.forEach(post => container.appendChild(createPostCard(post)));
+    posts.forEach(post => {
+        container.appendChild(createPostCard(post));
+        loadPostComments(post.id);
+    });
     renderPostPagination(container, pagination);
     renderPostMediaTabs(posts);
 }
@@ -132,14 +135,14 @@ function createPostCard(post) {
 
     const meta = el('div', 'flex-grow-1');
     meta.appendChild(el('div', 'fw-semibold', post.author_name || 'Unknown'));
-    meta.appendChild(el('small', 'text-muted', `${new Date(post.created_at).toLocaleString()} · ${post.privacy_level}`));
+    meta.appendChild(el('small', 'text-muted', `${new Date(post.created_at).toLocaleString()} \u00b7 ${post.privacy_level}`));
 
     const actions = el('div', 'dropdown');
     if (post.can_edit || post.can_delete) {
         const button = el('button', 'btn btn-sm btn-light');
         button.type = 'button';
         button.dataset.bsToggle = 'dropdown';
-        button.textContent = '⋯';
+        button.textContent = '\u22ef';
         const menu = el('ul', 'dropdown-menu dropdown-menu-end');
         if (post.can_edit) {
             const item = el('button', 'dropdown-item', 'Edit');
@@ -174,7 +177,7 @@ function createPostCard(post) {
     comments.dataset.postComments = post.id;
     body.appendChild(comments);
     card.appendChild(body);
-    loadPostComments(post.id);
+
     return card;
 }
 
@@ -265,7 +268,7 @@ async function loadPostComments(postId) {
     } catch (error) { container.innerHTML = '<div class="small text-danger">Unable to load comments.</div>'; }
 }
 
-function renderPostComments(container, postId, comments, total) {
+async function renderPostComments(container, postId, comments, total) {
     container.innerHTML = '';
     container.appendChild(el('div', 'small fw-semibold text-muted mb-2', `Comments (${total})`));
     const list = el('div', 'post-comments-list');
@@ -273,7 +276,9 @@ function renderPostComments(container, postId, comments, total) {
     if (!comments.length) list.appendChild(el('div', 'small text-muted mb-2', 'No comments yet.'));
     container.appendChild(list);
 
-    if (currentUser && csrfToken) {
+    if (currentUser) {
+        if (!csrfToken && typeof loadCsrfToken === 'function') await loadCsrfToken();
+        if (!csrfToken) return;
         const form = el('form', 'post-comment-form mt-2');
         const group = el('div', 'input-group input-group-sm');
         const input = document.createElement('input');
