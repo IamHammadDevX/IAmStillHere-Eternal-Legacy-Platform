@@ -50,7 +50,7 @@ try {
     unset($user['status']);
 
     // Build image URLs
-    $baseUrl = 'http://localhost/IAmStillHere/data/uploads/photos/';
+    $baseUrl = '/data/uploads/photos/';
 
     $user['profile_photo'] = !empty($user['profile_photo'])
         ? $baseUrl . $user['profile_photo']

@@ -1,4 +1,4 @@
-const POSTS_API = 'http://localhost/IAmStillHere/backend/posts';
+const POSTS_API = '/backend/posts';
 let postPage = 1;
 let postTotalPages = 1;
 let postPrivacyWidget = null;
@@ -8,11 +8,11 @@ let editingScheduledPostId = 0;
 
 function postMediaUrl(media) {
     const folder = media.media_type === 'video' ? 'videos' : 'photos';
-    return `http://localhost/IAmStillHere/data/uploads/${folder}/${encodeURIComponent(media.file_path)}`;
+    return `/data/uploads/${folder}/${encodeURIComponent(media.file_path)}`;
 }
 
 function postAuthorPhoto(photo) {
-    return photo ? `http://localhost/IAmStillHere/data/uploads/photos/${encodeURIComponent(photo)}` : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+    return photo ? `/data/uploads/photos/${encodeURIComponent(photo)}` : '/frontend/images/default-profile.png';
 }
 
 function el(tag, className = '', text = '') {
@@ -24,11 +24,20 @@ function el(tag, className = '', text = '') {
 
 function initPostsFeature() {
     const composer = document.getElementById('post-composer');
-    if (composer && currentUser && String(currentUser.id) === String(profileUserId)) {
+    const viewerId = currentUser && (currentUser.id || currentUser.user_id);
+    const isProfileOwner = viewerId && String(viewerId) === String(profileUserId);
+    const canEditProfile = document.getElementById('edit-profile-btn') && document.getElementById('edit-profile-btn').offsetParent !== null;
+
+    if (composer && (isProfileOwner || canEditProfile)) {
         composer.style.display = 'block';
     }
 
-    const oldPrivacy = document.getElementById('post-privacy'); if(oldPrivacy && typeof privacyComponent==='function'){oldPrivacy.style.display='none';postPrivacyWidget=privacyComponent('post',currentUser.id);oldPrivacy.parentElement.appendChild(postPrivacyWidget);}
+    const oldPrivacy = document.getElementById('post-privacy');
+    if (oldPrivacy && typeof privacyComponent === 'function' && currentUser && currentUser.id) {
+        oldPrivacy.style.display = 'none';
+        postPrivacyWidget = privacyComponent('post', currentUser.id);
+        oldPrivacy.parentElement.appendChild(postPrivacyWidget);
+    }
     enhancePostComposerForScheduling();
     document.getElementById('post-form')?.addEventListener('submit', submitPost);
     loadPosts(1);
@@ -339,6 +348,20 @@ function renderMediaGrid(container, items, emptyText) {
     });
 }
 
+function initPostsFeatureWhenReady(attempt = 0) {
+    const hasProfile = typeof profileUserId !== 'undefined' && profileUserId;
+    const sessionKnown = typeof currentUser !== 'undefined';
+
+    if (!hasProfile || !sessionKnown) {
+        if (attempt < 30) {
+            setTimeout(() => initPostsFeatureWhenReady(attempt + 1), 150);
+        }
+        return;
+    }
+
+    initPostsFeature();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initPostsFeature, 300);
+    initPostsFeatureWhenReady();
 });

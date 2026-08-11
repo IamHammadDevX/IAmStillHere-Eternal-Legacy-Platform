@@ -26,7 +26,7 @@ async function searchUsers(searchTerm) {
     
     try {
         // Use the new search endpoint for partial matching
-        const response = await fetch(`http://localhost/IAmStillHere/backend/users/search.php?q=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(`/backend/users/search.php?q=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         
         if (data.success) {
@@ -56,7 +56,7 @@ function displaySearchResults(users) {
 
     users.forEach(user => {
         const resultItem = document.createElement('a');
-        resultItem.href = `http://localhost/IAmStillHere/frontend/profile.php?user_id=${user.id}`;
+        resultItem.href = `/frontend/profile.php?user_id=${user.id}`;
         resultItem.className = 'list-group-item list-group-item-action';
         resultItem.innerHTML = `
             <div class="d-flex align-items-center">

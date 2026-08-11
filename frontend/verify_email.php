@@ -118,7 +118,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/auth/verify_code.php', {
+                const response = await fetch('/backend/auth/verify_code.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

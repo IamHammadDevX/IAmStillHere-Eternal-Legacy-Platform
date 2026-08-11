@@ -14,7 +14,7 @@
 <body class="memorials-page app-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+            <a class="navbar-brand" href="/index.php">
                 <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,7 +31,7 @@
                         <a href="#" class="nav-link">Memorials</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+                        <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
                         <a class="nav-link" href="dashboard.php">Dashboard</a>
@@ -123,7 +123,7 @@
 
         async function loadMemorials() {
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/memorials/list.php');
+                const response = await fetch('/backend/memorials/list.php');
                 const data = await response.json();
 
                 const grid = document.getElementById('memorials-grid');
@@ -137,11 +137,11 @@
 
                         // Build the correct photo paths
                         const profilePhoto = memorial.profile_photo
-                            ? `http://localhost/IAmStillHere/data/uploads/photos/${memorial.profile_photo}`
-                            : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+                            ? `/data/uploads/photos/${memorial.profile_photo}`
+                            : '/frontend/images/default-profile.png';
 
                         const coverPhoto = memorial.cover_photo
-                            ? `http://localhost/IAmStillHere/data/uploads/photos/${memorial.cover_photo}`
+                            ? `/data/uploads/photos/${memorial.cover_photo}`
                             : null;
 
                         col.innerHTML = `

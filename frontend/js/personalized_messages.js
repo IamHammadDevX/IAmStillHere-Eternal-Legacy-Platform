@@ -1,4 +1,4 @@
-const PM_API='http://localhost/IAmStillHere/backend/ai/personalized_messages';
+const PM_API='/backend/ai/personalized_messages';
 let pmBusy=false;
 function pmVal(id){return document.getElementById(id)?.value||'';}
 function pmSet(id,v){const e=document.getElementById(id);if(e)e.value=v||'';}

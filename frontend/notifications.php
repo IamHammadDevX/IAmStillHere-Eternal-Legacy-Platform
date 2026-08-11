@@ -19,13 +19,13 @@ if (!is_logged_in()) {
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php"><i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere</a>
+      <a class="navbar-brand" href="/index.php"><i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" id="nav-search"><a class="nav-link" href="memorials.php"><i class="bi bi-search"></i></a></li>
           <li class="nav-item"><a class="nav-link" href="memorials.php">Memorials</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/index.php">Home</a></li>
           <li class="nav-item" id="nav-dashboard" style="display:none;"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
           <li class="nav-item" id="nav-admin" style="display:none;"><a class="nav-link" href="admin.php">Admin</a></li>
           <li class="nav-item" id="nav-login"><a class="nav-link" href="login.php">Login</a></li>

@@ -1,4 +1,4 @@
-const PRIVACY_API = 'http://localhost/IAmStillHere/backend/privacy/rules';
+const PRIVACY_API = '/backend/privacy/rules';
 
 function privacyComponent(prefix, ownerId) {
     const wrap = document.createElement('div');

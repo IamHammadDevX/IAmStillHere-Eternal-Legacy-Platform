@@ -1,6 +1,6 @@
 async function checkSession() {
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+        const response = await fetch('/backend/auth/check_session.php');
         const data = await response.json();
         
         if (data.logged_in) {
@@ -33,11 +33,11 @@ async function checkSession() {
 
 async function logout() {
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/auth/logout.php');
+        const response = await fetch('/backend/auth/logout.php');
         const data = await response.json();
         
         if (data.success) {
-            window.location.href = 'http://localhost/IAmStillHere';
+            window.location.href = '';
         }
     } catch (error) {
         console.error('Logout failed:', error);
@@ -60,7 +60,7 @@ function showAlert(message, type = 'success') {
 
 document.addEventListener('DOMContentLoaded', checkSession);
 
-const NOTIFICATIONS_API = 'http://localhost/IAmStillHere/backend/notifications';
+const NOTIFICATIONS_API = '/backend/notifications';
 let notificationCsrfToken = null;
 
 function notificationEl(tag, className = '', text = '') {
@@ -137,7 +137,7 @@ function setupNotificationBell() {
 async function notificationCsrf() {
     if (notificationCsrfToken) return notificationCsrfToken;
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/auth/csrf_token.php');
+        const response = await fetch('/backend/auth/csrf_token.php');
         const data = await response.json();
         notificationCsrfToken = data.success ? data.data.csrf_token : null;
     } catch (error) {

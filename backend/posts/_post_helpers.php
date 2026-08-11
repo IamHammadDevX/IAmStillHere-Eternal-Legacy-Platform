@@ -201,6 +201,6 @@ function posts_user_can_delete_comment(array $comment): bool
 function posts_media_public_path(array $media): string
 {
     $folder = $media['media_type'] === 'video' ? 'videos' : 'photos';
-    return 'http://localhost/IAmStillHere/data/uploads/' . $folder . '/' . rawurlencode($media['file_path']);
+    return '/data/uploads/' . $folder . '/' . rawurlencode($media['file_path']);
 }
 ?>

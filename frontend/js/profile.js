@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
     try {
-        const sessionResponse = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+        const sessionResponse = await fetch('/backend/auth/check_session.php');
         const sessionData = await sessionResponse.json();
 
         if (sessionData.logged_in) {
@@ -37,7 +37,7 @@ async function init() {
 
 async function loadCsrfToken() {
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/auth/csrf_token.php');
+        const response = await fetch('/backend/auth/csrf_token.php');
         const data = await response.json();
         csrfToken = data.success ? data.data.csrf_token : null;
     } catch (error) {
@@ -54,8 +54,8 @@ function escapeHtml(value) {
 
 function authorPhotoUrl(photo) {
     return photo
-        ? `http://localhost/IAmStillHere/data/uploads/photos/${encodeURIComponent(photo)}`
-        : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+        ? `/data/uploads/photos/${encodeURIComponent(photo)}`
+        : '/frontend/images/default-profile.png';
 }
 
 function safeUploadPathSegment(value) {
@@ -64,7 +64,7 @@ function safeUploadPathSegment(value) {
 
 async function loadProfile() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/users/profile.php?user_id=${profileUserId}`);
+        const response = await fetch(`/backend/users/profile.php?user_id=${profileUserId}`);
         const data = await response.json();
 
         if (!data.success) {
@@ -87,7 +87,7 @@ async function loadProfile() {
         if (profile.profile_photo) {
             profileImg.src = profile.profile_photo;
         } else {
-            profileImg.src = 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+            profileImg.src = '/frontend/images/default-profile.png';
         }
 
         const coverImg = document.getElementById('cover-image');
@@ -156,7 +156,7 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     formData.append('date_of_birth', document.getElementById('dob-input').value);
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/users/update_profile.php', {
+        const response = await fetch('/backend/users/update_profile.php', {
             method: 'POST',
             body: formData
         });
@@ -198,7 +198,7 @@ document.getElementById('memorialSettingsForm')?.addEventListener('submit', asyn
     };
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/users/memorial_settings.php', {
+        const response = await fetch('/backend/users/memorial_settings.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(settingsData)
@@ -240,7 +240,7 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/tributes/create.php', {
+        const response = await fetch('/backend/tributes/create.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -272,7 +272,7 @@ document.getElementById('tributeForm')?.addEventListener('submit', async (e) => 
 
 async function loadTimeline() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${profileUserId}`);
+        const response = await fetch(`/backend/milestones/list.php?user_id=${profileUserId}`);
         const data = await response.json();
 
         const container = document.getElementById('timeline-container');
@@ -334,7 +334,7 @@ async function deleteMilestone(milestoneId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/delete.php', {
+        const response = await fetch('/backend/milestones/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ milestone_id: milestoneId })
@@ -357,7 +357,7 @@ async function deleteMilestone(milestoneId) {
 // ---------- Load Memories ----------
 async function loadMemories() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${profileUserId}`);
+        const response = await fetch(`/backend/memories/list.php?user_id=${profileUserId}`);
         const data = await response.json();
         const grid = document.getElementById('memories-grid');
 
@@ -386,7 +386,7 @@ async function loadMemories() {
                 let downloadButton = '';
 
                 if (isImage) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}`;
+                    filePath = `/data/uploads/photos/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
 
                     mediaHtml = `
@@ -395,10 +395,10 @@ async function loadMemories() {
                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                     `;
                 } else if (isVideo) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
+                    filePath = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
                     const posterPath = memory.video_thumbnail_path
-                        ? `http://localhost/IAmStillHere/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
+                        ? `/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
                         : '';
 
                     mediaHtml = `
@@ -413,7 +413,7 @@ async function loadMemories() {
                         </div>
                     `;
                 } else if (isAudio) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/audio/${memory.file_path}`;
+                    filePath = `/data/uploads/audio/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download</a>`;
 
                     mediaHtml = `
@@ -432,7 +432,7 @@ async function loadMemories() {
                     `;
                 } else {
                     // Documents
-                    filePath = `http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}`;
+                    filePath = `/data/uploads/documents/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
 
                     let fileIcon = 'bi-file-earmark-text';
@@ -501,7 +501,7 @@ async function loadMemoryComments(memoryId, page = 1) {
     container.innerHTML = '<div class="small text-muted">Loading comments...</div>';
 
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/comments/list.php?memory_id=${memoryId}&page=${page}&limit=20`);
+        const response = await fetch(`/backend/memories/comments/list.php?memory_id=${memoryId}&page=${page}&limit=20`);
         const data = await response.json();
 
         if (!data.success) {
@@ -648,7 +648,7 @@ async function submitMemoryComment(event, memoryId, input) {
     if (!text) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/create.php', {
+        const response = await fetch('/backend/memories/comments/create.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -675,7 +675,7 @@ async function editMemoryComment(comment, memoryId) {
     if (updated === null) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/update.php', {
+        const response = await fetch('/backend/memories/comments/update.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -700,7 +700,7 @@ async function deleteMemoryComment(commentId, memoryId) {
     if (!confirm('Delete this comment?')) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/delete.php', {
+        const response = await fetch('/backend/memories/comments/delete.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -727,7 +727,7 @@ async function deleteMemory(memoryId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/delete.php', {
+        const response = await fetch('/backend/memories/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ memory_id: memoryId })
@@ -751,7 +751,7 @@ async function deleteMemory(memoryId) {
 
 async function loadTributes() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/list.php?memorial_user_id=${profileUserId}`);
+        const response = await fetch(`/backend/tributes/list.php?memorial_user_id=${profileUserId}`);
         const data = await response.json();
         const container = document.getElementById('tributes-container');
 
@@ -767,13 +767,13 @@ async function loadTributes() {
                 if (tribute.author_id && tribute.registered_user_name) {
                     // Registered user
                     avatarUrl = tribute.profile_photo
-                        ? `http://localhost/IAmStillHere/data/uploads/photos/${tribute.profile_photo}`
-                        : 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                        ? `/data/uploads/photos/${tribute.profile_photo}`
+                        : '/data/uploads/photos/default-profile.png';
                     displayName = tribute.registered_user_name;
                     userBadge = '<span class="badge bg-primary ms-2" style="font-size: 0.7rem;">Member</span>';
                 } else {
                     // Guest user
-                    avatarUrl = 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                    avatarUrl = '/data/uploads/photos/default-profile.png';
                     displayName = tribute.author_name || 'Anonymous';
                     userBadge = '<span class="badge bg-secondary ms-2" style="font-size: 0.7rem;">Guest</span>';
                 }
@@ -832,7 +832,7 @@ async function deleteTribute(tributeId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/tributes/delete.php', {
+        const response = await fetch('/backend/tributes/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tribute_id: tributeId })
@@ -855,7 +855,7 @@ async function deleteTribute(tributeId) {
 // Load Events Function
 async function loadEvents() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/events/list.php?user_id=${profileUserId}`);
+        const response = await fetch(`/backend/events/list.php?user_id=${profileUserId}`);
         const data = await response.json();
 
         const container = document.getElementById('events-container');
@@ -988,7 +988,7 @@ async function deleteEvent(eventId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/events/delete.php', {
+        const response = await fetch('/backend/events/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ event_id: eventId })
@@ -1027,14 +1027,14 @@ async function editProfileMemory(memoryId) {
     document.getElementById('profile-edit-memory-description').value=memory.description||'';
     document.getElementById('profile-edit-memory-date').value=memory.memory_date||'';
     const folder=document.getElementById('profile-edit-memory-folder'); folder.innerHTML='<option value="0">No folder</option>';
-    try { const result=await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${encodeURIComponent(profileUserId)}`).then(r=>r.json()); profileMemoryFoldersCache=result.data?.folders||[]; profileMemoryFoldersCache.forEach(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.name;folder.appendChild(option);}); } catch(e) {}
+    try { const result=await fetch(`/backend/memories/folders/list.php?user_id=${encodeURIComponent(profileUserId)}`).then(r=>r.json()); profileMemoryFoldersCache=result.data?.folders||[]; profileMemoryFoldersCache.forEach(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.name;folder.appendChild(option);}); } catch(e) {}
     folder.value=memory.folder_id||0;
     if(!profileMemoryPrivacyWidget){profileMemoryPrivacyWidget=privacyComponent('profile-memory-edit',Number(profileUserId));document.getElementById('profile-edit-memory-privacy').appendChild(profileMemoryPrivacyWidget);}
     profileMemoryPrivacyWidget.querySelector('.privacy-type').value=memory.privacy_level||'public';
     await profileMemoryPrivacyWidget.loadRule('memory',memory.id);
     bootstrap.Modal.getOrCreateInstance(modal).show();
 }
-document.getElementById('profileEditMemoryForm')?.addEventListener('submit',async event=>{event.preventDefault();if(!currentUser||Number(currentUser.id)!==Number(profileUserId))return;const error=document.getElementById('profile-edit-memory-error');const save=document.getElementById('profile-edit-memory-save');error.textContent='';save.disabled=true;try{const rule=profileMemoryPrivacyWidget.getRule();const response=await fetch('http://localhost/IAmStillHere/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('profile-edit-memory-id').value),title:document.getElementById('profile-edit-memory-title').value.trim(),description:document.getElementById('profile-edit-memory-description').value,memory_date:document.getElementById('profile-edit-memory-date').value,folder_id:Number(document.getElementById('profile-edit-memory-folder').value),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update memory.');await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule);bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal')).hide();loadMemories();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}});
+document.getElementById('profileEditMemoryForm')?.addEventListener('submit',async event=>{event.preventDefault();if(!currentUser||Number(currentUser.id)!==Number(profileUserId))return;const error=document.getElementById('profile-edit-memory-error');const save=document.getElementById('profile-edit-memory-save');error.textContent='';save.disabled=true;try{const rule=profileMemoryPrivacyWidget.getRule();const response=await fetch('/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('profile-edit-memory-id').value),title:document.getElementById('profile-edit-memory-title').value.trim(),description:document.getElementById('profile-edit-memory-description').value,memory_date:document.getElementById('profile-edit-memory-date').value,folder_id:Number(document.getElementById('profile-edit-memory-folder').value),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update memory.');await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule);bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal')).hide();loadMemories();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}});
 // Preserve the selected profile tab across refreshes.
 document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"][href^="#"]');

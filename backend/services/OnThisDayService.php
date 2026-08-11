@@ -150,10 +150,10 @@ class OnThisDayService
     private function memoryThumbnail(array $memory): ?string
     {
         if (!empty($memory['video_thumbnail_path'])) {
-            return 'http://localhost/IAmStillHere/data/uploads/' . ltrim((string) $memory['video_thumbnail_path'], '/');
+            return '/data/uploads/' . ltrim((string) $memory['video_thumbnail_path'], '/');
         }
         if (str_starts_with((string) $memory['file_type'], 'image/')) {
-            return 'http://localhost/IAmStillHere/data/uploads/photos/' . rawurlencode((string) $memory['file_path']);
+            return '/data/uploads/photos/' . rawurlencode((string) $memory['file_path']);
         }
         return null;
     }
@@ -163,6 +163,6 @@ class OnThisDayService
         if (empty($post['file_path']) || ($post['media_type'] ?? '') !== 'image') {
             return null;
         }
-        return 'http://localhost/IAmStillHere/data/uploads/photos/' . rawurlencode((string) $post['file_path']);
+        return '/data/uploads/photos/' . rawurlencode((string) $post['file_path']);
     }
 }

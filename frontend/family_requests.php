@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+            <a class="navbar-brand" href="/index.php">
                 <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,7 +31,7 @@
                         <a class="nav-link" href="memorials.php">Memorials</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+                        <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
                         <a class="nav-link" href="dashboard.php">Dashboard</a>

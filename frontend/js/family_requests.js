@@ -1,7 +1,7 @@
 let currentUserId = null;
 
 async function init() {
-    const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+    const response = await fetch('/backend/auth/check_session.php');
     const data = await response.json();
 
     if (!data.logged_in) {
@@ -19,7 +19,7 @@ async function loadReceivedRequests() {
     const container = document.getElementById('received-requests-container');
     
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/family/pending_requests.php?user_id=${currentUserId}`);
+        const response = await fetch(`/backend/family/pending_requests.php?user_id=${currentUserId}`);
         const data = await response.json();
 
         if (!data.success) {
@@ -47,8 +47,8 @@ async function loadReceivedRequests() {
             card.className = 'card mb-3 shadow-sm';
             
             const photoUrl = request.profile_photo 
-                ? `http://localhost/IAmStillHere/data/uploads/photos/${request.profile_photo}`
-                : 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                ? `/data/uploads/photos/${request.profile_photo}`
+                : '/data/uploads/photos/default-profile.png';
             
             const timeAgo = formatTimeAgo(request.created_at);
             const requester_id = request.requester_id;
@@ -56,14 +56,14 @@ async function loadReceivedRequests() {
             card.innerHTML = `
                 <div class="card-body">
                     <div class="d-flex align-items-start">
-                        <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${requester_id}" style="text-decoration: none; color: inherit;">
+                        <a href="/frontend/profile.php?user_id=${requester_id}" style="text-decoration: none; color: inherit;">
                             <img src="${photoUrl}" 
                                 alt="${request.requester_name}" 
                                 class="rounded-circle me-3" 
                                 style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #dee2e6;">
                         </a>
                         <div class="flex-grow-1">
-                            <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${requester_id}" style="text-decoration: none; color: inherit;">
+                            <a href="/frontend/profile.php?user_id=${requester_id}" style="text-decoration: none; color: inherit;">
                                 <h5 class="mb-1">${request.requester_name}</h5>
                             </a>
                             <p class="text-muted mb-2">
@@ -99,7 +99,7 @@ async function loadSentRequests() {
     const container = document.getElementById('sent-requests-container');
     
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/family/sent_requests.php?user_id=${currentUserId}`);
+        const response = await fetch(`/backend/family/sent_requests.php?user_id=${currentUserId}`);
         const data = await response.json();
 
         if (!data.success) {
@@ -127,8 +127,8 @@ async function loadSentRequests() {
             card.className = 'card mb-3 shadow-sm';
             
             const photoUrl = request.profile_photo 
-                ? `http://localhost/IAmStillHere/data/uploads/photos/${request.profile_photo}`
-                : 'http://localhost/IAmStillHere/data/uploads/photos/default-profile.png';
+                ? `/data/uploads/photos/${request.profile_photo}`
+                : '/data/uploads/photos/default-profile.png';
             
             const timeAgo = formatTimeAgo(request.created_at);
             const recipient_id = request.user_id;
@@ -145,14 +145,14 @@ async function loadSentRequests() {
             card.innerHTML = `
                 <div class="card-body">
                     <div class="d-flex align-items-start">
-                        <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${recipient_id}" style="text-decoration: none; color: inherit;">
+                        <a href="/frontend/profile.php?user_id=${recipient_id}" style="text-decoration: none; color: inherit;">
                             <img src="${photoUrl}" 
                                 alt="${request.user_name}" 
                                 class="rounded-circle me-3" 
                                 style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #dee2e6;">
                         </a>
                         <div class="flex-grow-1">
-                            <a href="http://localhost/IAmStillHere/frontend/profile.php?user_id=${recipient_id}" style="text-decoration: none; color: inherit;">
+                            <a href="/frontend/profile.php?user_id=${recipient_id}" style="text-decoration: none; color: inherit;">
                                 <h5 class="mb-1">${request.user_name} ${statusBadge}</h5>
                             </a>
                             <p class="text-muted mb-2">
@@ -187,7 +187,7 @@ async function respondToRequest(requestId, action) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/family/respond_request.php', {
+        const response = await fetch('/backend/family/respond_request.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -216,7 +216,7 @@ async function cancelRequest(requestId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/family/cancel_request.php', {
+        const response = await fetch('/backend/family/cancel_request.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ request_id: requestId })

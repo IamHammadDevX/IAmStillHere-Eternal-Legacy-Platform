@@ -1,4 +1,4 @@
-const JOURNEYS_API = 'http://localhost/IAmStillHere/backend/journeys';
+const JOURNEYS_API = '/backend/journeys';
 let journeysCache = [];
 let activeJourneyId = null;
 let journeyPrivacyWidget = null;

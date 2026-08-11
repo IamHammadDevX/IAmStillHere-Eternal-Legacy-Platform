@@ -1,4 +1,4 @@
-const AI_AUTOBIO_API = 'http://localhost/IAmStillHere/backend/ai/autobiography';
+const AI_AUTOBIO_API = '/backend/ai/autobiography';
 let aiAutobioState = {autobiography: null, sections: [], timeline: []};
 let aiAutobioBusy = false;
 

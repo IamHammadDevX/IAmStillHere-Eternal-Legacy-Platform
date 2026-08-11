@@ -1,5 +1,5 @@
-const FRIENDS_API = 'http://localhost/IAmStillHere/backend/friends';
-const FRIEND_PHOTO_BASE = 'http://localhost/IAmStillHere/data/uploads/photos/';
+const FRIENDS_API = '/backend/friends';
+const FRIEND_PHOTO_BASE = '/data/uploads/photos/';
 
 function friendEl(tag, cls = '', text = '') {
   const node = document.createElement(tag);
@@ -9,7 +9,7 @@ function friendEl(tag, cls = '', text = '') {
 }
 
 function friendPhoto(photo) {
-  return photo ? `${FRIEND_PHOTO_BASE}${encodeURIComponent(photo)}` : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+  return photo ? `${FRIEND_PHOTO_BASE}${encodeURIComponent(photo)}` : '/frontend/images/default-profile.png';
 }
 
 async function friendEnsureCsrf() {

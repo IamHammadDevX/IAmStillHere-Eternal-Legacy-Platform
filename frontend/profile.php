@@ -23,7 +23,7 @@ if (!is_logged_in()) {
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="http://localhost/IAmStillHere/index.php">
+      <a class="navbar-brand" href="/index.php">
         <i class="bi bi-heart-fill text-danger"></i> IamAlwaysHere
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -40,7 +40,7 @@ if (!is_logged_in()) {
             <a href="memorials.php" class="nav-link">Memorials</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="http://localhost/IAmStillHere/index.php">Home</a>
+            <a class="nav-link" href="/index.php">Home</a>
           </li>
           <li class="nav-item" id="nav-dashboard" style="display:none;">
             <a class="nav-link" href="dashboard.php">Dashboard</a>
@@ -73,7 +73,7 @@ if (!is_logged_in()) {
       style="background:linear-gradient(to top,rgba(0,0,0,0.7),transparent)">
       <div class="container">
         <div class="d-flex align-items-end">
-          <img id="profile-image" src="http://localhost/IAmStillHere/data/uploads/photos/default-profile.png"
+          <img id="profile-image" src="/data/uploads/photos/default-profile.png"
             class="profile-photo" alt="Profile" />
           <div class="ms-3 text-white">
             <h2 id="profile-name">Loading...</h2>
@@ -504,7 +504,7 @@ if (!is_logged_in()) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081101"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081120"></script>
-  <script src="js/posts.js?v=2026081102"></script>
+  <script src="js/posts.js?v=2026081122"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081002"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>

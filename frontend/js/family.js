@@ -1,8 +1,8 @@
-const API_BASE = "http://localhost/IAmStillHere/backend/family";
-const AUTH_CHECK = "http://localhost/IAmStillHere/backend/auth/check_session.php";
-const USER_LOOKUP = "http://localhost/IAmStillHere/backend/users/find.php";
-const PROFILE_URL_BASE = "http://localhost/IAmStillHere/frontend/profile.php?user_id=";
-const PHOTO_URL_BASE = "http://localhost/IAmStillHere/data/uploads/photos/";
+const API_BASE = "/backend/family";
+const AUTH_CHECK = "/backend/auth/check_session.php";
+const USER_LOOKUP = "/backend/users/find.php";
+const PROFILE_URL_BASE = "/frontend/profile.php?user_id=";
+const PHOTO_URL_BASE = "/data/uploads/photos/";
 
 // profileUserId is already declared in profile.js
 let loggedInUser = null; // set after check_session
@@ -615,7 +615,7 @@ async function loadPendingRequests() {
     if (!loggedInUser) return;
 
     try {
-        const res = await fetch(`http://localhost/IAmStillHere/backend/family/pending_requests.php?user_id=${loggedInUser.id}`);
+        const res = await fetch(`/backend/family/pending_requests.php?user_id=${loggedInUser.id}`);
         const data = await res.json();
 
         if (data.success && data.count > 0) {

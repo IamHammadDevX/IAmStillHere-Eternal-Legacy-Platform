@@ -175,8 +175,8 @@ class EmailHelper
         $subject = "Family Connection Request - IamAlwaysHere";
 
         // NOTE: Update URLs if not running locally
-        $approveUrl = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
-        $rejectUrl = "http://localhost/IAmStillHere/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
+        $approveUrl = "/frontend/approve_family.php?request_id=" . $requestId . "&action=accept";
+        $rejectUrl = "/frontend/approve_family.php?request_id=" . $requestId . "&action=reject";
 
         $html_message = "
         <html>
@@ -252,7 +252,7 @@ class EmailHelper
     {
         $mail = new PHPMailer(true);
         $subject = "Password Reset Request - IamAlwaysHere";
-        $resetUrl = "http://localhost/IAmStillHere/frontend/reset_password.php?token=" . $resetToken;
+        $resetUrl = "/frontend/reset_password.php?token=" . $resetToken;
 
         // --- HTML body ---
         $html_message = "
@@ -396,7 +396,7 @@ class EmailHelper
                         </div>
                         
                         <p style='text-align: center; margin-top: 30px;'>
-                            <a href='http://localhost/IAmStillHere/frontend/profile.php?user_id={$eventDetails['user_id']}' 
+                            <a href='/frontend/profile.php?user_id={$eventDetails['user_id']}' 
                             style='display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px;'>
                                 <i class='bi bi-person-circle'></i> View Profile
                             </a>

@@ -8,7 +8,7 @@ let milestoneCache = [];
 let editMilestonePrivacyWidget = null;
 
 async function init() {
-    const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+    const response = await fetch('/backend/auth/check_session.php');
     const data = await response.json();
 
     if (!data.logged_in) {
@@ -35,7 +35,7 @@ async function init() {
 
 async function loadCsrfToken() {
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/auth/csrf_token.php');
+        const response = await fetch('/backend/auth/csrf_token.php');
         const data = await response.json();
         csrfToken = data.success ? data.data.csrf_token : null;
     } catch (error) {
@@ -52,8 +52,8 @@ function escapeHtml(value) {
 
 function authorPhotoUrl(photo) {
     return photo
-        ? `http://localhost/IAmStillHere/data/uploads/photos/${encodeURIComponent(photo)}`
-        : 'http://localhost/IAmStillHere/frontend/images/default-profile.png';
+        ? `/data/uploads/photos/${encodeURIComponent(photo)}`
+        : '/frontend/images/default-profile.png';
 }
 
 function safeUploadPathSegment(value) {
@@ -62,7 +62,7 @@ function safeUploadPathSegment(value) {
 
 async function loadTributeCount(userId) {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/tributes/get_count.php?user_id=${userId}`);
+        const response = await fetch(`/backend/tributes/get_count.php?user_id=${userId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -78,7 +78,7 @@ async function loadTributeCount(userId) {
 
 async function loadMemories() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}&_=${Date.now()}`);
+        const response = await fetch(`/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}&_=${Date.now()}`);
         const data = await response.json();
 
         const grid = document.getElementById('memories-grid');
@@ -108,7 +108,7 @@ async function loadMemories() {
                 let downloadButton = '';
 
                 if (isImage) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/photos/${memory.file_path}`;
+                    filePath = `/data/uploads/photos/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
 
                     mediaHtml = `
@@ -117,10 +117,10 @@ async function loadMemories() {
                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                     `;
                 } else if (isVideo) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
+                    filePath = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
                     const posterPath = memory.video_thumbnail_path
-                        ? `http://localhost/IAmStillHere/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
+                        ? `/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
                         : '';
 
                     mediaHtml = `
@@ -135,7 +135,7 @@ async function loadMemories() {
                         </div>
                     `;
                 } else if (isAudio) {
-                    filePath = `http://localhost/IAmStillHere/data/uploads/audio/${memory.file_path}`;
+                    filePath = `/data/uploads/audio/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download</a>`;
 
                     mediaHtml = `
@@ -154,7 +154,7 @@ async function loadMemories() {
                     `;
                 } else {
                     // Documents
-                    filePath = `http://localhost/IAmStillHere/data/uploads/documents/${memory.file_path}`;
+                    filePath = `/data/uploads/documents/${memory.file_path}`;
                     downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
 
                     let fileIcon = 'bi-file-earmark-text';
@@ -224,7 +224,7 @@ async function loadMemoryComments(memoryId, page = 1) {
     container.innerHTML = '<div class="small text-muted">Loading comments...</div>';
 
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/memories/comments/list.php?memory_id=${memoryId}&page=${page}&limit=20`);
+        const response = await fetch(`/backend/memories/comments/list.php?memory_id=${memoryId}&page=${page}&limit=20`);
         const data = await response.json();
 
         if (!data.success) {
@@ -371,7 +371,7 @@ async function submitMemoryComment(event, memoryId, input) {
     if (!text) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/create.php', {
+        const response = await fetch('/backend/memories/comments/create.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -398,7 +398,7 @@ async function editMemoryComment(comment, memoryId) {
     if (updated === null) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/update.php', {
+        const response = await fetch('/backend/memories/comments/update.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -423,7 +423,7 @@ async function deleteMemoryComment(commentId, memoryId) {
     if (!confirm('Delete this comment?')) return;
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/comments/delete.php', {
+        const response = await fetch('/backend/memories/comments/delete.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -450,7 +450,7 @@ async function deleteMemory(memoryId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/delete.php', {
+        const response = await fetch('/backend/memories/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ memory_id: memoryId })
@@ -472,7 +472,7 @@ async function deleteMemory(memoryId) {
 
 async function loadTimeline() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/milestones/list.php?user_id=${currentUserId}`);
+        const response = await fetch(`/backend/milestones/list.php?user_id=${currentUserId}`);
         const data = await response.json();
 
         const container = document.getElementById('timeline-container');
@@ -534,7 +534,7 @@ async function deleteMilestone(milestoneId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/delete.php', {
+        const response = await fetch('/backend/milestones/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ milestone_id: milestoneId })
@@ -557,7 +557,7 @@ async function deleteMilestone(milestoneId) {
 // Load Events Function
 async function loadEvents() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/events/list.php?user_id=${currentUserId}`);
+        const response = await fetch(`/backend/events/list.php?user_id=${currentUserId}`);
         const data = await response.json();
 
         const container = document.getElementById('events-container');
@@ -690,7 +690,7 @@ async function deleteEvent(eventId) {
     }
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/events/delete.php', {
+        const response = await fetch('/backend/events/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ event_id: eventId })
@@ -712,7 +712,7 @@ async function deleteEvent(eventId) {
 
 async function loadRequestCount() {
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/family/pending_requests.php?user_id=${currentUserId}`);
+        const response = await fetch(`/backend/family/pending_requests.php?user_id=${currentUserId}`);
         const data = await response.json();
 
         if (data.success && data.count > 0) {
@@ -728,7 +728,7 @@ async function loadRequestCount() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch('http://localhost/IAmStillHere/backend/auth/check_session.php');
+    const response = await fetch('/backend/auth/check_session.php');
     const data = await response.json();
 
     if (data.logged_in) {
@@ -749,7 +749,7 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     formData.append('file', document.getElementById('memory-file').files[0]);
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/memories/upload.php', {
+        const response = await fetch('/backend/memories/upload.php', {
             method: 'POST',
             body: formData
         });
@@ -782,7 +782,7 @@ document.getElementById('milestoneForm').addEventListener('submit', async (e) =>
     };
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/milestones/create.php', {
+        const response = await fetch('/backend/milestones/create.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(milestoneData)
@@ -815,7 +815,7 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('http://localhost/IAmStillHere/backend/events/create.php', {
+        const response = await fetch('/backend/events/create.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(eventData)
@@ -840,7 +840,7 @@ document.addEventListener('DOMContentLoaded', init);
 async function loadMemoryFolders(search = '') {
     const box = document.getElementById('memory-folders');
     if (!box) return;
-    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}&_=${Date.now()}`);
+    const response = await fetch(`/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}&_=${Date.now()}`);
     const data = await response.json();
     box.innerHTML = '';
     const folders = data.success ? data.data.folders : [];
@@ -872,19 +872,19 @@ document.getElementById('new-folder-button')?.addEventListener('click', async ()
     const name = prompt('Folder name');
     if (!name) return;
     const privacy = prompt('Privacy: public, family, friends, or private', 'private');
-    const response = await fetch('http://localhost/IAmStillHere/backend/memories/folders/create.php', { method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-Token':csrfToken}, body: JSON.stringify({name, privacy_level: privacy || 'private'}) });
+    const response = await fetch('/backend/memories/folders/create.php', { method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-Token':csrfToken}, body: JSON.stringify({name, privacy_level: privacy || 'private'}) });
     const data = await response.json();
     if (data.success) loadMemoryFolders(); else vaultStatus(data.message || 'Unable to create folder', 'danger');
 });
 async function folderPost(endpoint, payload) {
-    const response = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/${endpoint}.php`, {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify(payload)});
+    const response = await fetch(`/backend/memories/folders/${endpoint}.php`, {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify(payload)});
     return response.json();
 }
 async function renameFolder(folder) { const name=prompt('New folder name',folder.name); if(!name)return; const data=await folderPost('update',{folder_id:folder.id,name}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to rename folder','danger'); }
 async function createChildFolder(parent) { const name=prompt('Child folder name'); if(!name)return; const data=await folderPost('create',{name,parent_folder_id:parent.id,privacy_level:parent.privacy_level}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to create child folder','danger'); }
 async function deleteFolder(folder) { if(!confirm(`Delete empty folder "${folder.name}"?`))return; const data=await folderPost('delete',{folder_id:folder.id}); if(data.success){if(currentMemoryFolderId===folder.id){currentMemoryFolderId=0;loadMemories();}loadMemoryFolders();}else showAlert(data.message||'Folder must be empty','danger'); }
 async function moveMemory(memoryId) {
-    const folders = await fetch(`http://localhost/IAmStillHere/backend/memories/folders/list.php?user_id=${currentUserId}&_=${Date.now()}`).then(r => r.json());
+    const folders = await fetch(`/backend/memories/folders/list.php?user_id=${currentUserId}&_=${Date.now()}`).then(r => r.json());
     const available = folders.data?.folders || [];
     const options = available.map(f => `${f.id}: ${f.name}`).join('\\n');
     const choice = prompt(`Enter folder ID or exact folder name. Enter 0 to remove folder.\\n${options}`, '0');
@@ -915,10 +915,10 @@ async function editMemory(memoryId) {
 }
 document.getElementById('editMemoryForm')?.addEventListener('submit', async event => {
     event.preventDefault(); const error=document.getElementById('edit-memory-error'); error.textContent=''; const save=document.getElementById('edit-memory-save'); save.disabled=true;
-    try { const rule=editMemoryPrivacyWidget.getRule(); const response=await fetch('http://localhost/IAmStillHere/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('edit-memory-id').value),title:document.getElementById('edit-memory-title').value.trim(),description:document.getElementById('edit-memory-description').value,memory_date:document.getElementById('edit-memory-date').value,folder_id:Number(document.getElementById('edit-memory-folder').value),privacy_level:rule.visibility_type})}); const data=await response.json(); if(!data.success)throw new Error(data.message||'Unable to update memory.'); try { await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule); } catch (privacyError) { error.textContent='Memory updated, but privacy settings were not saved: '+privacyError.message; return; } bootstrap.Modal.getInstance(document.getElementById('editMemoryModal')).hide(); loadMemories(); loadMemoryFolders(); } catch(e){ error.textContent=e.message; } finally { save.disabled=false; }
+    try { const rule=editMemoryPrivacyWidget.getRule(); const response=await fetch('/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('edit-memory-id').value),title:document.getElementById('edit-memory-title').value.trim(),description:document.getElementById('edit-memory-description').value,memory_date:document.getElementById('edit-memory-date').value,folder_id:Number(document.getElementById('edit-memory-folder').value),privacy_level:rule.visibility_type})}); const data=await response.json(); if(!data.success)throw new Error(data.message||'Unable to update memory.'); try { await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule); } catch (privacyError) { error.textContent='Memory updated, but privacy settings were not saved: '+privacyError.message; return; } bootstrap.Modal.getInstance(document.getElementById('editMemoryModal')).hide(); loadMemories(); loadMemoryFolders(); } catch(e){ error.textContent=e.message; } finally { save.disabled=false; }
 });
 async function editMilestone(milestoneId){const m=milestoneCache.find(x=>Number(x.id)===Number(milestoneId));if(!m)return;document.getElementById('edit-milestone-id').value=m.id;document.getElementById('edit-milestone-title').value=m.title||'';document.getElementById('edit-milestone-description').value=m.description||'';document.getElementById('edit-milestone-date').value=m.milestone_date||'';document.getElementById('edit-milestone-category').value=m.category||'';if(!editMilestonePrivacyWidget){editMilestonePrivacyWidget=privacyComponent('milestone-edit',currentUserId);document.getElementById('edit-milestone-privacy').appendChild(editMilestonePrivacyWidget);}editMilestonePrivacyWidget.querySelector('.privacy-type').value=m.privacy_level||'public';await editMilestonePrivacyWidget.loadRule('milestone',m.id);bootstrap.Modal.getOrCreateInstance(document.getElementById('editMilestoneModal')).show();}
-document.getElementById('editMilestoneForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-milestone-error');const save=document.getElementById('edit-milestone-save');error.textContent='';save.disabled=true;try{const rule=editMilestonePrivacyWidget.getRule();const response=await fetch('http://localhost/IAmStillHere/backend/milestones/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({milestone_id:Number(document.getElementById('edit-milestone-id').value),title:document.getElementById('edit-milestone-title').value.trim(),description:document.getElementById('edit-milestone-description').value,milestone_date:document.getElementById('edit-milestone-date').value,category:document.getElementById('edit-milestone-category').value.trim(),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update milestone');await savePrivacyRule(csrfToken,'milestone',data.data.milestone_id,rule);bootstrap.Modal.getInstance(document.getElementById('editMilestoneModal')).hide();loadTimeline();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});
+document.getElementById('editMilestoneForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-milestone-error');const save=document.getElementById('edit-milestone-save');error.textContent='';save.disabled=true;try{const rule=editMilestonePrivacyWidget.getRule();const response=await fetch('/backend/milestones/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({milestone_id:Number(document.getElementById('edit-milestone-id').value),title:document.getElementById('edit-milestone-title').value.trim(),description:document.getElementById('edit-milestone-description').value,milestone_date:document.getElementById('edit-milestone-date').value,category:document.getElementById('edit-milestone-category').value.trim(),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update milestone');await savePrivacyRule(csrfToken,'milestone',data.data.milestone_id,rule);bootstrap.Modal.getInstance(document.getElementById('editMilestoneModal')).hide();loadTimeline();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});
 let editFolderPrivacyWidget = null;
 async function editFolder(folder){try{document.getElementById('edit-folder-id').value=folder.id;document.getElementById('edit-folder-name').value=folder.name||'';document.getElementById('edit-folder-description').value=folder.description||'';const parent=document.getElementById('edit-folder-parent');parent.innerHTML='<option value="0">No parent</option>';window.lastMemoryFolders.filter(x=>Number(x.id)!==Number(folder.id)).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;parent.appendChild(o);});parent.value=folder.parent_folder_id||0;if(!editFolderPrivacyWidget){editFolderPrivacyWidget=privacyComponent('folder-edit',currentUserId);document.getElementById('edit-folder-privacy').appendChild(editFolderPrivacyWidget);}editFolderPrivacyWidget.querySelector('.privacy-type').value=folder.privacy_level||'private';bootstrap.Modal.getOrCreateInstance(document.getElementById('editFolderModal')).show();await editFolderPrivacyWidget.loadRule('memory_folder',folder.id);}catch(error){showAlert(error.message||'Unable to open folder editor','danger');}}
 document.getElementById('editFolderForm')?.addEventListener('submit',async e=>{e.preventDefault();const error=document.getElementById('edit-folder-error');const save=document.getElementById('edit-folder-save');error.textContent='';save.disabled=true;try{const rule=editFolderPrivacyWidget.getRule();const advanced=['specific_people','release_date','release_event'].includes(rule.visibility_type);const legacy=['public','family','friends','private'].includes(rule.visibility_type)?rule.visibility_type:'private';const data=await folderPost('update',{folder_id:Number(document.getElementById('edit-folder-id').value),name:document.getElementById('edit-folder-name').value.trim(),description:document.getElementById('edit-folder-description').value,parent_folder_id:Number(document.getElementById('edit-folder-parent').value),privacy_level:legacy});if(!data.success)throw new Error(data.message||'Unable to update folder');try{await savePrivacyRule(csrfToken,'memory_folder',Number(document.getElementById('edit-folder-id').value),rule);}catch(privacyError){error.textContent='Folder updated, but privacy settings were not saved: '+privacyError.message;return;}bootstrap.Modal.getInstance(document.getElementById('editFolderModal')).hide();loadMemoryFolders();if(currentMemoryFolderId)loadMemories();}catch(err){error.textContent=err.message;}finally{save.disabled=false;}});
@@ -927,7 +927,7 @@ async function loadOnThisDay(page = 1) {
     if (!container) return;
     container.innerHTML = '<div class="text-muted">Loading On This Day...</div>';
     try {
-        const response = await fetch(`http://localhost/IAmStillHere/backend/on_this_day/list.php?page=${page}&limit=8`);
+        const response = await fetch(`/backend/on_this_day/list.php?page=${page}&limit=8`);
         const data = await response.json();
         if (!data.success) {
             container.innerHTML = `<div class="alert alert-danger">${escapeHtml(data.message || 'Unable to load On This Day.')}</div>`;
@@ -1021,7 +1021,7 @@ function initVaultFeature() {
 }
 
 async function vaultJson(endpoint, payload) {
-    const response = await fetch(`http://localhost/IAmStillHere/backend/vault/${endpoint}.php`, {
+    const response = await fetch(`/backend/vault/${endpoint}.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
         body: JSON.stringify({ ...payload, csrf_token: csrfToken })
@@ -1036,7 +1036,7 @@ async function loadVault() {
     try {
         const ownerInput = Number(document.getElementById('vault-owner-id')?.value || 0);
         const ownerParam = ownerInput > 0 ? `&owner_id=${ownerInput}` : '';
-        const response = await fetch(`http://localhost/IAmStillHere/backend/vault/list.php?folder_id=${vaultCurrentFolderId}${ownerParam}`);
+        const response = await fetch(`/backend/vault/list.php?folder_id=${vaultCurrentFolderId}${ownerParam}`);
         const data = await response.json();
         if (!data.success) throw new Error(data.message || 'Unable to load vault.');
         vaultOwnerId = data.data.owner_id;
@@ -1132,7 +1132,7 @@ function renderVaultDocuments(documents) {
         const down = document.createElement('a');
         down.className = 'btn btn-sm btn-outline-primary';
         down.textContent = 'Download';
-        down.href = `http://localhost/IAmStillHere/backend/vault/download.php?document_id=${doc.id}`;
+        down.href = `/backend/vault/download.php?document_id=${doc.id}`;
         const rename = document.createElement('button');
         rename.className = 'btn btn-sm btn-outline-secondary';
         rename.textContent = 'Rename';
@@ -1166,7 +1166,7 @@ async function loadVaultLogs() {
     try {
         const ownerInput = Number(document.getElementById('vault-owner-id')?.value || 0);
         const ownerParam = ownerInput > 0 ? `?owner_id=${ownerInput}` : '';
-        const response = await fetch(`http://localhost/IAmStillHere/backend/vault/logs.php${ownerParam}`);
+        const response = await fetch(`/backend/vault/logs.php${ownerParam}`);
         const data = await response.json();
         if (!data.success) throw new Error(data.message || 'Unable to load logs.');
         box.innerHTML = '';
@@ -1198,7 +1198,7 @@ async function vaultUpload(event) {
     form.append('folder_id', vaultCurrentFolderId);
     form.append('display_name', document.getElementById('vault-display-name').value.trim() || file.name.replace(/\.[^/.]+$/, ''));
     form.append('file', file);
-    const response = await fetch('http://localhost/IAmStillHere/backend/vault/upload.php', { method: 'POST', body: form, headers: { 'X-CSRF-Token': csrfToken } });
+    const response = await fetch('/backend/vault/upload.php', { method: 'POST', body: form, headers: { 'X-CSRF-Token': csrfToken } });
     const data = await response.json();
     if (data.success) { document.getElementById('vault-upload-form').reset(); vaultStatus('Vault document uploaded.', 'success'); loadVault(); }
     else vaultStatus(data.message || 'Upload failed', 'danger');
@@ -1254,7 +1254,7 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(initVaultFeature,
 
 
 
-const AUTOMATIONS_API = 'http://localhost/IAmStillHere/backend/automations';
+const AUTOMATIONS_API = '/backend/automations';
 let automationsCache = [];
 function automationEl(tag, cls='', text=''){const el=document.createElement(tag); if(cls)el.className=cls; if(text)el.textContent=text; return el;}
 function automationUtcFromLocal(value){return value ? new Date(value).toISOString() : '';}

@@ -1,4 +1,4 @@
-const AI_AVATAR_API = 'http://localhost/IAmStillHere/backend/ai';
+const AI_AVATAR_API = '/backend/ai';
 let aiAvatarConversationId = null;
 let aiAvatarBusy = false;
 let aiAvatarSourcesCache = [];

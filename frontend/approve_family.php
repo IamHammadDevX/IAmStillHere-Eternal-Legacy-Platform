@@ -70,7 +70,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/family/respond_request.php', {
+                const response = await fetch('/backend/family/respond_request.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

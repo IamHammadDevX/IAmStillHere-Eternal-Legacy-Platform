@@ -79,7 +79,7 @@
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
 
             try {
-                const response = await fetch('http://localhost/IAmStillHere/backend/auth/request_reset.php', {
+                const response = await fetch('/backend/auth/request_reset.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email })
