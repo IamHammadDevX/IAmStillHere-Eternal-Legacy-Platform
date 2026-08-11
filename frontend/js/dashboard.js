@@ -1191,19 +1191,42 @@ async function vaultReauth(event) {
 
 async function vaultUpload(event) {
     event.preventDefault();
-    const file = document.getElementById('vault-file').files[0];
-    if (!file) return vaultStatus('Choose a file first.', 'danger');
-    const form = new FormData();
-    form.append('csrf_token', csrfToken);
-    form.append('folder_id', vaultCurrentFolderId);
-    form.append('display_name', document.getElementById('vault-display-name').value.trim() || file.name.replace(/\.[^/.]+$/, ''));
-    form.append('file', file);
-    const response = await fetch('/backend/vault/upload.php', { method: 'POST', body: form, headers: { 'X-CSRF-Token': csrfToken } });
-    const data = await response.json();
-    if (data.success) { document.getElementById('vault-upload-form').reset(); vaultStatus('Vault document uploaded.', 'success'); loadVault(); }
-    else vaultStatus(data.message || 'Upload failed', 'danger');
-}
+    const fileInput = document.getElementById('vault-file');
+    const nameInput = document.getElementById('vault-display-name');
+    const uploadButton = document.querySelector('#vault-upload-form button[type="submit"]');
+    const file = fileInput?.files?.[0];
+    if (!file) { vaultStatus('Choose a file first.', 'danger'); return; }
+    if (!vaultIsVerified) { vaultStatus('Unlock Vault first.', 'warning'); return; }
 
+    const displayName = nameInput?.value.trim() || file.name.replace(/\.[^/.]+$/, '');
+    const form = new FormData();
+    form.append('csrf_token', csrfToken || '');
+    form.append('folder_id', String(vaultCurrentFolderId || 0));
+    form.append('display_name', displayName);
+    form.append('file', file, file.name);
+
+    if (uploadButton) { uploadButton.disabled = true; uploadButton.textContent = 'Uploading...'; }
+    vaultStatus('Uploading document...', 'info');
+    try {
+        const response = await fetch('/backend/vault/upload.php', {
+            method: 'POST',
+            body: form,
+            headers: { 'X-CSRF-Token': csrfToken || '' }
+        });
+        const raw = await response.text();
+        let data;
+        try { data = JSON.parse(raw); } catch (_) { throw new Error(`Server returned invalid response (${response.status}).`); }
+        if (!response.ok || !data.success) throw new Error(data.message || `Upload failed (${response.status}).`);
+        document.getElementById('vault-upload-form').reset();
+        vaultStatus(`Uploaded: ${displayName}`, 'success');
+        await loadVault();
+    } catch (error) {
+        console.error('Vault upload failed:', error);
+        vaultStatus(error.message || 'Upload failed.', 'danger');
+    } finally {
+        if (uploadButton) { uploadButton.disabled = false; uploadButton.textContent = 'Upload'; }
+    }
+}
 async function vaultCreateFolder() {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
     const name = document.getElementById('vault-folder-name').value.trim();
