@@ -35,17 +35,38 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
     }
     if($action['action_type']==='wall_post'){
         $scheduledId=(int)($payload['scheduled_wall_post_id']??0);
-        if($scheduledId>0){$lock=$db->prepare("UPDATE scheduled_wall_posts SET status='processing' WHERE id=:id AND owner_id=:owner AND status='scheduled'");$lock->execute(['id'=>$scheduledId,'owner'=>(int)$rule['owner_id']]);if($lock->rowCount()<1)return;}
-        $body=trim((string)($payload['body']??$rule['description']??$rule['title']));
-        if($body==='') throw new RuntimeException('Wall post body empty.');
-        $privacy=in_array(($payload['privacy_level']??'private'),['public','family','private'],true)?$payload['privacy_level']:'private';
-        $s=$db->prepare('INSERT INTO posts(user_id,body,privacy_level) VALUES(:u,:body,:privacy)');
-        $s->execute(['u'=>(int)$rule['owner_id'],'body'=>$body,'privacy'=>$privacy]);
-        $postId=(int)$db->lastInsertId();
-        if(!empty($payload['media_file_path']) && in_array(($payload['media_type']??''),['image','video'],true)){$m=$db->prepare('INSERT INTO post_media(post_id,file_path,file_type,file_size,media_type) VALUES(:p,:path,:type,:size,:media)');$m->execute(['p'=>$postId,'path'=>$payload['media_file_path'],'type'=>$payload['media_file_type']??'','size'=>(int)($payload['media_file_size']??0),'media'=>$payload['media_type']]);}
-        if($scheduledId>0)$db->prepare("UPDATE scheduled_wall_posts SET status='published', published_post_id=:post, updated_at=UTC_TIMESTAMP() WHERE id=:id")->execute(['post'=>$postId,'id'=>$scheduledId]);
-        return;
-    }    if($action['action_type']==='email'){
+        if($scheduledId<=0) throw new RuntimeException('Scheduled wall post ID missing.');
+        $row=$db->prepare('SELECT * FROM scheduled_wall_posts WHERE id=:id AND owner_id=:owner AND deleted_at IS NULL LIMIT 1');
+        $row->execute(['id'=>$scheduledId,'owner'=>(int)$rule['owner_id']]);
+        $scheduled=$row->fetch(PDO::FETCH_ASSOC);
+        if(!$scheduled) throw new RuntimeException('Scheduled wall post not found.');
+        if($scheduled['status']==='cancelled') throw new RuntimeException('Scheduled wall post was cancelled.');
+        if($scheduled['status']==='published' && (int)$scheduled['published_post_id']>0) return;
+        if($scheduled['status']!=='scheduled') throw new RuntimeException('Scheduled wall post is not publishable.');
+
+        $db->beginTransaction();
+        try {
+            $lock=$db->prepare("UPDATE scheduled_wall_posts SET status='processing', last_error=NULL WHERE id=:id AND owner_id=:owner AND status='scheduled'");
+            $lock->execute(['id'=>$scheduledId,'owner'=>(int)$rule['owner_id']]);
+            if($lock->rowCount()!==1) throw new RuntimeException('Scheduled wall post could not be claimed.');
+            $body=trim((string)$scheduled['body']);
+            if($body==='') throw new RuntimeException('Wall post body empty.');
+            $privacy=in_array($scheduled['privacy_level'],['public','family','private'],true)?$scheduled['privacy_level']:'private';
+            $post=$db->prepare('INSERT INTO posts(user_id,body,privacy_level) VALUES(:u,:body,:privacy)');
+            $post->execute(['u'=>(int)$rule['owner_id'],'body'=>$body,'privacy'=>$privacy]);
+            $postId=(int)$db->lastInsertId();
+            if(!$postId) throw new RuntimeException('Wall post was not persisted.');
+            if(!empty($scheduled['media_file_path']) && in_array(($scheduled['media_type']??''),['image','video'],true)){$m=$db->prepare('INSERT INTO post_media(post_id,file_path,file_type,file_size,media_type) VALUES(:p,:path,:type,:size,:media)');$m->execute(['p'=>$postId,'path'=>$scheduled['media_file_path'],'type'=>$scheduled['media_file_type']??'','size'=>(int)($scheduled['media_file_size']??0),'media'=>$scheduled['media_type']]);}
+            $done=$db->prepare("UPDATE scheduled_wall_posts SET status='published', published_post_id=:post, updated_at=UTC_TIMESTAMP() WHERE id=:id AND status='processing'");
+            $done->execute(['post'=>$postId,'id'=>$scheduledId]);
+            if($done->rowCount()!==1) throw new RuntimeException('Scheduled wall post status was not updated.');
+            $db->commit();
+        } catch(Throwable $e) {
+            if($db->inTransaction()) $db->rollBack();
+            $db->prepare("UPDATE scheduled_wall_posts SET status='scheduled', last_error=:error, updated_at=UTC_TIMESTAMP() WHERE id=:id AND status='processing'")->execute(['error'=>mb_substr($e->getMessage(),0,500),'id'=>$scheduledId]);
+            throw $e;
+        }
+        return;    }    if($action['action_type']==='email'){
         $u=$db->prepare('SELECT email,full_name FROM users WHERE id=:id LIMIT 1');$u->execute(['id'=>(int)$rule['owner_id']]);$user=$u->fetch(PDO::FETCH_ASSOC);
         if(!$user) throw new RuntimeException('Owner not found.');
         $event=['title'=>$rule['title'],'event_type'=>$rule['trigger_type'],'scheduled_date'=>$rule['next_run_at'],'message'=>$payload['message']??$rule['description']??'','user_id'=>(int)$rule['owner_id']];
