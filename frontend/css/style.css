@@ -2833,3 +2833,73 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .profile-page #personalized-messages-list:empty::after {
     content: none !important;
 }
+/* Mobile profile header: distinct cover band and larger anchored portrait */
+@media (max-width: 767.98px) {
+    .profile-page #cover-section {
+        min-height: 410px !important;
+        height: 410px !important;
+        overflow: hidden;
+        background: linear-gradient(180deg, #6d8fb4 0 170px, #7560b4 170px, #315f9a 100%) !important;
+    }
+
+    .profile-page #cover-section #cover-image {
+        position: absolute !important;
+        inset: 0 0 auto 0 !important;
+        width: 100% !important;
+        height: 170px !important;
+        object-fit: cover !important;
+        z-index: 0;
+    }
+
+    .profile-page #cover-section > .position-absolute {
+        z-index: 1;
+        min-height: 410px !important;
+        height: 410px !important;
+        padding: 170px 0 1.25rem !important;
+        background: linear-gradient(180deg, rgba(49,95,154,.08) 0 170px, rgba(117,96,180,.96) 170px, rgba(42,76,132,.98) 100%) !important;
+    }
+
+    .profile-page #cover-section .container > .d-flex {
+        justify-content: flex-end;
+        gap: .45rem;
+    }
+
+    .profile-page #profile-image.profile-photo {
+        width: 140px !important;
+        height: 140px !important;
+        flex: 0 0 140px;
+        border-width: 5px !important;
+        margin: 0 0 .25rem !important;
+    }
+
+    .profile-page #cover-section .ms-3 {
+        margin-left: 0 !important;
+    }
+
+    .profile-page #profile-name {
+        margin-bottom: .2rem !important;
+        font-size: 1.55rem !important;
+    }
+}
+@media (max-width: 767.98px) {
+    .profile-page #cover-section .container > .d-flex > .ms-3 {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .profile-page #profile-name,
+    .profile-page #profile-dates {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .profile-page #profile-name {
+        line-height: 1.05;
+    }
+
+    .profile-page #edit-profile-btn {
+        min-height: 42px;
+        white-space: nowrap;
+    }
+}
