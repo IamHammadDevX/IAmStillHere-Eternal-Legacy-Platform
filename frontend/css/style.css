@@ -2903,3 +2903,14 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
         white-space: nowrap;
     }
 }
+
+/* Memory images: preserve complete uploaded artwork in dashboard and profile cards */
+.memory-card img.memory-image {
+    width: 100%;
+    height: clamp(180px, 22vw, 240px);
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    background: #f1f3f5;
+    border-radius: 10px 10px 0 0;
+}

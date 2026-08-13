@@ -114,7 +114,7 @@ async function loadMemories() {
                     mediaHtml = `
                         <img src="${filePath}" 
                             alt="${memory.title}" 
-                            style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                            class="memory-image">
                     `;
                 } else if (isVideo) {
                     filePath = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
