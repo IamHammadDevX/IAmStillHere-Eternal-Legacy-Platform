@@ -22,7 +22,7 @@ try {
     $is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
 
     // Build privacy conditions
-    $privacy_conditions = "status = 'scheduled'";
+    $privacy_conditions = "status IN ('scheduled', 'published', 'cancelled')";
     
     if (!$is_owner && !$is_admin) {
         // Not owner or admin - show only public events

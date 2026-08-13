@@ -77,6 +77,9 @@ class NotificationService
                 if (in_array($resourceType, ['post', 'post_comment'], true)) {
                     return "profile.php?user_id={$ownerId}#posts-tab";
                 }
+                if ($resourceType === 'scheduled_event') {
+                    return "profile.php?user_id={$ownerId}#events-tab";
+                }
                 if ($resourceType === 'journey') {
                     return "profile.php?user_id={$ownerId}#journeys-tab";
                 }
@@ -110,6 +113,11 @@ class NotificationService
             }
             if ($resourceType === 'post_comment') {
                 $statement = $connection->prepare('SELECT p.user_id FROM post_comments c INNER JOIN posts p ON p.id = c.post_id WHERE c.id = :id LIMIT 1');
+                $statement->execute(['id' => $resourceId]);
+                return (int) $statement->fetchColumn();
+            }
+            if ($resourceType === 'scheduled_event') {
+                $statement = $connection->prepare('SELECT user_id FROM scheduled_events WHERE id = :id LIMIT 1');
                 $statement->execute(['id' => $resourceId]);
                 return (int) $statement->fetchColumn();
             }

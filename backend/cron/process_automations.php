@@ -20,7 +20,17 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
     $payload=$action['payload'] ? json_decode($action['payload'], true) : [];
     if(!is_array($payload)) $payload=[];
     if($action['action_type']==='notification'){
-        NotificationService::createOnce($db,(int)$rule['owner_id'],null,NotificationService::TYPE_SCHEDULED_EVENT_STATUS,'automation',(int)$rule['id'],mb_substr($payload['message']??('Automation ready: '.$rule['title']),0,255));
+        $message=mb_substr((string)($payload['message']??($rule['description']??('Automation ready: '. $rule['title']))),0,10000);
+        $event=$db->prepare("SELECT id FROM scheduled_events WHERE user_id=:user AND event_type='automation_notification' AND title=:title AND scheduled_date=:scheduled LIMIT 1");
+        $event->execute(['user'=>(int)$rule['owner_id'],'title'=>$rule['title'],'scheduled'=>$rule['next_run_at']]);
+        $eventId=(int)$event->fetchColumn();
+        if($eventId<=0){
+            $insert=$db->prepare("INSERT INTO scheduled_events (user_id,event_type,title,message,scheduled_date,privacy_level,status,notified,notified_at) VALUES (:user,'automation_notification',:title,:message,:scheduled,'private','scheduled',0,NULL)");
+            $insert->execute(['user'=>(int)$rule['owner_id'],'title'=>$rule['title'],'message'=>$message,'scheduled'=>$rule['next_run_at']]);
+            $eventId=(int)$db->lastInsertId();
+        }
+        NotificationService::createOnce($db,(int)$rule['owner_id'],null,NotificationService::TYPE_SCHEDULED_EVENT_STATUS,'scheduled_event',$eventId,$message);
+        $db->prepare("UPDATE scheduled_events SET status='published', notified=1, notified_at=NOW() WHERE id=:id")->execute(['id'=>$eventId]);
         return;
     }
     if($action['action_type']==='wall_post'){
