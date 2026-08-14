@@ -21,7 +21,7 @@ try{
         $id=(int)($d['folder_id']??0); if(!$id||!vault_folder_owned($db,$id,$actor)){ApiResponse::notFound('Folder not found.');exit;}
         $child=$db->prepare('SELECT id FROM vault_folders WHERE parent_folder_id=:id AND deleted_at IS NULL LIMIT 1'); $child->execute(['id'=>$id]);
         $doc=$db->prepare('SELECT id FROM vault_documents WHERE folder_id=:id AND deleted_at IS NULL LIMIT 1'); $doc->execute(['id'=>$id]);
-        if($child->fetchColumn()||$doc->fetchColumn()){ApiResponse::validation(['folder'=>'Folder must be empty.']);exit;}
+        if($child->fetchColumn()||$doc->fetchColumn()){ApiResponse::validation(['folder'=>'Cannot delete this folder yet. Move or delete its documents and subfolders first.']);exit;}
         $s=$db->prepare('UPDATE vault_folders SET deleted_at=NOW() WHERE id=:id AND owner_id=:owner'); $s->execute(['id'=>$id,'owner'=>$actor]); vault_log($db,$actor,$actor,null,'folder_delete'); ApiResponse::success([],'Vault folder deleted.'); exit;
     }
     ApiResponse::validation(['action'=>'Invalid action.']);

@@ -1013,7 +1013,7 @@ function vaultStatus(message, type = 'success') { const box = document.getElemen
 function initVaultFeature() {
     document.getElementById('vault-refresh-btn')?.addEventListener('click', () => loadVault());
     document.getElementById('vault-reauth-form')?.addEventListener('submit', vaultReauth);
-    document.getElementById('vault-upload-form')?.addEventListener('submit', vaultUpload);
+    document.getElementById('vault-upload-form')?.addEventListener('submit', vaultUpload); document.getElementById('vault-upload-trigger')?.addEventListener('click', () => { if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning'); document.getElementById('vault-file')?.click(); });
     document.getElementById('vault-folder-create')?.addEventListener('click', vaultCreateFolder);
     document.getElementById('vault-grant')?.addEventListener('click', () => vaultPermission('grant'));
     document.getElementById('vault-revoke')?.addEventListener('click', () => vaultPermission('revoke'));
@@ -1044,7 +1044,8 @@ async function loadVault() {
         if (ownerLabel) ownerLabel.textContent = ownerInput > 0 ? 'Viewing Vault Owner ID: ' + vaultOwnerId : 'Your Vault ID: ' + vaultOwnerId;
         vaultIsVerified = Boolean(data.data.vault_verified);
         document.getElementById('vault-reauth-box').style.display = vaultIsVerified ? 'none' : '';
-        renderVaultFolders(data.data.folders || []);
+        const path = data.data.folder_path || []; const crumb = document.getElementById('vault-breadcrumb'); if (crumb) crumb.textContent = 'Vault / ' + (path.length ? path.map(item => item.name).join(' / ') : 'All documents');
+        window.vaultFolderPath = data.data.folder_path || []; renderVaultFolders(data.data.folders || []);
         renderVaultDocuments(data.data.documents || []);
         renderVaultPermissions(data.data.permissions || []);
         setVaultLockedState(vaultIsVerified, data.data.vault_verified_until);
@@ -1058,7 +1059,7 @@ async function loadVault() {
 function setVaultLockedState(isVerified, verifiedUntil) {
     const sensitive = [
         'vault-folder-name', 'vault-folder-create', 'vault-display-name', 'vault-file',
-        'vault-counsel-user-id', 'vault-grant', 'vault-revoke'
+        'vault-counsel-user-id', 'vault-grant', 'vault-revoke', 'vault-upload-trigger'
     ];
     sensitive.forEach(id => {
         const el = document.getElementById(id);
@@ -1080,30 +1081,11 @@ function vaultBlockLockedClick(event) {
     }
 }
 function renderVaultFolders(folders) {
-    const box = document.getElementById('vault-folder-list');
-    if (!box) return;
-    box.innerHTML = '';
-    const all = document.createElement('button');
-    all.className = `list-group-item list-group-item-action ${vaultCurrentFolderId === 0 ? 'active' : ''}`;
-    all.textContent = 'All documents';
-    all.onclick = () => { vaultCurrentFolderId = 0; loadVault(); };
-    box.appendChild(all);
-    folders.forEach(folder => {
-        const row = document.createElement('div');
-        row.className = 'list-group-item d-flex justify-content-between align-items-center gap-2';
-        const open = document.createElement('button');
-        open.className = `btn btn-sm ${vaultCurrentFolderId === folder.id ? 'btn-primary' : 'btn-link'} text-start flex-grow-1`;
-        open.textContent = folder.name;
-        open.onclick = () => { vaultCurrentFolderId = folder.id; loadVault(); };
-        const del = document.createElement('button');
-        del.className = 'btn btn-sm btn-outline-danger';
-        del.textContent = 'Delete';
-        del.onclick = () => vaultDeleteFolder(folder.id);
-        row.append(open, del);
-        box.appendChild(row);
-    });
+    const box=document.getElementById('vault-folder-list'); if(!box)return; box.innerHTML='';
+    if(vaultCurrentFolderId){const back=document.createElement('button');back.className='list-group-item list-group-item-action';back.textContent='← Back';back.onclick=()=>{const path=window.vaultFolderPath||[];vaultCurrentFolderId=path.length?(path[path.length-1].parent_folder_id||0):0;loadVault();};box.appendChild(back);}
+    const all=document.createElement('button');all.className=`list-group-item list-group-item-action ${vaultCurrentFolderId===0?'active':''}`;all.textContent='All documents';all.onclick=()=>{vaultCurrentFolderId=0;loadVault();};box.appendChild(all);
+    folders.forEach(folder=>{const row=document.createElement('div');row.className='list-group-item d-flex justify-content-between align-items-center gap-2';const open=document.createElement('button');open.className='btn btn-sm btn-link text-start flex-grow-1';open.textContent='📁 '+folder.name;open.onclick=()=>{vaultCurrentFolderId=folder.id;loadVault();};const del=document.createElement('button');del.className='btn btn-sm btn-outline-danger';del.textContent='Delete';del.onclick=()=>vaultDeleteFolder(folder.id);row.append(open,del);box.appendChild(row);});
 }
-
 function renderVaultDocuments(documents) {
     const box = document.getElementById('vault-document-list');
     box.innerHTML = '';
@@ -1229,19 +1211,18 @@ async function vaultUpload(event) {
 }
 async function vaultCreateFolder() {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
-    const name = document.getElementById('vault-folder-name').value.trim();
-    if (!name) return;
-    const data = await vaultJson('folders', { action: 'create', name, parent_folder_id: vaultCurrentFolderId });
-    if (data.success) { document.getElementById('vault-folder-name').value = ''; vaultStatus('Vault folder created.', 'success'); loadVault(); }
-    else vaultStatus(data.message || 'Unable to create folder', 'danger');
+    const input=document.getElementById('vault-folder-name'), button=document.getElementById('vault-folder-create'), name=input.value.trim();
+    if (!name) return vaultStatus('Enter a folder name first.', 'warning');
+    button.disabled=true;button.textContent='Creating...';
+    try { const data=await vaultJson('folders',{action:'create',name,parent_folder_id:vaultCurrentFolderId}); if(data.success){input.value='';vaultStatus(`Folder created: ${name}`,'success');await loadVault();}else vaultStatus(data.errors?.name||data.errors?.parent_folder_id||data.message||'Unable to create folder','danger'); }
+    finally { button.disabled=!vaultIsVerified;button.textContent='+ Folder'; }
 }
-
 async function vaultDeleteFolder(folderId) {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
     if (!confirm('Delete empty vault folder?')) return;
     const data = await vaultJson('folders', { action: 'delete', folder_id: folderId });
     if (data.success) { if (vaultCurrentFolderId === folderId) vaultCurrentFolderId = 0; vaultStatus('Vault folder deleted.', 'success'); loadVault(); }
-    else vaultStatus(data.message || 'Unable to delete folder', 'danger');
+    else vaultStatus(data.errors?.folder || data.message || 'Cannot delete this folder. Remove its documents and subfolders first.', 'danger');
 }
 
 async function vaultRename(doc) {
