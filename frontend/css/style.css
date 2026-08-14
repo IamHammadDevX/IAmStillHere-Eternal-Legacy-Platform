@@ -2971,3 +2971,20 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
     .navbar #nav-notifications .notification-toggle .bi-bell { margin: 0 !important; }
     .navbar #nav-notifications #notification-count-badge { right: -4px !important; }
 }
+/* Social Wall images: preserve the complete original image. Videos keep existing sizing. */
+.post-media img.post-image {
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center;
+    display: block;
+    background: #f1f3f5;
+    border-radius: 18px;
+}
+
+@media (max-width: 576px) {
+    .post-media img.post-image {
+        max-height: none !important;
+    }
+}
