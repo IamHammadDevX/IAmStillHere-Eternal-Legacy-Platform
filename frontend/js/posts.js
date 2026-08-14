@@ -219,30 +219,32 @@ function renderPostPagination(container, pagination) {
 async function submitPost(event) {
     event.preventDefault();
     if (!csrfToken) return showAlert('Missing CSRF token. Refresh and try again.', 'danger');
+    const submit = event.target.querySelector('button[type="submit"]');
+    const originalText = submit?.innerHTML || 'Post';
+    if (submit?.disabled) return;
+    if (submit) { submit.disabled = true; submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Posting...'; }
     const form = new FormData();
     form.append('body', document.getElementById('post-body').value.trim());
     form.append('privacy_level', postPrivacyWidget ? postPrivacyWidget.getRule().visibility_type : document.getElementById('post-privacy').value);
     form.append('csrf_token', csrfToken);
     const media = document.getElementById('post-media').files[0];
     if (media) form.append('media', media);
-
     try {
-        if (document.querySelector('[name="post-mode"]:checked')?.value === 'schedule') { await submitScheduledPost(event.target); return; }
+        if (document.querySelector('[name="post-mode"]:checked')?.value === 'schedule') { submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Scheduling...'; await submitScheduledPost(event.target); return; }
         const response = await fetch(`${POSTS_API}/create.php`, { method: 'POST', body: form });
         const data = await response.json();
         if (data.success) {
             try { await savePrivacyRule(csrfToken, 'post', data.data.post.id, postPrivacyWidget ? postPrivacyWidget.getRule() : {visibility_type: document.getElementById('post-privacy').value, user_ids: [], release_at: '', release_event_id: 0}); } catch (privacyError) { showAlert('Post created, but privacy settings were not saved: ' + privacyError.message, 'warning'); return; }
             document.getElementById('post-form').reset();
             loadPosts(1);
-        } else {
-            showAlert(data.message || 'Unable to create post.', 'danger');
-        }
+        } else showAlert(data.message || 'Unable to create post.', 'danger');
     } catch (error) {
         console.error('Error creating post:', error);
-        showAlert('Error creating post.', 'danger');
+        showAlert(error.message || 'Error creating post.', 'danger');
+    } finally {
+        if (submit) { submit.disabled = false; submit.innerHTML = originalText; }
     }
 }
-
 async function editPost(post) {
     const modal=document.getElementById('postEditModal'); const body=document.getElementById('post-edit-body'); const error=document.getElementById('post-edit-error'); error.textContent=''; if(!window.postEditPrivacyWidget){window.postEditPrivacyWidget=privacyComponent('post-edit',currentUser.id);document.getElementById('post-edit-privacy').appendChild(window.postEditPrivacyWidget);} body.value=post.body||''; window.postEditPrivacyWidget.querySelector('.privacy-type').value=post.privacy_level||'public'; await window.postEditPrivacyWidget.loadRule('post',post.id); bootstrap.Modal.getOrCreateInstance(modal).show(); document.getElementById('post-edit-save').onclick=async()=>{try{const response=await fetch(`${POSTS_API}/update.php`,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({post_id:post.id,body:body.value.trim(),privacy_level:window.postEditPrivacyWidget.getRule().visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update post.');await savePrivacyRule(csrfToken,'post',post.id,window.postEditPrivacyWidget.getRule());bootstrap.Modal.getInstance(modal).hide();loadPosts(postPage);}catch(e){error.textContent=e.message;}};
 }
