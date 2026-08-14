@@ -3057,3 +3057,14 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .profile-page #journeyModal .modal-content { background:#fff !important; opacity:1 !important; }
 .profile-page #journeyModal .modal-body, .profile-page #journeyModal .modal-footer { background:#fff !important; opacity:1 !important; }
 .profile-page #journeyModal .form-control, .profile-page #journeyModal .form-select { background-color:#fff !important; opacity:1 !important; }
+
+/* Family tree: support larger families without overlap */
+.profile-page .family-tree-scroll { padding:1rem .5rem 1.25rem; }
+.profile-page .family-tree-compact { min-width:720px; }
+.profile-page .family-tree-section { max-width:900px; }
+.profile-page .family-tree-row { column-gap:1.35rem; row-gap:1rem; padding:.35rem .75rem .25rem; }
+.profile-page .family-tree-person { width:110px; }
+.profile-page .family-tree-person-link { min-height:112px; justify-content:flex-start; padding:.45rem .3rem; border-radius:16px; }
+.profile-page .family-tree-person-link:hover { background:#f5f0fb; }
+@media (max-width:768px) { .profile-page .family-tree-compact { min-width:640px; } .profile-page .family-tree-section,.profile-page .family-tree-root-area { width:640px; } .profile-page .family-tree-person { width:96px; } }
+@media (max-width:576px) { .profile-page .family-tree-compact { min-width:560px; } .profile-page .family-tree-section,.profile-page .family-tree-root-area { width:560px; } .profile-page .family-tree-row { column-gap:.8rem; } }
