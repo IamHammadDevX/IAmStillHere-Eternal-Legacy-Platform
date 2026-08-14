@@ -30,6 +30,11 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
+    // Accepted friends cannot also be added as family. Check both row directions.
+    $friendCheck = $conn->prepare("SELECT id FROM friendships WHERE ((user_id=:a AND friend_id=:b) OR (user_id=:b AND friend_id=:a)) AND status='accepted' LIMIT 1");
+    $friendCheck->execute(['a' => $user_id, 'b' => $family_member_id]);
+    if ($friendCheck->fetch()) { echo json_encode(['success' => false, 'message' => 'This user is already your friend and cannot be added as family.']); exit; }
+
     // Check if already family members
     $check = $conn->prepare("SELECT id FROM family_members WHERE user_id = :user_id AND family_member_id = :family_member_id AND status = 'active'");
     $check->execute(['user_id' => $user_id, 'family_member_id' => $family_member_id]);

@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081401" />
+  <link rel="stylesheet" href="css/style.css?v=2026081403" />
 </head>
 
 <body class="profile-page app-page">
@@ -370,16 +370,8 @@ if (!is_logged_in()) {
             </div>
 
             <div class="card p-3 mb-4" id="add-family-form">
-              <h5>Add Family Member</h5>
-              <div class="mb-3">
-                <label for="familyEmail" class="form-label">Family Member Email</label>
-                <input type="email" id="familyEmail" class="form-control" placeholder="Enter family member's email">
-              </div>
-              <div class="mb-3">
-                <label for="relationship" class="form-label">Relationship</label>
-                <input type="text" id="relationship" class="form-control" placeholder="e.g., Father, Sister, Friend">
-              </div>
-              <button class="btn btn-primary" id="btn-add-family">Add Member</button>
+              <div class="d-flex justify-content-between align-items-center gap-2"><div><h5 class="mb-1">Family Members</h5><p class="small text-muted mb-0">Search by username or email, then send a family request.</p></div><button id="family-add-toggle" class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#family-add-panel">Add member</button></div>
+              <div id="family-add-panel" class="collapse mt-3"><form id="family-search-form" class="row g-2"><div class="col-md-7"><input type="search" id="family-search-input" class="form-control" placeholder="Search username or email" minlength="2" autocomplete="off"></div><div class="col-md-3"><input type="text" id="relationship" class="form-control" placeholder="Relationship (e.g. Sister)" required></div><div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Search</button></div></form><div id="family-search-results" class="mt-3" aria-live="polite"></div></div>
             </div>
           </div>
           <!-- END FAMILY TAB CONTENT -->
@@ -514,7 +506,7 @@ if (!is_logged_in()) {
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
   <script src="js/friends.js?v=2026081402"></script>
-  <script src="js/family.js"></script>
+  <script src="js/family.js?v=2026081401"></script>
   <script src="js/search.js"></script>
 
 <div class="modal fade" id="journeyModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Shared journey</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="journeyForm"><input type="hidden" id="journey-id"><label class="form-label">Title</label><input id="journey-title" class="form-control mb-2" maxlength="180" required><label class="form-label">Description</label><textarea id="journey-description" class="form-control mb-2" maxlength="5000"></textarea><div class="row"><div class="col-md-6"><label class="form-label">Start date</label><input id="journey-start" type="date" class="form-control mb-2"></div><div class="col-md-6"><label class="form-label">End date</label><input id="journey-end" type="date" class="form-control mb-2"></div></div><label class="form-label">Status</label><select id="journey-status" class="form-select mb-3"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select><div id="journey-privacy"></div><div id="journey-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="journeyForm" class="btn btn-primary" id="journey-save">Save</button></div></div></div></div>

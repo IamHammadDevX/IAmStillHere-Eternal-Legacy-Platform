@@ -3039,3 +3039,16 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .dashboard-page .dashboard-feature-link .card { border:1px solid rgba(91,70,150,.12) !important; }
 @media (max-width: 991.98px) { .dashboard-page .dashboard-feature-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media (max-width: 575.98px) { .dashboard-page .dashboard-feature-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; } .dashboard-page .dashboard-feature-grid .card-body { padding:.85rem .5rem; } .dashboard-page .dashboard-feature-grid i.display-4 { width:58px; height:58px; font-size:1.7rem; } .dashboard-page .dashboard-feature-grid .card-body > .btn, .dashboard-page .dashboard-feature-grid .dashboard-feature-link .btn { min-width:0; width:100%; padding-left:.35rem; padding-right:.35rem; font-size:.75rem; } }
+
+.family-search-avatar { width:42px; height:42px; object-fit:cover; }
+.family-search-result { background:rgba(255,255,255,.8); }
+@media (max-width:575.98px) { .family-search-result { align-items:flex-start !important; } .family-search-result > .small { max-width:42%; } }
+
+.profile-page [aria-label="Family view toggle"] { gap: .35rem; }
+.profile-page [aria-label="Family view toggle"] .btn { border-radius: 12px !important; }
+
+/* Family search result avatars must stay compact inside profile image rules */
+.profile-page #family-search-results .family-search-result { min-width:0; overflow:hidden; }
+.profile-page #family-search-results .family-search-avatar { width:42px !important; height:42px !important; min-width:42px !important; max-width:42px !important; flex:0 0 42px; border-radius:50% !important; object-fit:cover !important; display:block !important; }
+.profile-page #family-search-results .family-search-result > div:nth-child(2) { min-width:0; overflow:hidden; }
+.profile-page #family-search-results .family-search-result .fw-semibold { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

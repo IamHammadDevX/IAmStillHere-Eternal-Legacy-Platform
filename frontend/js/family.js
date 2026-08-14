@@ -601,6 +601,24 @@ async function removeFamilyMember(familyMemberId) {
     }
 }
 
+async function searchFamilyUsers(query) {
+    const box = document.getElementById('family-search-results'); if (!box) return; box.textContent = 'Searching...';
+    try {
+        const response = await fetch(`/backend/friends/search.php?q=${encodeURIComponent(query)}`); const data = await response.json(); box.textContent = '';
+        if (!data.success) { box.textContent = data.message || 'Unable to search users.'; return; }
+        const users = data.data?.users || []; if (!users.length) { box.textContent = 'No matching users found.'; return; }
+        users.forEach(user => {
+            const row=document.createElement('div'); row.className='family-search-result d-flex align-items-center gap-2 border rounded p-2 mb-2';
+            const img=document.createElement('img'); img.className='rounded-circle family-search-avatar'; img.src=`${PHOTO_URL_BASE}${encodeURIComponent(user.profile_photo || 'default-profile.png')}`; img.alt=user.full_name||user.username||'User';
+            const info=document.createElement('div'); info.className='flex-grow-1'; const name=document.createElement('div'); name.className='fw-semibold'; name.textContent=user.full_name||user.username||'User'; const handle=document.createElement('div'); handle.className='small text-muted'; handle.textContent=`@${user.username||'user'}`; info.append(name,handle); row.append(img,info);
+            const state=user.relationship?.state||'none'; const label={friends:'Already a friend ? cannot add as family',family:'Already a family member',pending_sent:'Family/friend request already pending',pending_received:'This user has a pending request',blocked:'Unavailable'}[state];
+            if(label){const status=document.createElement('span'); status.className='small text-muted text-end'; status.textContent=label; row.appendChild(status);} else {const add=document.createElement('button'); add.type='button'; add.className='btn btn-primary btn-sm'; add.textContent='Send request'; add.onclick=async()=>{const relationship=document.getElementById('relationship')?.value.trim();if(!relationship){showAlert('Enter the relationship first.','warning');return;}add.disabled=true;add.textContent='Sending...';try{const res=await fetch(`${API_BASE}/add.php`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:Number(profileUserId),family_member_id:Number(user.id),relationship})});const result=await res.json();if(!result.success)throw Error(result.message||'Unable to send family request.');add.textContent='Request sent';showAlert(result.message||'Family request sent.','success');loadFamilyMembers();}catch(e){add.disabled=false;add.textContent='Send request';showAlert(e.message,'danger');}};row.appendChild(add);}
+            box.appendChild(row);
+        });
+    } catch(e){ box.textContent='Unable to search users. Please try again.'; }
+}
+function wireFamilySearch(){const form=document.getElementById('family-search-form'),input=document.getElementById('family-search-input');if(!form||!input)return;form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(q.length<2){document.getElementById('family-search-results').textContent='Enter at least 2 characters.';return;}searchFamilyUsers(q);});}
+
 function wireAddButton() {
     const btn = document.getElementById('btn-add-family');
     if (!btn) return;
@@ -632,6 +650,7 @@ async function initFamilyFeature() {
     updateAddFormVisibility();
     wireFamilyViewToggle();
     wireAddButton();
+    wireFamilySearch();
     await loadFamilyMembers();
 }
 
