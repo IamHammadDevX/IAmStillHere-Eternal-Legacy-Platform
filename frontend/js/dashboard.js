@@ -1197,7 +1197,7 @@ async function vaultUpload(event) {
         });
         const raw = await response.text();
         let data;
-        try { data = JSON.parse(raw); } catch (_) { throw new Error(`Server returned invalid response (${response.status}).`); }
+        try { const first=raw.indexOf('{'); const last=raw.lastIndexOf('}'); data=JSON.parse(first>=0&&last>first?raw.slice(first,last+1):raw); } catch (_) { throw new Error(`Server returned invalid response (${response.status}).`); }
         if (!response.ok || !data.success) throw new Error(data.message || `Upload failed (${response.status}).`);
         document.getElementById('vault-upload-form').reset();
         vaultStatus(`Uploaded: ${displayName}`, 'success');

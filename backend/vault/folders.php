@@ -5,14 +5,14 @@ try{
     $db=vault_db(); $actor=vault_require_auth(); $d=vault_input(); vault_require_csrf($d); vault_require_verified();
     $action=(string)($d['action']??'create');
     if($action==='create'){
-        $name=vault_safe_name((string)($d['name']??'')); $parent=(int)($d['parent_folder_id']??0);
+        $name=trim((string)($d['name']??'')); if($name===''){ApiResponse::validation(['name'=>'Folder name is required.']);exit;} $name=vault_safe_name($name); $parent=(int)($d['parent_folder_id']??0);
         if(!vault_folder_owned($db,$parent,$actor)){ApiResponse::validation(['parent_folder_id'=>'Parent folder not found.']);exit;}
         $s=$db->prepare('INSERT INTO vault_folders(owner_id,parent_folder_id,name) VALUES(:owner,:parent,:name)');
         $s->execute(['owner'=>$actor,'parent'=>$parent?:null,'name'=>$name]); vault_log($db,$actor,$actor,null,'folder_create');
         ApiResponse::success(['folder_id'=>(int)$db->lastInsertId()],'Vault folder created.',201); exit;
     }
     if($action==='update'){
-        $id=(int)($d['folder_id']??0); $name=vault_safe_name((string)($d['name']??'')); $parent=(int)($d['parent_folder_id']??0);
+        $id=(int)($d['folder_id']??0); $name=trim((string)($d['name']??'')); if($name===''){ApiResponse::validation(['name'=>'Folder name is required.']);exit;} $name=vault_safe_name($name); $parent=(int)($d['parent_folder_id']??0);
         if(!$id||!vault_folder_owned($db,$id,$actor)||!vault_folder_owned($db,$parent,$actor)||$parent===$id||vault_is_descendant($db,$parent,$id,$actor)){ApiResponse::validation(['folder'=>'Invalid folder hierarchy.']);exit;}
         $s=$db->prepare('UPDATE vault_folders SET name=:name,parent_folder_id=:parent WHERE id=:id AND owner_id=:owner');
         $s->execute(['name'=>$name,'parent'=>$parent?:null,'id'=>$id,'owner'=>$actor]); vault_log($db,$actor,$actor,null,'folder_update'); ApiResponse::success([],'Vault folder updated.'); exit;
