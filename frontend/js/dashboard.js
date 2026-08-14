@@ -16,6 +16,7 @@ async function init() {
         return;
     }
     loggedInUser = data.user;
+    const tributesLink = document.getElementById('dashboard-tributes-link'); if (tributesLink) tributesLink.href = `profile.php?user_id=${encodeURIComponent(data.user.id)}#tributes-tab`;
 
     currentUserId = data.user.id;
     const savedFolder = Number(localStorage.getItem('memoryFolder_' + currentUserId) || 0);
