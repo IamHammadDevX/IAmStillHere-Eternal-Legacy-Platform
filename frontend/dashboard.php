@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081401">
+    <link rel="stylesheet" href="css/style.css?v=2026081406">
 </head>
 
 <body class="dashboard-page app-page">
@@ -158,7 +158,7 @@
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="memories-tab">
-                <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-sm btn-outline-primary" id="new-folder-button">New folder</button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
+                <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-sm btn-outline-primary" id="new-folder-button">+ Add Folder</button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
                 <div class="row" id="memories-grid"></div>
             </div>
             <div class="tab-pane fade" id="timeline-tab">

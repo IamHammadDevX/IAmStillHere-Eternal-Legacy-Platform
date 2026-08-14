@@ -839,33 +839,26 @@ document.getElementById('eventForm').addEventListener('submit', async (e) => {
 document.addEventListener('DOMContentLoaded', init);
 
 async function loadMemoryFolders(search = '') {
-    const box = document.getElementById('memory-folders');
-    if (!box) return;
+    const box = document.getElementById('memory-folders'); if (!box) return;
     const response = await fetch(`/backend/memories/folders/list.php?user_id=${currentUserId}&search=${encodeURIComponent(search)}&_=${Date.now()}`);
-    const data = await response.json();
-    box.innerHTML = '';
-    const folders = data.success ? data.data.folders : [];
-    window.lastMemoryFolders = folders;
+    const data = await response.json(); box.innerHTML = '';
+    const folders = data.success ? (data.data.folders || []) : []; window.lastMemoryFolders = folders;
     const activeFolder = folders.find(folder => Number(folder.id) === Number(currentMemoryFolderId));
-    const breadcrumb = document.getElementById('memory-folder-breadcrumb');
-    if (breadcrumb) breadcrumb.textContent = activeFolder ? activeFolder.name : 'All memories';
+    const breadcrumb = document.getElementById('memory-folder-breadcrumb'); if (breadcrumb) breadcrumb.textContent = activeFolder ? activeFolder.name : 'All memories';
     if (currentMemoryFolderId && !activeFolder) { currentMemoryFolderId = 0; localStorage.removeItem('memoryFolder_' + currentUserId); }
-    const all = document.createElement('button');
-    all.className = 'btn btn-sm btn-outline-dark'; all.textContent = 'All';
-    all.onclick = () => { currentMemoryFolderId = 0; localStorage.removeItem('memoryFolder_' + currentUserId); document.getElementById('memory-folder-breadcrumb').textContent = 'All memories'; loadMemories(); loadMemoryFolders(search); };
-    box.appendChild(all);
-    folders.forEach(folder => {
-        const button = document.createElement('button');
-        button.className = `btn btn-sm ${currentMemoryFolderId === folder.id ? 'btn-primary' : 'btn-outline-secondary'}`;
-        button.textContent = `${folder.name} (${folder.memory_count})`;
-        button.onclick = () => { currentMemoryFolderId = Number(folder.id); localStorage.setItem('memoryFolder_' + currentUserId, currentMemoryFolderId); document.getElementById('memory-folder-breadcrumb').textContent = folder.name; loadMemories(); loadMemoryFolders(search); };
-        const renameButton = document.createElement('button'); renameButton.className='btn btn-sm btn-outline-secondary'; renameButton.textContent='Edit'; renameButton.onclick=()=>editFolder(folder);
-        const childButton = document.createElement('button'); childButton.className='btn btn-sm btn-outline-secondary'; childButton.textContent='+ Child'; childButton.onclick=()=>createChildFolder(folder);
-        const deleteButton = document.createElement('button'); deleteButton.className='btn btn-sm btn-outline-danger'; deleteButton.textContent='Delete'; deleteButton.onclick=()=>deleteFolder(folder);
-        box.appendChild(button); box.append(renameButton, childButton, deleteButton);
+    const all = document.createElement('button'); all.type='button'; all.className=`folder-tree-all ${currentMemoryFolderId===0?'is-selected':''}`; all.innerHTML='<i class="bi bi-collection me-2"></i><span>All memories</span>'; all.onclick=()=>{currentMemoryFolderId=0;localStorage.removeItem('memoryFolder_'+currentUserId);if(breadcrumb)breadcrumb.textContent='All memories';loadMemories();loadMemoryFolders(search);}; box.appendChild(all);
+    if (!folders.length) { const empty=document.createElement('div'); empty.className='folder-tree-empty'; empty.innerHTML='<i class="bi bi-folder2-open"></i><div>No folders yet.</div><small>Create a folder to organize your memories.</small>'; box.appendChild(empty); }
+    const byParent = new Map(); folders.forEach(f=>{const key=Number(f.parent_folder_id||0);if(!byParent.has(key))byParent.set(key,[]);byParent.get(key).push(f);});
+    const renderLevel = (parentId, host, depth=0) => (byParent.get(Number(parentId))||[]).forEach(folder => {
+        const row=document.createElement('div'); row.className=`folder-tree-node ${currentMemoryFolderId===Number(folder.id)?'is-selected':''}`; row.dataset.folderId=folder.id; row.style.setProperty('--folder-depth',depth);
+        const children=byParent.get(Number(folder.id))||[]; const hasChildren=children.length>0; const toggle=document.createElement('button'); toggle.type='button'; toggle.className='folder-chevron'; toggle.innerHTML=hasChildren?'<i class="bi bi-chevron-right"></i>':'<span></span>'; toggle.setAttribute('aria-label',hasChildren?'Expand folder':'No subfolders');
+        const content=document.createElement('button'); content.type='button'; content.className='folder-tree-main'; content.innerHTML=`<i class="bi bi-folder-fill folder-tree-icon"></i><span class="folder-tree-name"></span><span class="folder-tree-count">${Number(folder.memory_count||0)}</span>`; content.querySelector('.folder-tree-name').textContent=folder.name; content.title=folder.name;
+        content.onclick=()=>{currentMemoryFolderId=Number(folder.id);localStorage.setItem('memoryFolder_'+currentUserId,currentMemoryFolderId);if(breadcrumb)breadcrumb.textContent=folder.name;loadMemories();loadMemoryFolders(search);};
+        const manage=document.createElement('div'); manage.className='dropdown folder-tree-manage'; const menu=document.createElement('button'); menu.type='button'; menu.className='btn btn-sm btn-link text-muted'; menu.dataset.bsToggle='dropdown'; menu.setAttribute('aria-label',`Manage ${folder.name}`); menu.innerHTML='<i class="bi bi-three-dots-vertical"></i>'; const list=document.createElement('ul'); list.className='dropdown-menu dropdown-menu-end'; [['Edit',()=>editFolder(folder)],['+ Child',()=>createChildFolder(folder)],['Delete',()=>deleteFolder(folder)]].forEach(([label,fn],i)=>{const li=document.createElement('li'),item=document.createElement('button');item.type='button';item.className=`dropdown-item ${i===2?'text-danger':''}`;item.textContent=label;item.onclick=fn;li.appendChild(item);list.appendChild(li);}); manage.append(menu,list); row.append(toggle,content,manage); host.appendChild(row);
+        const childHost=document.createElement('div'); childHost.className='folder-tree-children'; childHost.hidden=true; row.parentNode?.appendChild(childHost); if(hasChildren){toggle.onclick=()=>{childHost.hidden=!childHost.hidden;toggle.innerHTML=childHost.hidden?'<i class="bi bi-chevron-right"></i>':'<i class="bi bi-chevron-down"></i>';};renderLevel(folder.id,childHost,depth+1);}
     });
-    const select = document.getElementById('memory-folder');
-    if (select) { select.innerHTML = '<option value="0">No folder</option>'; folders.forEach(folder => { const option=document.createElement('option'); option.value=folder.id; option.textContent=folder.name; select.appendChild(option); }); }
+    renderLevel(0,box);
+    const select=document.getElementById('memory-folder'); if(select){select.innerHTML='<option value="0">No folder</option>';folders.forEach(folder=>{const option=document.createElement('option');option.value=folder.id;option.textContent=folder.name;select.appendChild(option);});}
 }
 
 document.getElementById('folder-search')?.addEventListener('input', event => loadMemoryFolders(event.target.value));
@@ -1254,11 +1247,6 @@ async function vaultPermission(action) {
 
 document.addEventListener('DOMContentLoaded', () => setTimeout(initVaultFeature, 500));
 
-
-
-
-
-
 const AUTOMATIONS_API = '/backend/automations';
 let automationsCache = [];
 function automationEl(tag, cls='', text=''){const el=document.createElement(tag); if(cls)el.className=cls; if(text)el.textContent=text; return el;}
@@ -1288,4 +1276,3 @@ function collectAutomationPayload(){const actions=[...document.querySelectorAll(
 async function submitAutomation(e){e.preventDefault(); const err=document.getElementById('automation-error'); const save=document.getElementById('automation-save'); err.textContent=''; save.disabled=true; try{const payload=collectAutomationPayload(); const endpoint=payload.automation_id?'update':'create'; const data=await automationJson(endpoint,payload); if(!data.success)throw new Error(data.message||'Unable to save automation'); bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide(); showAlert(data.message||'Automation saved','success'); loadAutomations();}catch(ex){err.textContent=ex.message;}finally{save.disabled=false;}}
 async function setAutomationStatus(id,action){const data=await automationJson('cancel',{automation_id:id,action}); showAlert(data.message||'Done',data.success?'success':'danger'); if(data.success)loadAutomations();}
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);});
-
