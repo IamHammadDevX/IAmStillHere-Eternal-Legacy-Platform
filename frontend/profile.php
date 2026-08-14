@@ -336,10 +336,11 @@ if (!is_logged_in()) {
           <div class="tab-pane fade" id="friends-tab">
             <div class="card mb-4">
               <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
                   <h5 class="mb-0">Friends</h5>
-                  <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friend-requests-panel">Requests</button>
+                  <div class="d-flex gap-2"><button id="friends-add-button" class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friends-add-panel">Add Friend</button><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friend-requests-panel">Requests</button></div>
                 </div>
+                <div class="collapse mb-3" id="friends-add-panel"><form id="friends-search-form" class="d-flex flex-column flex-sm-row gap-2"><input id="friends-search-input" class="form-control" type="search" minlength="2" placeholder="Search by username or email" autocomplete="off"><button class="btn btn-primary" type="submit">Search</button></form><div id="friends-search-results" class="mt-3" aria-live="polite"></div></div>
                 <div class="collapse mb-3" id="friend-requests-panel"><div id="friend-requests-container"></div></div>
                 <div id="friends-list" class="row g-3"></div>
               </div>
@@ -512,7 +513,7 @@ if (!is_logged_in()) {
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
-  <script src="js/friends.js?v=2026081201"></script>
+  <script src="js/friends.js?v=2026081402"></script>
   <script src="js/family.js"></script>
   <script src="js/search.js"></script>
 

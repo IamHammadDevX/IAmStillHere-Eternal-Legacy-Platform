@@ -220,6 +220,9 @@ function createRequestRow(request) {
   return row;
 }
 
+function relationshipLabel(state) { if (state === 'friends') return 'Already friends'; if (state === 'family') return 'Family member'; if (state === 'pending_sent' || state === 'pending_received') return 'Request pending'; if (state === 'blocked') return 'Unavailable'; return ''; }
+async function searchFriendUsers(query, box) { box.textContent='Searching...'; try { const r=await fetch(`/backend/friends/search.php?q=${encodeURIComponent(query)}`); const d=await r.json(); box.textContent=''; if(!d.success){box.textContent=d.message||'Unable to search users.';return;} const users=d.data.users||[]; if(!users.length){box.textContent='No matching users found.';return;} users.forEach(u=>{const row=friendEl('div','d-flex align-items-center gap-2 border rounded p-2 mb-2'); const img=friendEl('img','rounded-circle'); img.src=friendPhoto(u.profile_photo); img.alt=u.full_name||u.username||'User'; img.width=42; img.height=42; img.style.objectFit='cover'; const details=friendEl('div','flex-grow-1'); details.append(friendEl('div','fw-semibold',u.full_name||u.username||'User'),friendEl('div','small text-muted',`@${u.username||'user'}`)); const state=u.relationship?.state||'none'; const label=relationshipLabel(state); if(label) details.appendChild(friendEl('div','small text-muted',label)); row.append(img,details); if(state==='none'){const b=makeFriendButton('Add Friend','btn-primary btn-sm',async()=>{b.disabled=true;b.textContent='Sending...';try{const x=await friendPost('send',{user_id:u.id});if(!x.success)throw Error(x.message||'Unable to send request.');b.className='btn btn-secondary btn-sm';b.textContent='Request sent';}catch(e){b.disabled=false;b.textContent='Add Friend';details.appendChild(friendEl('div','small text-danger',e.message));}});row.appendChild(b);} box.appendChild(row);}); } catch(e){box.textContent='Unable to search users. Please try again.';} }
+function initFriendSearch(){const f=document.getElementById('friends-search-form'),i=document.getElementById('friends-search-input'),b=document.getElementById('friends-search-results');if(!f||!i||!b)return;f.addEventListener('submit',e=>{e.preventDefault();const q=i.value.trim();if(q.length<2){b.textContent='Enter at least 2 characters.';return;}searchFriendUsers(q,b);});}
 function initFriendsFeatureWhenReady(attempt = 0) {
   if (typeof profileUserId === 'undefined' || !profileUserId || typeof currentUser === 'undefined' || !currentUser) {
     if (attempt < 30) setTimeout(() => initFriendsFeatureWhenReady(attempt + 1), 150);
@@ -229,3 +232,4 @@ function initFriendsFeatureWhenReady(attempt = 0) {
 }
 
 document.addEventListener('DOMContentLoaded', () => initFriendsFeatureWhenReady());
+document.addEventListener('DOMContentLoaded', initFriendSearch);
