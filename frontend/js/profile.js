@@ -362,6 +362,25 @@ async function deleteMilestone(milestoneId) {
     }
 }
 
+function renderMemoryVideoTab() {
+    const container = document.getElementById('videos-container');
+    if (!container) return;
+    const memories = (profileMemoriesCache || []).filter(m => {
+        const type = String(m.file_type || '').toLowerCase();
+        const name = String(m.file_path || '').toLowerCase();
+        return type.includes('video') || /\.(mp4|avi|mkv|mov|3gp|flv|wmv|webm|mpeg|mpg)$/.test(name);
+    });
+    if (!memories.length) return;
+    if (container.querySelector('[data-memory-video]')) return;
+    memories.forEach(memory => {
+        const col = document.createElement('div'); col.className = 'col-md-6'; col.dataset.memoryVideo = memory.id;
+        const src = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
+        const poster = memory.video_thumbnail_path ? `/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}` : '';
+        col.innerHTML = `<div class="card h-100"><div class="video-memory-preview"><video controls preload="metadata" ${poster ? `poster="${poster}"` : ''}><source src="${src}" type="${escapeHtml(memory.file_type || 'video/mp4')}">Your browser cannot play this video.</video></div><div class="card-body"><h6>${escapeHtml(memory.title || 'Video memory')}</h6><p class="small text-muted mb-0">Video memory ? ${escapeHtml(memory.privacy_level || 'private')}</p></div></div>`;
+        container.appendChild(col);
+    });
+}
+
 // ---------- Load Memories ----------
 async function loadMemories() {
     try {
@@ -497,6 +516,7 @@ async function loadMemories() {
         } else {
             grid.innerHTML = '<p class="text-muted">No memories shared yet.</p>';
         }
+        renderMemoryVideoTab();
     } catch (error) {
         console.error('Error loading memories:', error);
     }

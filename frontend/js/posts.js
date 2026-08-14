@@ -344,6 +344,7 @@ function renderPostMediaTabs(posts) {
     const videoItems = media.filter(item => item.media_type === 'video');
     renderMediaGrid(photos, photoItems, 'No post photos yet.');
     renderMediaGrid(videos, videoItems, 'No post videos yet.');
+    if (typeof renderMemoryVideoTab === 'function') renderMemoryVideoTab();
 }
 
 function renderMediaGrid(container, items, emptyText) {

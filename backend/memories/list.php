@@ -29,21 +29,11 @@ try {
         }
     }
 
-    $privacy_conditions = "privacy_level = 'public'";
-    
-    if (is_logged_in()) {
-        if ($_SESSION['user_id'] == $user_id) {
-            $privacy_conditions = "1=1";
-        } elseif (is_admin()) {
-            $privacy_conditions = "1=1";
-        } else {
-            $familyCheck = $conn->prepare("SELECT id FROM family_members WHERE user_id = :owner_id AND family_member_id = :viewer_id AND status = 'active'");
-            $familyCheck->execute(['owner_id' => $user_id, 'viewer_id' => $_SESSION['user_id']]);
-            if ($familyCheck->fetch()) {
-                $privacy_conditions = "privacy_level IN ('public', 'family')";
-            }
-        }
-    }
+    // PrivacyService is the single source of truth. Keep only the public SQL
+    // shortcut for guests; authenticated viewers must reach canView() so
+    // friends, family, specific people, release rules, and blocks are handled
+    // consistently for every media type.
+    $privacy_conditions = is_logged_in() ? '1=1' : "privacy_level = 'public'";
     
     $stmt = $conn->prepare("SELECT * FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id) ORDER BY upload_date DESC LIMIT :limit OFFSET :offset");
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);

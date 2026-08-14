@@ -38,7 +38,7 @@ class PrivacyService
         if ($type === 'private') return false;
         if ($type === 'specific_people') return in_array($viewerId, $rule['user_ids'] ?? [], true);
         if ($type === 'family') {
-            $s=$db->prepare("SELECT id FROM family_members WHERE user_id=:owner AND family_member_id=:viewer AND status='active' AND approved=1 LIMIT 1");$s->execute(['owner'=>$ownerId,'viewer'=>$viewerId]); return (bool)$s->fetchColumn();
+            $s=$db->prepare("SELECT id FROM family_members WHERE ((user_id=:owner AND family_member_id=:viewer) OR (user_id=:viewer AND family_member_id=:owner)) AND status='active' AND approved=1 LIMIT 1");$s->execute(['owner'=>$ownerId,'viewer'=>$viewerId]); return (bool)$s->fetchColumn();
         }
         if ($type === 'friends') {
             $blocked=$db->prepare("SELECT id FROM friendships WHERE ((user_id=:a AND friend_id=:b) OR (user_id=:b AND friend_id=:a)) AND status='blocked' LIMIT 1");$blocked->execute(['a'=>$ownerId,'b'=>$viewerId]);if($blocked->fetchColumn())return false;

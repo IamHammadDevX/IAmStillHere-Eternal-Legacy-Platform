@@ -739,6 +739,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const submit = form.querySelector('button[type="submit"]');
+    if (form.dataset.uploading === '1') return;
+    form.dataset.uploading = '1';
+    const originalText = submit?.innerHTML || 'Upload Memory';
+    if (submit) { submit.disabled = true; submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Uploading...'; }
 
     const formData = new FormData();
     formData.append('title', document.getElementById('memory-title').value);
@@ -749,24 +755,19 @@ document.getElementById('memoryForm').addEventListener('submit', async (e) => {
     formData.append('file', document.getElementById('memory-file').files[0]);
 
     try {
-        const response = await fetch('/backend/memories/upload.php', {
-            method: 'POST',
-            body: formData
-        });
-
+        const response = await fetch('/backend/memories/upload.php', { method: 'POST', body: formData });
         const data = await response.json();
-
         if (data.success) {
             try { if (memoryPrivacyWidget) await savePrivacyRule(csrfToken, 'memory', data.memory_id, memoryPrivacyWidget.getRule()); } catch (privacyError) { showAlert('Memory uploaded, but privacy settings were not saved: ' + privacyError.message, 'warning'); return; }
             showAlert('Memory uploaded successfully!', 'success');
-            document.getElementById('memoryForm').reset();
+            form.reset();
             bootstrap.Modal.getInstance(document.getElementById('uploadMemoryModal')).hide();
             loadMemories();
-        } else {
-            showAlert(data.message, 'danger');
-        }
-    } catch (error) {
-        showAlert('Upload failed. Please try again.', 'danger');
+        } else showAlert(data.message, 'danger');
+    } catch (error) { showAlert('Upload failed. Please try again.', 'danger'); }
+    finally {
+        form.dataset.uploading = '0';
+        if (submit) { submit.disabled = false; submit.innerHTML = originalText; }
     }
 });
 
