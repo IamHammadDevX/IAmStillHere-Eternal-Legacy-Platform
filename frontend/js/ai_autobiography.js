@@ -1,11 +1,11 @@
 const AI_AUTOBIO_API = '/backend/ai/autobiography';
 let aiAutobioState = {autobiography: null, sections: [], timeline: []};
-let aiAutobioBusy = false;
+let aiAutobioBusy = false; let aiAutobioSessionReady = false;
 
 function initAiAutobiography() {
     const root = document.getElementById('autobiography-tab');
     if (!root || root.dataset.ready === '1') return;
-    root.dataset.ready = '1';
+    root.dataset.ready = '1'; window.addEventListener('profile-session-ready', () => { aiAutobioSessionReady = true; renderAutobiography(); });
     document.getElementById('autobio-generate')?.addEventListener('click', () => generateAutobiography(false));
     document.getElementById('autobio-save')?.addEventListener('click', saveAutobiography);
     document.getElementById('autobio-publish')?.addEventListener('click', toggleAutobiographyPublish);
@@ -60,7 +60,7 @@ async function autobioJson(response) {
 async function generateAutobiography(overwriteManual) {
     if (aiAutobioBusy || !autobioIsOwner()) return;
     const manual = document.querySelectorAll('.autobio-section-text[data-manual="1"]').length > 0;
-    if (manual && !overwriteManual && !confirm('Manual edits will be preserved. Regenerate only empty/non-manual sections?')) return;
+    if (manual && !overwriteManual) { if (!confirm('Regenerating will replace your manual edits. Do you want to continue?')) return; overwriteManual = true; }
     aiAutobioBusy = true;
     autobioSetStatus('Generating your autobiography... please wait, this can take 20-60 seconds.', 'primary');
     setAutobioButtons(true);
