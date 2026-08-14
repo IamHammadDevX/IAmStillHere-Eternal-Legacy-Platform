@@ -1050,7 +1050,7 @@ footer p {
 .text-muted:empty::after,
 [id$="container"]:empty::after,
 [id$="list"]:empty::after {
-    content: "No items yet.";
+    content: "Ask a question to begin. Try: What do you know about my career?";
     color: var(--legacy-muted);
 }
 
@@ -2913,4 +2913,20 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
     display: block;
     background: #f1f3f5;
     border-radius: 10px 10px 0 0;
+}
+
+/* AI Avatar empty state */
+#ai-avatar-messages:empty::after {
+    content: "Ask a question to begin. Try: What do you know about my career?";
+    display: block;
+    padding: 1.5rem;
+    color: var(--legacy-muted);
+    text-align: center;
+}
+
+#ai-avatar-sources:empty::after {
+    content: "No memories, posts, or milestones are available for the AI Avatar yet.";
+    display: block;
+    padding: .5rem;
+    color: var(--legacy-muted);
 }
