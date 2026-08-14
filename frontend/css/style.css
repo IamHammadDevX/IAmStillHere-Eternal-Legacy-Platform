@@ -2930,3 +2930,28 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
     padding: .5rem;
     color: var(--legacy-muted);
 }
+/* Responsive navbar and search modal layering */
+.navbar { position: relative; z-index: 3000; }
+.navbar .navbar-collapse { position: relative; z-index: 3001; }
+.navbar .navbar-toggler { position: relative; z-index: 3002; }
+.modal { z-index: 5000; }
+.modal-backdrop { z-index: 4990; }
+
+@media (max-width: 991.98px) {
+    .navbar .container { position: relative; flex-wrap: wrap; }
+    .navbar .navbar-brand { min-width: 0; max-width: calc(100% - 58px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .navbar .navbar-collapse { flex-basis: 100%; width: 100%; margin-top: .5rem; padding: .5rem; border-radius: .75rem; background: rgba(20, 29, 32, .98); box-shadow: 0 12px 28px rgba(0,0,0,.25); }
+    .navbar .navbar-nav { width: 100%; align-items: stretch; gap: .2rem; }
+    .navbar .nav-item, .navbar .nav-link { width: 100%; }
+    .navbar .nav-link { display: flex; align-items: center; min-height: 42px; padding: .65rem .8rem !important; }
+    .navbar #nav-search .nav-link { justify-content: flex-start; }
+    .navbar #nav-search .nav-link i { margin-right: .55rem; }
+    .navbar .notification-toggle { justify-content: flex-start; }
+}
+
+@media (max-width: 420px) {
+    .navbar .container { padding-left: .7rem; padding-right: .7rem; }
+    .navbar-brand { font-size: .9rem; }
+    .modal-dialog { width: auto; max-width: none; margin: .75rem; }
+    .modal-content { max-height: calc(100vh - 1.5rem); overflow: auto; }
+}
