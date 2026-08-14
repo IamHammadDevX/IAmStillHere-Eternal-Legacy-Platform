@@ -55,7 +55,7 @@ function renderJourneys(rows) {
       if (j.can_manage) {
         const wrap=jEl('div','dropdown'); const menu=jEl('button','btn btn-outline-secondary btn-sm dropdown-toggle','Manage'); menu.type='button'; menu.dataset.bsToggle='dropdown';
         const list=jEl('ul','dropdown-menu dropdown-menu-end');
-        [['Edit',()=>openJourneyModal(j)],['Invite people',()=>openJourneyInvite(j.id)],['Delete journey',()=>deleteJourney(j.id)]].forEach(([label,fn],i)=>{const li=jEl('li');const item=jEl('button',`dropdown-item${i===2?' text-danger':''}`,'');item.textContent=label;item.type='button';item.addEventListener('click',fn);li.appendChild(item);list.appendChild(li);});
+        [['Edit',()=>openJourneyModal(j)],['Delete journey',()=>deleteJourney(j.id)],['Invite people',()=>openJourneyInvite(j.id)]].forEach(([label,fn],i)=>{const li=jEl('li');const item=jEl('button',`dropdown-item${i===2?' text-danger':''}`,'');item.textContent=label;item.type='button';item.addEventListener('click',fn);li.appendChild(item);list.appendChild(li);});
         wrap.append(menu,list); actions.appendChild(wrap);
       }
     }

@@ -3052,3 +3052,8 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .profile-page #family-search-results .family-search-avatar { width:42px !important; height:42px !important; min-width:42px !important; max-width:42px !important; flex:0 0 42px; border-radius:50% !important; object-fit:cover !important; display:block !important; }
 .profile-page #family-search-results .family-search-result > div:nth-child(2) { min-width:0; overflow:hidden; }
 .profile-page #family-search-results .family-search-result .fw-semibold { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Journey modal must be fully opaque for readable editing */
+.profile-page #journeyModal .modal-content { background:#fff !important; opacity:1 !important; }
+.profile-page #journeyModal .modal-body, .profile-page #journeyModal .modal-footer { background:#fff !important; opacity:1 !important; }
+.profile-page #journeyModal .form-control, .profile-page #journeyModal .form-select { background-color:#fff !important; opacity:1 !important; }
