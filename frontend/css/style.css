@@ -3073,3 +3073,9 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .friend-suggestion img { flex:0 0 44px; }
 .friend-suggestions-empty { padding:.85rem; border:1px dashed rgba(91,70,150,.25); border-radius:14px; }
 @media (max-width:575.98px) { .friend-suggestion { flex-wrap:wrap; } .friend-suggestion .btn { margin-left:auto; } }
+
+.world-event-content { border-left:4px solid #27a9c7 !important; background:linear-gradient(135deg,#f0fbfd,#fff); }
+.world-event-marker { background:#27a9c7 !important; box-shadow:0 0 0 4px rgba(39,169,199,.16); }
+#timeline-view-toggle { flex-wrap:wrap; gap:.3rem; }
+#timeline-view-toggle .btn { border-radius:10px !important; }
+@media (max-width:575.98px) { #timeline-view-toggle { width:100%; } #timeline-view-toggle .btn { flex:1 1 100%; } }
