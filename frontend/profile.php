@@ -227,7 +227,7 @@ if (!is_logged_in()) {
             <div class="card"><div class="card-body"><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
           </div>
           <div class="tab-pane fade" id="journeys-tab">
-            <div class="card mb-4"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Shared Journeys</h5><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
+            <div class="card mb-4 journeys-overview-card"><div class="card-body"><div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2"><div><h5 class="mb-1">Shared Journeys</h5><p class="small text-muted mb-0">Build a life story together with approved memories, milestones, and event notes.</p></div><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3 mt-1"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
           </div>
           <div class="tab-pane fade" id="photos-tab">
             <div id="photos-container" class="row g-3"><p class="text-muted">Photos from posts will appear here.</p></div>

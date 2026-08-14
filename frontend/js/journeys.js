@@ -30,20 +30,35 @@ function renderJourneys(rows) {
   const box = document.getElementById('journeys-container'); box.innerHTML = '';
   const create = document.getElementById('journey-create-btn');
   if (create) create.style.display = currentUser && String(currentUser.id) === String(profileUserId) ? '' : 'none';
-  if (!rows.length) { box.appendChild(jEl('div','text-muted','No shared journeys yet.')); return; }
+  if (!rows.length) {
+    const empty = jEl('div', 'journey-empty-state text-center py-4');
+    empty.appendChild(jEl('div', 'display-6 mb-2', '??'));
+    empty.appendChild(jEl('h6', 'mb-2', 'No shared journeys yet'));
+    empty.appendChild(jEl('p', 'text-muted mb-3', 'Shared Journeys help family and friends build one story together. Add milestones, memories, and event notes in one place.'));
+    if (create && create.style.display !== 'none') empty.appendChild(jEl('div', 'small text-muted', 'Start by creating your first journey.'));
+    box.appendChild(empty); return;
+  }
   rows.forEach(j => {
-    const col = jEl('div','col-md-6'); const card = jEl('div','card h-100'); const body = jEl('div','card-body');
-    body.appendChild(jEl('h6','mb-1',j.title));
-    body.appendChild(jEl('div','small text-muted mb-2',`${jDateRange(j)} - ${j.participant_count} participants - ${j.status}`));
-    body.appendChild(jEl('p','small mb-2',j.description || ''));
-    const actions = jEl('div','d-flex flex-wrap gap-2');
-    if (j.participant_status === 'pending') { const accept=jEl('button','btn btn-success btn-sm','Accept'); accept.type='button'; accept.addEventListener('click',()=>respondJourney(j.id,'accept')); actions.appendChild(accept); const reject=jEl('button','btn btn-outline-danger btn-sm','Reject'); reject.type='button'; reject.addEventListener('click',()=>respondJourney(j.id,'reject')); actions.appendChild(reject); } else { const view = jEl('button','btn btn-outline-primary btn-sm','Open'); view.type='button'; view.addEventListener('click',()=>openJourney(j.id)); actions.appendChild(view); }
-    if (j.can_manage) {
-      const edit=jEl('button','btn btn-outline-secondary btn-sm','Edit'); edit.type='button'; edit.addEventListener('click',()=>openJourneyModal(j)); actions.appendChild(edit);
-      const inv=jEl('button','btn btn-outline-secondary btn-sm','Invite'); inv.type='button'; inv.addEventListener('click',()=>openJourneyInvite(j.id)); actions.appendChild(inv);
-      const del=jEl('button','btn btn-outline-danger btn-sm','Delete'); del.type='button'; del.addEventListener('click',()=>deleteJourney(j.id)); actions.appendChild(del);
+    const col = jEl('div', 'col-12 col-lg-6'); const card = jEl('div', 'card journey-card h-100'); const body = jEl('div', 'card-body d-flex flex-column');
+    const head = jEl('div', 'd-flex justify-content-between align-items-start gap-2 mb-2');
+    const titleWrap = jEl('div', 'min-w-0'); titleWrap.appendChild(jEl('h5', 'journey-card-title mb-1', j.title || 'Untitled journey')); titleWrap.appendChild(jEl('div', 'small text-muted', jDateRange(j)));
+    const status = jEl('span', 'badge rounded-pill bg-secondary text-nowrap', j.status || 'draft'); head.append(titleWrap, status); body.appendChild(head);
+    body.appendChild(jEl('div', 'journey-card-meta small text-muted mb-2', `${j.participant_count || 0} participant${Number(j.participant_count) === 1 ? '' : 's'} ? Shared journey`));
+    body.appendChild(jEl('p', 'small text-muted journey-card-description mb-3', j.description || 'A shared space for memories, milestones, and contributions.'));
+    const actions = jEl('div', 'd-flex flex-wrap gap-2 mt-auto');
+    if (j.participant_status === 'pending') {
+      const accept=jEl('button','btn btn-success btn-sm','Accept'); accept.type='button'; accept.addEventListener('click',()=>respondJourney(j.id,'accept'));
+      const reject=jEl('button','btn btn-outline-danger btn-sm','Reject'); reject.type='button'; reject.addEventListener('click',()=>respondJourney(j.id,'reject')); actions.append(accept,reject);
+    } else {
+      const view = jEl('button','btn btn-primary btn-sm journey-open-btn','Open Journey'); view.type='button'; view.addEventListener('click',()=>openJourney(j.id)); actions.appendChild(view);
+      if (j.can_contribute) { const add=jEl('button','btn btn-outline-success btn-sm','Add Item'); add.type='button'; add.addEventListener('click',()=>openJourneyItem(j.id)); actions.appendChild(add); }
+      if (j.can_manage) {
+        const wrap=jEl('div','dropdown'); const menu=jEl('button','btn btn-outline-secondary btn-sm dropdown-toggle','Manage'); menu.type='button'; menu.dataset.bsToggle='dropdown';
+        const list=jEl('ul','dropdown-menu dropdown-menu-end');
+        [['Edit',()=>openJourneyModal(j)],['Invite people',()=>openJourneyInvite(j.id)],['Delete journey',()=>deleteJourney(j.id)]].forEach(([label,fn],i)=>{const li=jEl('li');const item=jEl('button',`dropdown-item${i===2?' text-danger':''}`,'');item.textContent=label;item.type='button';item.addEventListener('click',fn);li.appendChild(item);list.appendChild(li);});
+        wrap.append(menu,list); actions.appendChild(wrap);
+      }
     }
-    if (j.can_contribute) { const add=jEl('button','btn btn-outline-success btn-sm','Add item'); add.type='button'; add.addEventListener('click',()=>openJourneyItem(j.id)); actions.appendChild(add); }
     body.appendChild(actions); card.appendChild(body); col.appendChild(card); box.appendChild(col);
   });
 }

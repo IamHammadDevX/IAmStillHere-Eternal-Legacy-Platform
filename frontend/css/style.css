@@ -2988,3 +2988,18 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
         max-height: none !important;
     }
 }
+
+/* Shared Journeys: clear hierarchy and responsive actions */
+.profile-page .journey-card { border: 1px solid rgba(31,41,51,.1); }
+.profile-page .journey-card-title { overflow-wrap: anywhere; }
+.profile-page .journey-card-meta { letter-spacing: .01em; }
+.profile-page .journey-card-description { min-height: 2.8rem; }
+.profile-page .journey-open-btn { min-width: 120px; }
+.profile-page .journey-empty-state { border: 1px dashed rgba(91,70,150,.25); border-radius: 18px; background: rgba(248,246,255,.65); }
+@media (max-width: 575.98px) {
+  .profile-page .journey-card .card-body { padding: 1rem; }
+  .profile-page .journey-card .dropdown { flex: 1 1 auto; }
+  .profile-page .journey-card .dropdown > .btn { width: 100%; }
+  .profile-page .journey-card .journey-open-btn { flex: 1 1 100%; }
+  .profile-page .journey-card .journey-card-description { min-height: 0; }
+}
