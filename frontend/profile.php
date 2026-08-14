@@ -342,7 +342,7 @@ if (!is_logged_in()) {
                 </div>
                 <div class="collapse mb-3" id="friends-add-panel"><form id="friends-search-form" class="d-flex flex-column flex-sm-row gap-2"><input id="friends-search-input" class="form-control" type="search" minlength="2" placeholder="Search by username or email" autocomplete="off"><button class="btn btn-primary" type="submit">Search</button></form><div id="friends-search-results" class="mt-3" aria-live="polite"></div></div>
                 <div class="collapse mb-3" id="friend-requests-panel"><div id="friend-requests-container"></div></div>
-                <div id="friends-list" class="row g-3"></div>
+                <div id="friends-list" class="row g-3"></div><div id="people-you-may-know" class="mt-4"></div>
               </div>
             </div>
           </div>
@@ -505,7 +505,7 @@ if (!is_logged_in()) {
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
-  <script src="js/friends.js?v=2026081402"></script>
+  <script src="js/friends.js?v=2026081403"></script>
   <script src="js/family.js?v=2026081401"></script>
   <script src="js/search.js"></script>
 

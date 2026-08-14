@@ -3068,3 +3068,8 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .profile-page .family-tree-person-link:hover { background:#f5f0fb; }
 @media (max-width:768px) { .profile-page .family-tree-compact { min-width:640px; } .profile-page .family-tree-section,.profile-page .family-tree-root-area { width:640px; } .profile-page .family-tree-person { width:96px; } }
 @media (max-width:576px) { .profile-page .family-tree-compact { min-width:560px; } .profile-page .family-tree-section,.profile-page .family-tree-root-area { width:560px; } .profile-page .family-tree-row { column-gap:.8rem; } }
+
+.friend-suggestion { padding:.65rem; border:1px solid rgba(31,41,51,.1); border-radius:14px; background:#fff; min-width:0; }
+.friend-suggestion img { flex:0 0 44px; }
+.friend-suggestions-empty { padding:.85rem; border:1px dashed rgba(91,70,150,.25); border-radius:14px; }
+@media (max-width:575.98px) { .friend-suggestion { flex-wrap:wrap; } .friend-suggestion .btn { margin-left:auto; } }

@@ -28,12 +28,18 @@ async function friendPost(endpoint, payload) {
   return response.json();
 }
 
+async function loadPeopleYouMayKnow() {
+  const box=document.getElementById('people-you-may-know'); if(!box||!currentUser)return; box.innerHTML='<div class="small text-muted">Finding people you may know...</div>';
+  try { const r=await fetch(`${FRIENDS_API}/suggestions.php`,{cache:'no-store'}); const d=await r.json(); if(!d.success)throw Error(d.message||'Unable to load suggestions.'); const users=d.data.suggestions||[]; if(!users.length){box.innerHTML='<div class="friend-suggestions-empty"><strong>No suggestions yet</strong><div class="small text-muted">Suggestions will appear when you share friends or family connections.</div></div>';return;} box.innerHTML='<h6 class="mb-2">People You May Know</h6><div class="row g-2"></div>'; const grid=box.querySelector('.row'); users.forEach(u=>{const col=friendEl('div','col-12 col-md-6');const row=friendEl('div','friend-suggestion d-flex align-items-center gap-2');const img=friendEl('img','rounded-circle');img.src=friendPhoto(u.profile_photo);img.alt=u.full_name||u.username||'User';img.width=44;img.height=44;img.style.objectFit='cover';const info=friendEl('div','flex-grow-1');info.append(friendEl('div','fw-semibold',u.full_name||u.username||'User'),friendEl('div','small text-muted',`${u.reason} ? ${u.connection_count}`));const b=makeFriendButton('Add Friend','btn-primary btn-sm',async()=>{b.disabled=true;b.textContent='Sending...';try{const x=await friendPost('send',{user_id:u.id});if(!x.success)throw Error(x.message||'Unable to send request.');col.remove();if(!grid.children.length)box.innerHTML='';}catch(e){b.disabled=false;b.textContent='Add Friend';showAlert(e.message,'danger');}});row.append(img,info,b);col.appendChild(row);grid.appendChild(col);}); } catch(e){box.innerHTML='<div class="small text-danger">Unable to load suggestions.</div>';}
+}
+
 async function initFriendsFeature() {
   if (!currentUser || !profileUserId) return;
   await friendEnsureCsrf();
   await loadFriendStatus();
   await loadFriends();
   await loadFriendRequests();
+  await loadPeopleYouMayKnow();
 }
 
 async function loadFriendStatus() {
