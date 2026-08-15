@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081406" />
+  <link rel="stylesheet" href="css/style.css?v=2026081408" />
 </head>
 
 <body class="profile-page app-page">
@@ -498,7 +498,7 @@ if (!is_logged_in()) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081407"></script>
-  <script src="js/posts.js?v=2026081404"></script>
+  <script src="js/posts.js?v=2026081410"></script>
   <script src="js/ai_avatar.js?v=2026081011"></script>
   <script src="js/ai_autobiography.js?v=2026081402"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>
