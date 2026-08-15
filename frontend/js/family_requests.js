@@ -31,10 +31,10 @@ async function loadReceivedRequests() {
 
         if (data.requests.length === 0) {
             container.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox display-1 text-muted"></i>
-                    <h5 class="mt-3 text-muted">No pending requests</h5>
-                    <p class="text-muted">You don't have any family requests at the moment</p>
+                <div class="family-requests-empty">
+                    <i class="bi bi-inbox" aria-hidden="true"></i>
+                    <h5>No family requests right now</h5>
+                    <p>When someone sends you a family connection request, it will appear here.</p>
                 </div>
             `;
             return;
@@ -111,10 +111,10 @@ async function loadSentRequests() {
 
         if (data.requests.length === 0) {
             container.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="bi bi-send display-1 text-muted"></i>
-                    <h5 class="mt-3 text-muted">No sent requests</h5>
-                    <p class="text-muted">You haven't sent any family requests yet</p>
+                <div class="family-requests-empty">
+                    <i class="bi bi-send" aria-hidden="true"></i>
+                    <h5>No sent requests</h5>
+                    <p>Family requests you send will appear here while they are waiting for a response.</p>
                 </div>
             `;
             return;

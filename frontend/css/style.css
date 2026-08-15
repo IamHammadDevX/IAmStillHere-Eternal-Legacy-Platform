@@ -3113,3 +3113,23 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
   .memory-folder-add span { font-size: .8rem; }
   #folder-search { width: 150px; }
 }
+/* Family Requests: isolated, meaningful empty states */
+.family-requests-page #received-requests-container:empty::after,
+.family-requests-page #sent-requests-container:empty::after,
+.family-requests-page .family-requests-empty::after {
+  content: none !important;
+  display: none !important;
+}
+.family-requests-page .family-requests-empty {
+  min-height: 260px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .65rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #64748b;
+}
+.family-requests-page .family-requests-empty > i { font-size: 3rem; color: #7b61b8; }
+.family-requests-page .family-requests-empty h5 { margin: 0; color: #334155; font-weight: 750; }
+.family-requests-page .family-requests-empty p { max-width: 30rem; margin: 0; }

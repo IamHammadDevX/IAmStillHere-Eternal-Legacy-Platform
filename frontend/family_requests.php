@@ -8,10 +8,10 @@
     <title>Family Requests - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081401">
+    <link rel="stylesheet" href="css/style.css?v=2026081416">
 </head>
 
-<body>
+<body class="family-requests-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/index.php">
@@ -155,7 +155,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/search.js"></script>
-    <script src="js/family_requests.js"></script>
+    <script src="js/family_requests.js?v=2026081416"></script>
 </body>
 
 </html>
