@@ -64,8 +64,7 @@
                 <h2 class="mb-2 mt-3">My Dashboard</h2>
                 <p class="text-muted mb-0">Upload memories, organize folders, manage milestones, automations, and your private vault.</p>
             </div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadMemoryModal"><i class="bi bi-cloud-arrow-up me-1"></i> Upload Memory</button>
-        </section>
+            </section>
 
         <div class="row dashboard-feature-grid mb-4">
             <div class="col-md-3 mb-3">
@@ -154,7 +153,7 @@
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="memories-tab">
-                <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-sm btn-outline-primary" id="new-folder-button">+ Add Folder</button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
+                <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-outline-primary memory-folder-add" id="new-folder-button" type="button"><i class="bi bi-folder-plus" aria-hidden="true"></i><span>New folder</span></button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
                 <div class="row" id="memories-grid"></div>
             </div>
             <div class="tab-pane fade" id="timeline-tab">

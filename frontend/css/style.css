@@ -1050,7 +1050,7 @@ footer p {
 .text-muted:empty::after,
 [id$="container"]:empty::after,
 [id$="list"]:empty::after {
-    content: "Ask a question to begin. Try: What do you know about my career?";
+    content: "No items yet";
     color: var(--legacy-muted);
 }
 
@@ -3090,3 +3090,26 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .memory-drag-item.is-dragging { opacity: .45; cursor: grabbing; }
 #memory-folders .folder-tree-node.is-drop-target { background: #dff7e8; outline: 2px dashed #198754; outline-offset: -2px; }
 @media (max-width: 767.98px) { .memory-drag-item { cursor: default; } }
+/* Clear, tap-friendly Memory Folder action */
+.memory-folder-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-height: 42px;
+  padding: .55rem .85rem;
+  border-radius: 12px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.memory-folder-add i { font-size: 1.05rem; }
+@media (max-width: 575.98px) {
+  .memory-folder-add { min-height: 40px; padding: .5rem .7rem; font-size: .875rem; }
+  #folder-search { min-width: 0; width: min(100%, 190px); }
+}
+@media (max-width: 360px) {
+  .memory-folder-add span { font-size: .8rem; }
+  #folder-search { width: 150px; }
+}
