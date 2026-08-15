@@ -3232,3 +3232,87 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
         padding: .7rem .82rem;
     }
 }
+
+
+/* AI autobiography: unique visual chapter themes and readable writing surfaces. */
+.profile-page #autobio-status:empty { display: none; }
+.profile-page #autobio-status:empty::after { content: none; }
+
+.profile-page .autobio-section-card {
+    position: relative;
+    overflow: hidden;
+    border: 0 !important;
+    box-shadow: 0 14px 32px rgba(15,23,42,.09) !important;
+}
+
+.profile-page .autobio-section-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .96;
+}
+
+.profile-page .autobio-section-card .card-body { position: relative; z-index: 1; }
+.profile-page .autobio-section-card h6 {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    margin-bottom: .25rem;
+    padding: .25rem .72rem;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: .01em;
+}
+.profile-page .autobio-section-card textarea,
+.profile-page .autobio-section-card p {
+    border-color: rgba(255,255,255,.58);
+    background: rgba(255,255,255,.93);
+    color: #1f2937;
+    box-shadow: 0 8px 20px rgba(15,23,42,.06);
+}
+.profile-page .autobio-section-card p { padding: .9rem 1rem; border-radius: 14px; }
+.profile-page .autobio-section-card .btn { background: rgba(255,255,255,.9); }
+
+.profile-page .autobio-theme-career::before { background: linear-gradient(135deg, #0f4c81, #2d86c7 56%, #b9e4fb); }
+.profile-page .autobio-theme-career h6 { background: #103d68; }
+.profile-page .autobio-theme-life-events::before { background: linear-gradient(135deg, #a24316, #e5873b 55%, #ffdc9b); }
+.profile-page .autobio-theme-life-events h6 { background: #8b3410; }
+.profile-page .autobio-theme-achievements::before { background: linear-gradient(135deg, #0c6b52, #24a178 52%, #c6efb4); }
+.profile-page .autobio-theme-achievements h6 { background: #07513e; }
+.profile-page .autobio-theme-wisdom::before { background: linear-gradient(135deg, #56388d, #9669ca 54%, #e3c8fa); }
+.profile-page .autobio-theme-wisdom h6 { background: #493077; }
+
+.profile-page .autobio-timeline-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    margin-top: 1rem;
+}
+.profile-page .autobio-timeline-pagination .btn { min-width: 6.7rem; }
+.profile-page .autobio-timeline-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .85rem;
+    padding: 1.25rem;
+    border: 1px dashed rgba(91,70,150,.3);
+    border-radius: 16px;
+    color: #64748b;
+    background: rgba(248,250,252,.8);
+    text-align: left;
+}
+.profile-page .autobio-timeline-empty i { color: #7b51bb; font-size: 1.7rem; }
+.profile-page .autobio-timeline-empty strong,
+.profile-page .autobio-timeline-empty span { display: block; }
+.profile-page .autobio-timeline-empty span { margin-top: .2rem; font-size: .88rem; }
+
+@media (max-width: 575.98px) {
+    .profile-page .autobio-section-card .card-body { padding: .9rem; }
+    .profile-page .autobio-section-card h6 { font-size: .92rem; }
+    .profile-page .autobio-timeline-pagination { flex-wrap: wrap; gap: .5rem; }
+    .profile-page .autobio-timeline-pagination .small { order: -1; flex-basis: 100%; text-align: center; }
+    .profile-page .autobio-timeline-pagination .btn { flex: 1 1 0; min-width: 0; }
+}

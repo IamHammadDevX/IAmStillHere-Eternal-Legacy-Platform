@@ -1,6 +1,8 @@
 const AI_AUTOBIO_API = '/backend/ai/autobiography';
 let aiAutobioState = {autobiography: null, sections: [], timeline: []};
 let aiAutobioBusy = false; let aiAutobioSessionReady = false;
+let aiAutobioTimelinePage = 1;
+const AI_AUTOBIO_TIMELINE_PAGE_SIZE = 10;
 
 function initAiAutobiography() {
     const root = document.getElementById('autobiography-tab');
@@ -188,8 +190,9 @@ function renderAutobiographySections(owner) {
     box.innerHTML = sections.map(section => {
         const sources = Array.isArray(section.sources) ? section.sources : [];
         const sourceText = sources.slice(0, 4).map(ref => `${ref.type}: ${ref.title}`).join(', ');
+        const theme = autobioSectionTheme(section.section_key);
         if (owner) {
-            return `<div class="card mb-3 autobio-section-card">
+            return `<div class="card mb-3 autobio-section-card ${theme}">
                 <div class="card-body">
                     <div class="d-flex justify-content-between gap-2 mb-2">
                         <h6 class="mb-0">${autobioEscape(section.section_title)}</h6>
@@ -200,7 +203,7 @@ function renderAutobiographySections(owner) {
                 </div>
             </div>`;
         }
-        return `<div class="card mb-3 autobio-section-card"><div class="card-body">
+        return `<div class="card mb-3 autobio-section-card ${theme}"><div class="card-body">
             <h6>${autobioEscape(section.section_title)}</h6>
             <p class="mb-0">${autobioEscape(section.content).replace(/\n/g, '<br>')}</p>
             ${sourceText ? `<div class="small text-muted mt-2">Sources: ${autobioEscape(sourceText)}</div>` : ''}
@@ -211,15 +214,32 @@ function renderAutobiographySections(owner) {
     });
 }
 
+function autobioSectionTheme(sectionKey) {
+    const key = String(sectionKey || '').toLowerCase();
+    if (key.includes('career')) return 'autobio-theme-career';
+    if (key.includes('achievement')) return 'autobio-theme-achievements';
+    if (key.includes('wisdom') || key.includes('lesson')) return 'autobio-theme-wisdom';
+    return 'autobio-theme-life-events';
+}
+
 function renderAutobiographyTimeline() {
     const box = document.getElementById('autobio-timeline');
+    const pager = document.getElementById('autobio-timeline-pagination');
     const items = Array.isArray(aiAutobioState.timeline) ? aiAutobioState.timeline : [];
     if (!box) return;
     if (!items.length) {
-        box.innerHTML = '<div class="text-muted text-center py-3">No dated timeline items available.</div>';
+        box.innerHTML = `<div class="autobio-timeline-empty">
+            <i class="bi bi-calendar2-heart" aria-hidden="true"></i>
+            <div><strong>Your life timeline will appear here.</strong><span>Add dated memories, milestones, posts, or journeys to build your pictograph.</span></div>
+        </div>`;
+        if (pager) pager.innerHTML = '';
         return;
     }
-    box.innerHTML = items.map(item => {
+    const totalPages = Math.max(1, Math.ceil(items.length / AI_AUTOBIO_TIMELINE_PAGE_SIZE));
+    aiAutobioTimelinePage = Math.min(Math.max(1, aiAutobioTimelinePage), totalPages);
+    const start = (aiAutobioTimelinePage - 1) * AI_AUTOBIO_TIMELINE_PAGE_SIZE;
+    const pageItems = items.slice(start, start + AI_AUTOBIO_TIMELINE_PAGE_SIZE);
+    box.innerHTML = pageItems.map(item => {
         const thumb = item.thumbnail ? `<img src="${autobioEscape(item.thumbnail)}" alt="" class="autobio-timeline-thumb">` : '<div class="autobio-timeline-dot"><i class="bi bi-stars"></i></div>';
         const date = item.item_date ? new Date(item.item_date).toLocaleDateString() : 'Unknown date';
         return `<div class="autobio-timeline-item">
@@ -234,6 +254,16 @@ function renderAutobiographyTimeline() {
             </div>
         </div>`;
     }).join('');
+    if (pager) {
+        pager.innerHTML = totalPages > 1 ? `<button type="button" class="btn btn-outline-secondary btn-sm" data-autobio-page="${aiAutobioTimelinePage - 1}" ${aiAutobioTimelinePage === 1 ? 'disabled' : ''}>? Previous</button>
+            <span class="small text-muted">Showing ${start + 1}?${Math.min(start + AI_AUTOBIO_TIMELINE_PAGE_SIZE, items.length)} of ${items.length}</span>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-autobio-page="${aiAutobioTimelinePage + 1}" ${aiAutobioTimelinePage === totalPages ? 'disabled' : ''}>Next ?</button>` : `<span class="small text-muted">${items.length} timeline item${items.length === 1 ? '' : 's'}</span>`;
+        pager.querySelectorAll('[data-autobio-page]').forEach(button => button.addEventListener('click', () => {
+            aiAutobioTimelinePage = Number(button.dataset.autobioPage) || 1;
+            renderAutobiographyTimeline();
+            document.getElementById('autobio-timeline')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }));
+    }
 }
 
 function setAutobioButtons(disabled) {
