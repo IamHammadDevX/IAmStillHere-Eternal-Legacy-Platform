@@ -3079,3 +3079,9 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 #timeline-view-toggle { flex-wrap:wrap; gap:.3rem; }
 #timeline-view-toggle .btn { border-radius:10px !important; }
 @media (max-width:575.98px) { #timeline-view-toggle { width:100%; } #timeline-view-toggle .btn { flex:1 1 100%; } }
+.dashboard-pager .btn { min-width: 92px; }
+@media (max-width: 575.98px) {
+  .dashboard-pager { width: 100%; }
+  .dashboard-pager .btn { flex: 1 1 0; min-width: 0; }
+  .dashboard-pager .small { flex-basis: 100%; text-align: center; }
+}

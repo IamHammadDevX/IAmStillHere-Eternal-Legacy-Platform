@@ -77,7 +77,33 @@ async function loadTributeCount(userId) {
     }
 }
 
-async function loadMemories() {
+const DASHBOARD_PAGE_SIZE = 10;
+let memoryPage = 1;
+let timelinePage = 1;
+let eventsPage = 1;
+let automationsPage = 1;
+
+function appendDashboardPager(container, page, totalItems, onPageChange) {
+    const totalPages = Math.max(1, Math.ceil(totalItems / DASHBOARD_PAGE_SIZE));
+    if (totalPages <= 1) return;
+    const pager = document.createElement('nav');
+    pager.className = 'dashboard-pager d-flex flex-wrap justify-content-center align-items-center gap-2 mt-3';
+    pager.setAttribute('aria-label', 'Pagination');
+    const previous = document.createElement('button');
+    previous.type = 'button'; previous.className = 'btn btn-outline-secondary btn-sm'; previous.textContent = 'Previous'; previous.disabled = page <= 1;
+    previous.onclick = () => onPageChange(page - 1);
+    const label = document.createElement('span');
+    label.className = 'small text-muted px-1';
+    label.textContent = `Page ${page} of ${totalPages}`;
+    const next = document.createElement('button');
+    next.type = 'button'; next.className = 'btn btn-outline-secondary btn-sm'; next.textContent = 'Next'; next.disabled = page >= totalPages;
+    next.onclick = () => onPageChange(page + 1);
+    pager.append(previous, label, next);
+    container.appendChild(pager);
+}
+
+async function loadMemories(page = memoryPage) {
+    memoryPage = Math.max(1, Number(page) || 1);
     try {
         const response = await fetch(`/backend/memories/list.php?user_id=${currentUserId}${currentMemoryFolderId ? '&folder_id=' + currentMemoryFolderId : ''}&_=${Date.now()}`);
         const data = await response.json();
@@ -87,7 +113,8 @@ async function loadMemories() {
 
         window.lastLoadedMemories = data.memories || [];
         if (data.success && data.memories.length > 0) {
-            data.memories.forEach((memory, index) => {
+            const memoryStart = (memoryPage - 1) * DASHBOARD_PAGE_SIZE;
+            data.memories.slice(memoryStart, memoryStart + DASHBOARD_PAGE_SIZE).forEach((memory, index) => {
                 const col = document.createElement('div');
                 col.className = 'col-md-4 mb-4';
 
@@ -210,6 +237,7 @@ async function loadMemories() {
                 grid.appendChild(col);
                 loadMemoryComments(memory.id);
             });
+            appendDashboardPager(grid, memoryPage, data.memories.length, nextPage => loadMemories(nextPage));
         } else {
             grid.innerHTML = '<div class="col-12"><p class="text-muted text-center">No memories yet. Upload your first memory!</p></div>';
         }
@@ -471,7 +499,8 @@ async function deleteMemory(memoryId) {
     }
 }
 
-async function loadTimeline() {
+async function loadTimeline(page = timelinePage) {
+    timelinePage = Math.max(1, Number(page) || 1);
     try {
         const response = await fetch(`/backend/milestones/list.php?user_id=${currentUserId}`);
         const data = await response.json();
@@ -481,7 +510,8 @@ async function loadTimeline() {
 
         milestoneCache = data.milestones || [];
         if (data.success && data.milestones.length > 0) {
-            data.milestones.forEach((milestone, index) => {
+            const milestoneStart = (timelinePage - 1) * DASHBOARD_PAGE_SIZE;
+            data.milestones.slice(milestoneStart, milestoneStart + DASHBOARD_PAGE_SIZE).forEach((milestone, index) => {
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
 
@@ -521,6 +551,7 @@ async function loadTimeline() {
 
                 container.appendChild(item);
             });
+            appendDashboardPager(container, timelinePage, data.milestones.length, nextPage => loadTimeline(nextPage));
         } else {
             container.innerHTML = '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
         }
@@ -556,7 +587,8 @@ async function deleteMilestone(milestoneId) {
 }
 
 // Load Events Function
-async function loadEvents() {
+async function loadEvents(page = eventsPage) {
+    eventsPage = Math.max(1, Number(page) || 1);
     try {
         const response = await fetch(`/backend/events/list.php?user_id=${currentUserId}`);
         const data = await response.json();
@@ -580,10 +612,12 @@ async function loadEvents() {
 
         container.innerHTML = '';
 
-        // Separate upcoming and past events
+        const eventStart = (eventsPage - 1) * DASHBOARD_PAGE_SIZE;
+        const pageEvents = data.events.slice(eventStart, eventStart + DASHBOARD_PAGE_SIZE);
+        // Separate the current page into upcoming and past events.
         const now = new Date();
-        const upcomingEvents = data.events.filter(e => new Date(e.scheduled_date) >= now);
-        const pastEvents = data.events.filter(e => new Date(e.scheduled_date) < now);
+        const upcomingEvents = pageEvents.filter(e => new Date(e.scheduled_date) >= now);
+        const pastEvents = pageEvents.filter(e => new Date(e.scheduled_date) < now);
 
         // Display upcoming events
         if (upcomingEvents.length > 0) {
@@ -609,6 +643,7 @@ async function loadEvents() {
 
             container.appendChild(pastSection);
         }
+        appendDashboardPager(container, eventsPage, data.events.length, nextPage => loadEvents(nextPage));
 
     } catch (error) {
         console.error('Error loading events:', error);
@@ -847,14 +882,14 @@ async function loadMemoryFolders(search = '') {
     const activeFolder = folders.find(folder => Number(folder.id) === Number(currentMemoryFolderId));
     const breadcrumb = document.getElementById('memory-folder-breadcrumb'); if (breadcrumb) breadcrumb.textContent = activeFolder ? activeFolder.name : 'All memories';
     if (currentMemoryFolderId && !activeFolder) { currentMemoryFolderId = 0; localStorage.removeItem('memoryFolder_' + currentUserId); }
-    const all = document.createElement('button'); all.type='button'; all.className=`folder-tree-all ${currentMemoryFolderId===0?'is-selected':''}`; all.innerHTML='<i class="bi bi-collection me-2"></i><span>All memories</span>'; all.onclick=()=>{currentMemoryFolderId=0;localStorage.removeItem('memoryFolder_'+currentUserId);if(breadcrumb)breadcrumb.textContent='All memories';loadMemories();loadMemoryFolders(search);}; box.appendChild(all);
+    const all = document.createElement('button'); all.type='button'; all.className=`folder-tree-all ${currentMemoryFolderId===0?'is-selected':''}`; all.innerHTML='<i class="bi bi-collection me-2"></i><span>All memories</span>'; all.onclick=()=>{memoryPage=1;currentMemoryFolderId=0;localStorage.removeItem('memoryFolder_'+currentUserId);if(breadcrumb)breadcrumb.textContent='All memories';loadMemories();loadMemoryFolders(search);}; box.appendChild(all);
     if (!folders.length) { const empty=document.createElement('div'); empty.className='folder-tree-empty'; empty.innerHTML='<i class="bi bi-folder2-open"></i><div>No folders yet.</div><small>Create a folder to organize your memories.</small>'; box.appendChild(empty); }
     const byParent = new Map(); folders.forEach(f=>{const key=Number(f.parent_folder_id||0);if(!byParent.has(key))byParent.set(key,[]);byParent.get(key).push(f);});
     const renderLevel = (parentId, host, depth=0) => (byParent.get(Number(parentId))||[]).forEach(folder => {
         const row=document.createElement('div'); row.className=`folder-tree-node ${currentMemoryFolderId===Number(folder.id)?'is-selected':''}`; row.dataset.folderId=folder.id; row.style.setProperty('--folder-depth',depth);
         const children=byParent.get(Number(folder.id))||[]; const hasChildren=children.length>0; const toggle=document.createElement('button'); toggle.type='button'; toggle.className='folder-chevron'; toggle.innerHTML=hasChildren?'<i class="bi bi-chevron-right"></i>':'<span></span>'; toggle.setAttribute('aria-label',hasChildren?'Expand folder':'No subfolders');
         const content=document.createElement('button'); content.type='button'; content.className='folder-tree-main'; content.innerHTML=`<i class="bi bi-folder-fill folder-tree-icon"></i><span class="folder-tree-name"></span><span class="folder-tree-count">${Number(folder.memory_count||0)}</span>`; content.querySelector('.folder-tree-name').textContent=folder.name; content.title=folder.name;
-        content.onclick=()=>{currentMemoryFolderId=Number(folder.id);localStorage.setItem('memoryFolder_'+currentUserId,currentMemoryFolderId);if(breadcrumb)breadcrumb.textContent=folder.name;loadMemories();loadMemoryFolders(search);};
+        content.onclick=()=>{memoryPage=1;currentMemoryFolderId=Number(folder.id);localStorage.setItem('memoryFolder_'+currentUserId,currentMemoryFolderId);if(breadcrumb)breadcrumb.textContent=folder.name;loadMemories();loadMemoryFolders(search);};
         const manage=document.createElement('div'); manage.className='dropdown folder-tree-manage'; const menu=document.createElement('button'); menu.type='button'; menu.className='btn btn-sm btn-link text-muted'; menu.dataset.bsToggle='dropdown'; menu.setAttribute('aria-label',`Manage ${folder.name}`); menu.innerHTML='<i class="bi bi-three-dots-vertical"></i>'; const list=document.createElement('ul'); list.className='dropdown-menu dropdown-menu-end'; [['Edit',()=>editFolder(folder)],['+ Child',()=>createChildFolder(folder)],['Delete',()=>deleteFolder(folder)]].forEach(([label,fn],i)=>{const li=document.createElement('li'),item=document.createElement('button');item.type='button';item.className=`dropdown-item ${i===2?'text-danger':''}`;item.textContent=label;item.onclick=fn;li.appendChild(item);list.appendChild(li);}); manage.append(menu,list); row.append(toggle,content,manage); host.appendChild(row);
         const childHost=document.createElement('div'); childHost.className='folder-tree-children'; childHost.hidden=true; row.parentNode?.appendChild(childHost); if(hasChildren){toggle.onclick=()=>{childHost.hidden=!childHost.hidden;toggle.innerHTML=childHost.hidden?'<i class="bi bi-chevron-right"></i>':'<i class="bi bi-chevron-down"></i>';};renderLevel(folder.id,childHost,depth+1);}
     });
@@ -1250,13 +1285,14 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(initVaultFeature,
 
 const AUTOMATIONS_API = '/backend/automations';
 let automationsCache = [];
+let automationsPagination = null;
 function automationEl(tag, cls='', text=''){const el=document.createElement(tag); if(cls)el.className=cls; if(text)el.textContent=text; return el;}
 function automationUtcFromLocal(value){return value ? new Date(value).toISOString() : '';}
 function automationLocalInputFromUtc(value){if(!value)return ''; const d=new Date(String(value).replace(' ','T')+'Z'); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
 function automationDisplayDate(value){return value ? new Date(String(value).replace(' ','T')+'Z').toLocaleString() : 'none';}
 function toggleAutomationFields(){const t=document.getElementById('automation-trigger')?.value; document.querySelectorAll('.automation-datetime').forEach(e=>e.classList.toggle('d-none', !['specific_datetime','linked_milestone_event'].includes(t))); document.querySelectorAll('.automation-recurring').forEach(e=>e.classList.toggle('d-none', !['birthday','anniversary','custom_recurring'].includes(t))); document.querySelectorAll('.automation-linked').forEach(e=>e.classList.toggle('d-none', t!=='linked_milestone_event'));}
 async function automationJson(endpoint,payload){const res=await fetch(`${AUTOMATIONS_API}/${endpoint}.php`,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({...payload,csrf_token:csrfToken})});const text=await res.text();if(!text.trim())throw new Error(`Automation endpoint returned an empty response (HTTP ${res.status}). Check the server error log.`);try{return JSON.parse(text);}catch(e){throw new Error(`Automation endpoint returned invalid JSON (HTTP ${res.status}).`);}}
-async function loadAutomations(){const box=document.getElementById('automations-container'); if(!box||!currentUserId)return; box.innerHTML='<div class="text-muted">Loading automations...</div>'; try{const res=await fetch(`${AUTOMATIONS_API}/list.php`); const data=await res.json(); if(!data.success)throw new Error(data.message||'Unable to load automations'); automationsCache=data.data.automations||[]; renderAutomations(automationsCache);}catch(e){box.innerHTML=`<div class="alert alert-danger">${escapeHtml(e.message)}</div>`;}}
+async function loadAutomations(page=automationsPage){automationsPage=Math.max(1,Number(page)||1);const box=document.getElementById('automations-container'); if(!box||!currentUserId)return; box.innerHTML='<div class="text-muted">Loading automations...</div>'; try{const res=await fetch(`${AUTOMATIONS_API}/list.php?page=${automationsPage}&limit=${DASHBOARD_PAGE_SIZE}`); const data=await res.json(); if(!data.success)throw new Error(data.message||'Unable to load automations'); automationsCache=data.data.automations||[];automationsPagination=data.data.pagination||null;renderAutomations(automationsCache);}catch(e){box.innerHTML=`<div class="alert alert-danger">${escapeHtml(e.message)}</div>`;}}
 function renderAutomations(rows){
     const box=document.getElementById('automations-container');
     box.innerHTML='';
@@ -1271,6 +1307,7 @@ function renderAutomations(rows){
         card.appendChild(body);
         box.appendChild(card);
     });
+    if(automationsPagination&&automationsPagination.total_pages>1)appendDashboardPager(box,automationsPage,automationsPagination.total_items,nextPage=>loadAutomations(nextPage));
 }
 function openAutomationModal(id=null){const a=id?automationsCache.find(x=>Number(x.id)===Number(id)):null; document.getElementById('automation-id').value=a?.id||''; document.getElementById('automation-title').value=a?.title||''; document.getElementById('automation-description').value=a?.description||''; document.getElementById('automation-status').value=['draft','scheduled'].includes(a?.status)?a.status:'scheduled'; document.getElementById('automation-trigger').value=a?.trigger_type||'specific_datetime'; document.getElementById('automation-datetime').value=a?.trigger_datetime?automationLocalInputFromUtc(a.trigger_datetime):automationLocalInputFromUtc(a?.next_run_at); document.getElementById('automation-month').value=a?.recurring_month||''; document.getElementById('automation-day').value=a?.recurring_day||''; document.getElementById('automation-linked-type').value=a?.linked_resource_type||'event'; document.getElementById('automation-linked-id').value=a?.linked_resource_id||''; document.querySelectorAll('.automation-action').forEach(ch=>{ch.checked=!a ? ch.value==='notification' : (a.actions||[]).some(x=>x.action_type===ch.value);}); document.getElementById('automation-error').textContent=''; toggleAutomationFields(); bootstrap.Modal.getOrCreateInstance(document.getElementById('automationModal')).show();}
 function collectAutomationPayload(){const actions=[...document.querySelectorAll('.automation-action:checked')].map(ch=>({action_type:ch.value,payload: ch.value==='wall_post'?{body:document.getElementById('automation-description').value,privacy_level:'private'}:{message:document.getElementById('automation-description').value}})); return {automation_id:Number(document.getElementById('automation-id').value||0),title:document.getElementById('automation-title').value.trim(),description:document.getElementById('automation-description').value,trigger_type:document.getElementById('automation-trigger').value,trigger_datetime:automationUtcFromLocal(document.getElementById('automation-datetime').value),recurring_month:Number(document.getElementById('automation-month').value||0),recurring_day:Number(document.getElementById('automation-day').value||0),linked_resource_type:document.getElementById('automation-linked-type').value,linked_resource_id:Number(document.getElementById('automation-linked-id').value||0),status:document.getElementById('automation-status').value,actions};}
