@@ -10,6 +10,7 @@ $page = max(1, intval($_GET['page'] ?? 1));
 $limit = ITEMS_PER_PAGE;
 $offset = ($page - 1) * $limit;
 $folder_id = max(0, intval($_GET['folder_id'] ?? 0));
+$memory_id = max(0, intval($_GET['memory_id'] ?? 0));
 
 if (empty($user_id)) {
     echo json_encode(['success' => false, 'message' => 'User ID required']);
@@ -35,17 +36,18 @@ try {
     // consistently for every media type.
     $privacy_conditions = is_logged_in() ? '1=1' : "privacy_level = 'public'";
     
-    $stmt = $conn->prepare("SELECT * FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id) ORDER BY upload_date DESC LIMIT :limit OFFSET :offset");
+    $stmt = $conn->prepare("SELECT * FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id) AND (:memory_id = 0 OR id = :memory_id) ORDER BY upload_date DESC LIMIT :limit OFFSET :offset");
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->bindValue(':folder_id', $folder_id, PDO::PARAM_INT);
+    $stmt->bindValue(':memory_id', $memory_id, PDO::PARAM_INT);
     $stmt->execute();
     
     $memories = array_values(array_filter($stmt->fetchAll(), static function (array $memory) use ($conn) { return PrivacyService::canView($conn, 'memory', (int) $memory['id'], (int) $memory['user_id'], SessionHelper::getUserId(), (string) $memory['privacy_level'], isset($memory['folder_id']) ? (int) $memory['folder_id'] : null); }));
     
-    $countStmt = $conn->prepare("SELECT COUNT(*) as total FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id)");
-    $countStmt->execute(['user_id' => $user_id, 'folder_id' => $folder_id]);
+    $countStmt = $conn->prepare("SELECT COUNT(*) as total FROM memories WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions AND (:folder_id = 0 OR folder_id = :folder_id) AND (:memory_id = 0 OR id = :memory_id)");
+    $countStmt->execute(['user_id' => $user_id, 'folder_id' => $folder_id, 'memory_id' => $memory_id]);
     $total = count($memories);
     
     echo json_encode([

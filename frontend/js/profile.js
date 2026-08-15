@@ -286,6 +286,89 @@ async function loadWorldEventsForTimeline(milestones){const years=[...new Set((m
 function initTimelineWorldToggle(){document.querySelectorAll('[data-timeline-view]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-timeline-view]').forEach(x=>x.classList.toggle('active',x===b));const view=b.dataset.timelineView;document.getElementById('timeline-container')?.classList.toggle('timeline-world-only',view==='world');if(view==='world'){document.getElementById('timeline-container').querySelectorAll('.timeline-item:not(.world-timeline-item)').forEach(e=>e.classList.add('d-none'));}else{document.getElementById('timeline-container').querySelectorAll('.timeline-item:not(.world-timeline-item)').forEach(e=>e.classList.remove('d-none'));}renderWorldEventsTimeline();}));}
 document.addEventListener('DOMContentLoaded',initTimelineWorldToggle);
 
+
+// ---------- About life journal ----------
+let aboutJournalPage = 1;
+const ABOUT_JOURNAL_PAGE_SIZE = 10;
+
+function initAboutLifeJournal() {
+    const tab = document.querySelector('[data-bs-toggle="tab"][href="#about-tab"]');
+    tab?.addEventListener('shown.bs.tab', () => loadAboutLifeJournal(aboutJournalPage));
+    if (document.querySelector('#about-tab.active')) loadAboutLifeJournal(aboutJournalPage);
+}
+
+function aboutJournalIcon(type) {
+    return ({memory: 'bi-images', milestone: 'bi-award', event: 'bi-calendar-event'})[type] || 'bi-bookmark-star';
+}
+
+function aboutJournalLabel(type) {
+    return ({memory: 'Memory', milestone: 'Milestone', event: 'Event'})[type] || 'Life update';
+}
+
+function aboutJournalDate(value) {
+    const date = value ? new Date(value) : null;
+    return date && !Number.isNaN(date.getTime()) ? date.toLocaleDateString(undefined, {year: 'numeric', month: 'short', day: 'numeric'}) : 'Date unavailable';
+}
+
+async function loadAboutLifeJournal(page = 1) {
+    const list = document.getElementById('about-life-journal');
+    const pager = document.getElementById('about-life-journal-pagination');
+    if (!list || !profileUserId) return;
+    list.innerHTML = '<div class="about-journal-loading"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Loading life highlights?</div>';
+    if (pager) pager.innerHTML = '';
+    try {
+        const response = await fetch(`/backend/about/list.php?user_id=${encodeURIComponent(profileUserId)}&page=${page}&limit=${ABOUT_JOURNAL_PAGE_SIZE}`, {cache: 'no-store'});
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Unable to load life highlights.');
+        const result = data.data || {};
+        const items = Array.isArray(result.items) ? result.items : [];
+        const pagination = result.pagination || {};
+        aboutJournalPage = Number(pagination.current_page) || 1;
+        if (!items.length) {
+            list.innerHTML = `<div class="about-journal-empty"><i class="bi bi-journal-text"></i><div><strong>No life highlights to show yet.</strong><span>Memories, milestones, and events shared with you will appear here.</span></div></div>`;
+            return;
+        }
+        list.innerHTML = items.map(item => `<article class="about-journal-card about-journal-${escapeHtml(item.type)}">
+            <div class="about-journal-icon"><i class="bi ${aboutJournalIcon(item.type)}"></i></div>
+            <div class="about-journal-content"><div class="about-journal-meta"><span>${aboutJournalLabel(item.type)}</span><time>${aboutJournalDate(item.item_date)}</time></div><h6>${escapeHtml(item.title || 'Untitled')}</h6><p>${escapeHtml(item.description || 'No description was added.')}</p></div>
+            <button type="button" class="about-journal-open" data-about-type="${escapeHtml(item.type)}" data-about-id="${Number(item.id)}" aria-label="Open ${aboutJournalLabel(item.type)}"><i class="bi bi-arrow-up-right"></i></button>
+        </article>`).join('');
+        list.querySelectorAll('[data-about-type]').forEach(button => button.addEventListener('click', () => openAboutItem(button.dataset.aboutType, Number(button.dataset.aboutId))));
+        renderAboutJournalPagination(pagination);
+    } catch (error) {
+        list.innerHTML = `<div class="about-journal-empty about-journal-error"><i class="bi bi-exclamation-circle"></i><div><strong>Life highlights could not load.</strong><span>${escapeHtml(error.message || 'Please try again.')}</span></div></div>`;
+    }
+}
+
+function renderAboutJournalPagination(pagination) {
+    const pager = document.getElementById('about-life-journal-pagination');
+    if (!pager) return;
+    const current = Number(pagination.current_page) || 1;
+    const pages = Number(pagination.total_pages) || 1;
+    const total = Number(pagination.total_items) || 0;
+    if (pages <= 1) { pager.innerHTML = total ? `<span>${total} highlight${total === 1 ? '' : 's'}</span>` : ''; return; }
+    pager.innerHTML = `<button type="button" class="btn btn-outline-secondary btn-sm" data-about-page="${current - 1}" ${current === 1 ? 'disabled' : ''}>? Previous</button><span>Showing page ${current} of ${pages}</span><button type="button" class="btn btn-outline-secondary btn-sm" data-about-page="${current + 1}" ${current === pages ? 'disabled' : ''}>Next ?</button>`;
+    pager.querySelectorAll('[data-about-page]').forEach(button => button.addEventListener('click', () => {
+        loadAboutLifeJournal(Number(button.dataset.aboutPage));
+        document.getElementById('about-life-journal')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }));
+}
+
+function openAboutItem(type, id) {
+    const targets = {memory: '#memories-tab', milestone: '#timeline-tab', event: '#events-tab'};
+    const tabId = targets[type];
+    if (!tabId || !id) return;
+    const tab = document.querySelector(`[data-bs-toggle="tab"][href="${tabId}"]`);
+    bootstrap.Tab.getOrCreateInstance(tab).show();
+    const selector = type === 'memory' ? `#memory-card-${id}` : type === 'milestone' ? `#milestone-${id}` : `#event-${id}`;
+    setTimeout(() => {
+        const item = document.querySelector(selector);
+        if (item) { item.classList.add('about-item-focus'); item.scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => item.classList.remove('about-item-focus'), 1800); }
+        else if (type === 'memory') { const url = new URL(window.location.href); url.searchParams.set('focus_memory', id); url.hash = 'memories-tab'; window.location.assign(url.toString()); }
+        else showAlert('Open the relevant tab to view this shared item.', 'info');
+    }, 180);
+}
+
 // ---------- Load Timeline ----------
 
 async function loadTimeline() {
@@ -299,6 +382,7 @@ async function loadTimeline() {
         if (data.success && data.milestones.length > 0) {
             data.milestones.forEach((milestone, index) => {
                 const item = document.createElement('div');
+                item.id = `milestone-${milestone.id}`;
                 item.className = 'timeline-item';
                 item.dataset.timelineYear = timelineYear(milestone.milestone_date) || 0;
 
@@ -400,6 +484,13 @@ async function loadMemories() {
         const response = await fetch(`/backend/memories/list.php?user_id=${profileUserId}`);
         const data = await response.json();
         const grid = document.getElementById('memories-grid');
+        const focusMemoryId = Number(new URLSearchParams(window.location.search).get('focus_memory') || 0);
+        if (focusMemoryId && !(data.memories || []).some(memory => Number(memory.id) === focusMemoryId)) {
+            const focusResponse = await fetch(`/backend/memories/list.php?user_id=${profileUserId}&memory_id=${focusMemoryId}`);
+            const focusData = await focusResponse.json();
+            const focusMemory = (focusData.memories || [])[0];
+            if (focusData.success && focusMemory) data.memories = [focusMemory, ...(data.memories || [])];
+        }
 
         profileMemoriesCache = data.memories || [];
         if (data.success && data.memories.length > 0) {
@@ -501,7 +592,7 @@ async function loadMemories() {
                 );
 
                 col.innerHTML = `
-                    <div class="card memory-card">
+                    <div id="memory-card-${memory.id}" class="card memory-card">
                         ${mediaHtml}
                         <div class="card-body">
                             <h5 class="card-title">${escapeHtml(memory.title)}</h5>
@@ -530,6 +621,11 @@ async function loadMemories() {
             grid.innerHTML = '<p class="text-muted">No memories shared yet.</p>';
         }
         renderMemoryVideoTab();
+        if (focusMemoryId) {
+            const focused = document.getElementById(`memory-card-${focusMemoryId}`);
+            if (focused) { focused.classList.add('about-item-focus'); focused.scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => focused.classList.remove('about-item-focus'), 1800); }
+            const url = new URL(window.location.href); url.searchParams.delete('focus_memory'); history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+        }
     } catch (error) {
         console.error('Error loading memories:', error);
     }
@@ -906,6 +1002,7 @@ async function loadEvents() {
             return;
         }
 
+        window.profileEventsCache = data.events || [];
         if (data.events.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-4">
@@ -958,6 +1055,7 @@ async function loadEvents() {
 // Create Event Card
 function createEventCard(event, isPast) {
     const card = document.createElement('div');
+    card.id = `event-${event.id}`;
     card.className = `card mb-3 ${isPast ? 'bg-light' : 'border-info'}`;
 
     const eventDate = new Date(event.scheduled_date);
@@ -1078,6 +1176,7 @@ async function editProfileMemory(memoryId) {
 document.getElementById('profileEditMemoryForm')?.addEventListener('submit',async event=>{event.preventDefault();if(!currentUser||Number(currentUser.id)!==Number(profileUserId))return;const error=document.getElementById('profile-edit-memory-error');const save=document.getElementById('profile-edit-memory-save');error.textContent='';save.disabled=true;try{const rule=profileMemoryPrivacyWidget.getRule();const response=await fetch('/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('profile-edit-memory-id').value),title:document.getElementById('profile-edit-memory-title').value.trim(),description:document.getElementById('profile-edit-memory-description').value,memory_date:document.getElementById('profile-edit-memory-date').value,folder_id:Number(document.getElementById('profile-edit-memory-folder').value),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update memory.');await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule);bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal')).hide();loadMemories();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}});
 // Preserve the selected profile tab across refreshes.
 document.addEventListener('DOMContentLoaded', () => {
+    initAboutLifeJournal();
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"][href^="#"]');
     const saved = window.location.hash;
     if (saved) {

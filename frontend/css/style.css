@@ -3316,3 +3316,43 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
     .profile-page .autobio-timeline-pagination .small { order: -1; flex-basis: 100%; text-align: center; }
     .profile-page .autobio-timeline-pagination .btn { flex: 1 1 0; min-width: 0; }
 }
+
+
+/* About: compact newspaper-style life journal. */
+.profile-page .about-bio-card { overflow: hidden; border: 0; background: linear-gradient(125deg, #fff, #f8f6ff) !important; }
+.profile-page .about-bio-card .card-body { padding: clamp(1.3rem, 3vw, 2rem); }
+.profile-page .about-bio-card h5, .profile-page .about-journal-heading h5 { margin: .2rem 0 .35rem; font-weight: 850; }
+.profile-page .about-eyebrow { display: inline-flex; align-items: center; gap: .35rem; color: #7145ad; font-size: .75rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.profile-page .about-life-journal { padding: clamp(1rem, 2.5vw, 1.5rem); border: 1px solid rgba(31,41,51,.08); border-radius: 22px; background: linear-gradient(145deg, #fbfcff, #f4f1fb); box-shadow: 0 14px 32px rgba(15,23,42,.06); }
+.profile-page .about-journal-heading { margin-bottom: 1rem; padding-bottom: .8rem; border-bottom: 1px solid rgba(31,41,51,.10); }
+.profile-page .about-journal-heading p { margin: 0; color: #64748b; font-size: .92rem; }
+.profile-page .about-life-journal-list { display: grid; gap: .75rem; }
+.profile-page .about-journal-card { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto; gap: .8rem; align-items: center; padding: .9rem; border: 1px solid rgba(31,41,51,.09); border-radius: 16px; background: rgba(255,255,255,.94); transition: transform .18s ease, box-shadow .18s ease; }
+.profile-page .about-journal-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15,23,42,.09); }
+.profile-page .about-journal-icon { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border-radius: 12px; color: #fff; background: linear-gradient(135deg, #7250b2, #3f69cd); }
+.profile-page .about-journal-milestone .about-journal-icon { background: linear-gradient(135deg, #0d8b71, #2ca87b); }
+.profile-page .about-journal-event .about-journal-icon { background: linear-gradient(135deg, #e17d20, #dd4b55); }
+.profile-page .about-journal-content { min-width: 0; }
+.profile-page .about-journal-meta { display: flex; flex-wrap: wrap; gap: .45rem; color: #667085; font-size: .76rem; font-weight: 750; }
+.profile-page .about-journal-meta span { color: #7045ad; text-transform: uppercase; letter-spacing: .04em; }
+.profile-page .about-journal-card h6 { overflow: hidden; margin: .16rem 0; color: #1f2937; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.profile-page .about-journal-card p { display: -webkit-box; overflow: hidden; margin: 0; color: #64748b; font-size: .88rem; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.profile-page .about-journal-open { display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border: 1px solid rgba(112,69,173,.28); border-radius: 50%; color: #6940a8; background: #fff; transition: background .18s ease, color .18s ease; }
+.profile-page .about-journal-open:hover { color: #fff; background: #6f3fb0; }
+.profile-page .about-life-journal-pagination { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: 1rem; color: #64748b; font-size: .85rem; }
+.profile-page .about-life-journal-pagination .btn { min-width: 6.8rem; }
+.profile-page .about-journal-loading, .profile-page .about-journal-empty { display: flex; align-items: center; justify-content: center; gap: .75rem; min-height: 7rem; padding: 1rem; border: 1px dashed rgba(112,69,173,.25); border-radius: 15px; color: #64748b; text-align: left; }
+.profile-page .about-journal-empty i { color: #7045ad; font-size: 1.6rem; }
+.profile-page .about-journal-empty strong, .profile-page .about-journal-empty span { display: block; }
+.profile-page .about-journal-empty span { margin-top: .2rem; font-size: .88rem; }
+.profile-page .about-journal-error i { color: #dc3545; }
+.profile-page .about-item-focus { outline: 3px solid rgba(112,69,173,.42); outline-offset: 4px; transition: outline-color .3s ease; }
+@media (max-width: 575.98px) {
+  .profile-page .about-journal-card { grid-template-columns: 2.35rem minmax(0,1fr); gap: .65rem; padding: .75rem; }
+  .profile-page .about-journal-icon { width: 2.35rem; height: 2.35rem; }
+  .profile-page .about-journal-open { grid-column: 2; justify-self: end; width: 2.1rem; height: 2.1rem; margin-top: -.1rem; }
+  .profile-page .about-journal-card h6 { white-space: normal; }
+  .profile-page .about-life-journal-pagination { flex-wrap: wrap; gap: .5rem; }
+  .profile-page .about-life-journal-pagination span { order: -1; flex-basis: 100%; text-align: center; }
+  .profile-page .about-life-journal-pagination .btn { flex: 1 1 0; min-width: 0; }
+}
