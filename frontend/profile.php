@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081603" />
+  <link rel="stylesheet" href="css/style.css?v=2026081604" />
 </head>
 
 <body class="profile-page app-page">
@@ -348,6 +348,7 @@ if (!is_logged_in()) {
                 </div>
                 <div class="collapse mb-3" id="friends-add-panel"><form id="friends-search-form" class="d-flex flex-column flex-sm-row gap-2"><input id="friends-search-input" class="form-control" type="search" minlength="2" placeholder="Search by username or email" autocomplete="off"><button class="btn btn-primary" type="submit">Search</button></form><div id="friends-search-results" class="mt-3" aria-live="polite"></div></div>
                 <div class="collapse mb-3" id="friend-requests-panel"><div id="friend-requests-container"></div></div>
+                <div class="member-list-search mb-3"><i class="bi bi-search" aria-hidden="true"></i><input id="friends-list-search" class="form-control" type="search" placeholder="Search your friends by name or username" autocomplete="off"><span id="friends-list-count" class="small text-muted"></span></div>
                 <div id="friends-list" class="row g-3"></div><div id="people-you-may-know" class="mt-4"></div>
               </div>
             </div>
@@ -370,6 +371,7 @@ if (!is_logged_in()) {
                     </button>
                   </div>
                 </div>
+                <div class="member-list-search mb-3"><i class="bi bi-search" aria-hidden="true"></i><input id="family-list-search" class="form-control" type="search" placeholder="Search family members by name or relationship" autocomplete="off"><span id="family-list-count" class="small text-muted"></span></div>
                 <div id="family-list" class="row g-3">
                 </div>
               </div>
@@ -511,8 +513,8 @@ if (!is_logged_in()) {
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js"></script>
-  <script src="js/friends.js?v=2026081403"></script>
-  <script src="js/family.js?v=2026081401"></script>
+  <script src="js/friends.js?v=2026081601"></script>
+  <script src="js/family.js?v=2026081601"></script>
   <script src="js/search.js"></script>
 
 <div class="modal fade" id="journeyModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Shared journey</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="journeyForm"><input type="hidden" id="journey-id"><label class="form-label">Title</label><input id="journey-title" class="form-control mb-2" maxlength="180" required><label class="form-label">Description</label><textarea id="journey-description" class="form-control mb-2" maxlength="5000"></textarea><div class="row"><div class="col-md-6"><label class="form-label">Start date</label><input id="journey-start" type="date" class="form-control mb-2"></div><div class="col-md-6"><label class="form-label">End date</label><input id="journey-end" type="date" class="form-control mb-2"></div></div><label class="form-label">Status</label><select id="journey-status" class="form-select mb-3"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select><div id="journey-privacy"></div><div id="journey-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="journeyForm" class="btn btn-primary" id="journey-save">Save</button></div></div></div></div>

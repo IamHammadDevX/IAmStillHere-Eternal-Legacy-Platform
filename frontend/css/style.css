@@ -3356,3 +3356,12 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
   .profile-page .about-life-journal-pagination span { order: -1; flex-basis: 100%; text-align: center; }
   .profile-page .about-life-journal-pagination .btn { flex: 1 1 0; min-width: 0; }
 }
+
+
+/* Fast in-list member search for Friends and Family. */
+.profile-page .member-list-search { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .55rem; padding: .5rem .7rem; border: 1px solid rgba(31,41,51,.10); border-radius: 14px; background: rgba(248,250,252,.88); }
+.profile-page .member-list-search > i { color: #7250b2; }
+.profile-page .member-list-search .form-control { min-width: 0; border: 0; background: transparent; box-shadow: none; }
+.profile-page .member-list-search .form-control:focus { background: #fff; border-radius: 10px; }
+.profile-page .member-list-search .small { white-space: nowrap; }
+@media (max-width: 575.98px) { .profile-page .member-list-search { grid-template-columns: auto minmax(0, 1fr); } .profile-page .member-list-search .small { grid-column: 1 / -1; padding-left: 1.4rem; } }

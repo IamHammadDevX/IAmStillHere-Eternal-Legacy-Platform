@@ -1,5 +1,6 @@
 const FRIENDS_API = '/backend/friends';
 const FRIEND_PHOTO_BASE = '/data/uploads/photos/';
+let friendsListCache = [];
 
 function friendEl(tag, cls = '', text = '') {
   const node = document.createElement(tag);
@@ -126,31 +127,51 @@ function renderFriendAction(area, status) {
 async function loadFriends() {
   const box = document.getElementById('friends-list');
   if (!box) return;
-
-  box.textContent = '';
-  box.appendChild(friendEl('p', 'text-muted', 'Loading friends...'));
-
+  box.innerHTML = '<p class="text-muted">Loading friends...</p>';
   try {
-    const response = await fetch(`${FRIENDS_API}/list.php?user_id=${encodeURIComponent(profileUserId)}&limit=20`);
-    const data = await response.json();
-    box.textContent = '';
-
-    if (!data.success) {
-      box.appendChild(friendEl('p', 'text-danger', data.message || 'Unable to load friends.'));
-      return;
+    const firstResponse = await fetch(`${FRIENDS_API}/list.php?user_id=${encodeURIComponent(profileUserId)}&limit=50&page=1`);
+    const firstData = await firstResponse.json();
+    if (!firstData.success) throw new Error(firstData.message || 'Unable to load friends.');
+    const pagination = firstData.data?.pagination || {};
+    const totalPages = Number(pagination.total_pages) || 1;
+    const friends = [...(firstData.data?.friends || [])];
+    for (let page = 2; page <= totalPages; page += 1) {
+      const response = await fetch(`${FRIENDS_API}/list.php?user_id=${encodeURIComponent(profileUserId)}&limit=50&page=${page}`);
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message || 'Unable to load friends.');
+      friends.push(...(data.data?.friends || []));
     }
-
-    const friends = data.data.friends || [];
-    if (!friends.length) {
-      box.appendChild(friendEl('p', 'text-muted', 'No friends yet.'));
-      return;
-    }
-
-    friends.forEach((friend) => box.appendChild(createFriendCard(friend)));
+    friendsListCache = friends.sort((a, b) => friendDisplayName(a).localeCompare(friendDisplayName(b), undefined, {sensitivity: 'base'}));
+    renderFriendsList();
   } catch (error) {
-    box.textContent = '';
-    box.appendChild(friendEl('p', 'text-danger', 'Unable to load friends.'));
+    friendsListCache = [];
+    box.innerHTML = `<p class="text-danger">${error.message || 'Unable to load friends.'}</p>`;
   }
+}
+
+function friendDisplayName(friend) {
+  return String(friend?.full_name || friend?.username || 'Friend').trim();
+}
+
+function renderFriendsList() {
+  const box = document.getElementById('friends-list');
+  const input = document.getElementById('friends-list-search');
+  const count = document.getElementById('friends-list-count');
+  if (!box) return;
+  const query = (input?.value || '').trim().toLocaleLowerCase();
+  const matches = friendsListCache.filter(friend => `${friend.full_name || ''} ${friend.username || ''}`.toLocaleLowerCase().includes(query));
+  box.innerHTML = '';
+  if (!matches.length) {
+    box.appendChild(friendEl('p', 'text-muted', query ? 'No friends match your search.' : 'No friends yet.'));
+  } else {
+    matches.forEach(friend => box.appendChild(createFriendCard(friend)));
+  }
+  if (count) count.textContent = `${matches.length} of ${friendsListCache.length} friend${friendsListCache.length === 1 ? '' : 's'}`;
+}
+
+function initFriendsListSearch() {
+  const input = document.getElementById('friends-list-search');
+  input?.addEventListener('input', renderFriendsList);
 }
 
 function createFriendCard(friend) {
@@ -239,3 +260,4 @@ function initFriendsFeatureWhenReady(attempt = 0) {
 
 document.addEventListener('DOMContentLoaded', () => initFriendsFeatureWhenReady());
 document.addEventListener('DOMContentLoaded', initFriendSearch);
+document.addEventListener('DOMContentLoaded', initFriendsListSearch);

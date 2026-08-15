@@ -292,7 +292,7 @@ function collectVisibleTreeBranches(root) {
         .map(group => ({
             group,
             label: getTreeBranchLabel(group),
-            members: (branches[group] || []).filter(member => !member.cycle)
+            members: (branches[group] || []).filter(member => !member.cycle).sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, {sensitivity: 'base'}))
         }))
         .filter(section => section.members.length > 0);
 }
@@ -385,6 +385,39 @@ function renderFamilyTree(treeData) {
     body.appendChild(viewport);
     card.appendChild(body);
     list.appendChild(card);
+    filterFamilyTreeRendered();
+}
+
+function familyMemberMatches(member, query) {
+    const text = `${getMemberName(member)} ${member.relationship || ''}`.toLocaleLowerCase();
+    return !query || text.includes(query);
+}
+
+function getFamilySearchQuery() {
+    return (document.getElementById('family-list-search')?.value || '').trim().toLocaleLowerCase();
+}
+
+function filterFamilyTreeRendered() {
+    const query = getFamilySearchQuery();
+    const list = document.getElementById('family-list');
+    if (!list) return;
+    list.querySelectorAll('.family-tree-section').forEach(section => {
+        let visible = 0;
+        section.querySelectorAll('.family-tree-member-wrap').forEach(wrap => {
+            const name = wrap.querySelector('.family-tree-name')?.textContent?.toLocaleLowerCase() || '';
+            const relationship = wrap.querySelector('.family-tree-relationship')?.textContent?.toLocaleLowerCase() || '';
+            const match = !query || `${name} ${relationship}`.includes(query);
+            wrap.classList.toggle('d-none', !match);
+            if (match) visible += 1;
+        });
+        section.classList.toggle('d-none', visible === 0);
+    });
+    const noResult = list.querySelector('.family-tree-search-empty');
+    if (noResult) noResult.remove();
+    if (query && !list.querySelector('.family-tree-member-wrap:not(.d-none)')) {
+        const empty = document.createElement('p'); empty.className = 'family-tree-search-empty text-muted text-center mt-3 mb-0'; empty.textContent = 'No family members match your search.';
+        list.querySelector('.family-tree-compact')?.appendChild(empty);
+    }
 }
 
 async function loadFamilyTree() {
@@ -415,6 +448,8 @@ async function loadFamilyTree() {
     }
 }
 function renderFamilyMembers(members) {
+    const query = getFamilySearchQuery();
+    const visibleMembers = (members || []).filter(member => familyMemberMatches(member, query));
     if (familyViewMode === 'tree') {
         if (familyTreeCache) {
             renderFamilyTree(familyTreeCache);
@@ -429,10 +464,10 @@ function renderFamilyMembers(members) {
 
     list.innerHTML = '';
 
-    if (members.length === 0) {
+    if (visibleMembers.length === 0) {
         const empty = document.createElement('p');
         empty.className = 'text-muted';
-        empty.textContent = 'No family members added yet.';
+        empty.textContent = query ? 'No family members match your search.' : 'No family members added yet.';
         list.appendChild(empty);
         return;
     }
@@ -445,12 +480,12 @@ function renderFamilyMembers(members) {
         card.classList.add('p-0');
         const listWrap = document.createElement('div');
         listWrap.className = 'family-list-view';
-        members.forEach(member => listWrap.appendChild(createListMember(member)));
+        visibleMembers.forEach(member => listWrap.appendChild(createListMember(member)));
         card.appendChild(listWrap);
     } else {
         const membersGrid = document.createElement('div');
         membersGrid.className = 'd-flex flex-wrap gap-4 justify-content-start align-items-start family-grid-view';
-        members.forEach(member => membersGrid.appendChild(createGridMember(member)));
+        visibleMembers.forEach(member => membersGrid.appendChild(createGridMember(member)));
         card.appendChild(membersGrid);
     }
 
@@ -500,7 +535,8 @@ async function loadFamilyMembers() {
             return;
         }
 
-        familyMembersCache = data.members || [];
+        familyMembersCache = (data.members || []).sort((a, b) => getMemberName(a).localeCompare(getMemberName(b), undefined, {sensitivity: 'base'}));
+        updateFamilySearchCount();
         if (familyViewMode === 'tree') {
             await loadFamilyTree();
         } else {
@@ -619,6 +655,25 @@ async function searchFamilyUsers(query) {
 }
 function wireFamilySearch(){const form=document.getElementById('family-search-form'),input=document.getElementById('family-search-input');if(!form||!input)return;form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(q.length<2){document.getElementById('family-search-results').textContent='Enter at least 2 characters.';return;}searchFamilyUsers(q);});}
 
+function updateFamilySearchCount() {
+    const count = document.getElementById('family-list-count');
+    if (!count) return;
+    const visible = familyMembersCache.filter(member => familyMemberMatches(member, getFamilySearchQuery())).length;
+    count.textContent = `${visible} of ${familyMembersCache.length} family member${familyMembersCache.length === 1 ? '' : 's'}`;
+}
+
+function wireFamilyMemberSearch() {
+    const input = document.getElementById('family-list-search');
+    if (!input || input.dataset.ready === '1') return;
+    input.dataset.ready = '1';
+    input.addEventListener('input', () => {
+        updateFamilySearchCount();
+        if (familyViewMode === 'tree') {
+            if (familyTreeCache) filterFamilyTreeRendered(); else loadFamilyTree();
+        } else renderFamilyMembers(familyMembersCache);
+    });
+}
+
 function wireAddButton() {
     const btn = document.getElementById('btn-add-family');
     if (!btn) return;
@@ -651,6 +706,7 @@ async function initFamilyFeature() {
     wireFamilyViewToggle();
     wireAddButton();
     wireFamilySearch();
+    wireFamilyMemberSearch();
     await loadFamilyMembers();
 }
 
