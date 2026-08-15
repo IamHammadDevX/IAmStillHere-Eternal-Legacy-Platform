@@ -14,7 +14,7 @@ function automation_db(): PDO { return (new Database())->getConnection(); }
 function automation_input(): array { $d=json_decode(file_get_contents('php://input'), true); return is_array($d)?$d:$_POST; }
 function automation_user(): ?int { return SessionHelper::getUserId(); }
 function automation_require_auth(): int { if(!SessionHelper::isAuthenticated()){ApiResponse::unauthorized();exit;} return (int)SessionHelper::getUserId(); }
-function automation_require_csrf(array $data): void { if(!CsrfHelper::validate(CsrfHelper::getTokenFromRequest($data))){ApiResponse::forbidden('Invalid CSRF token.');exit;} }
+function automation_require_csrf(array $data) { if(!CsrfHelper::validate(CsrfHelper::getTokenFromRequest($data))){ApiResponse::forbidden('Invalid CSRF token.');exit;} }
 function automation_clean(string $v, int $max=255): string { return mb_substr(trim($v),0,$max); }
 function automation_utc_datetime(?string $value): ?string { if(!$value)return null; try { return (new DateTimeImmutable($value))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'); } catch(Throwable $e){ return null; } }
 function automation_next_run(array $data): ?string {

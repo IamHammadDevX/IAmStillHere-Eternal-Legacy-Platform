@@ -35,7 +35,16 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
     }
     if($action['action_type']==='wall_post'){
         $scheduledId=(int)($payload['scheduled_wall_post_id']??0);
-        if($scheduledId<=0) throw new RuntimeException('Scheduled wall post ID missing.');
+        if($scheduledId<=0){
+            $body=trim((string)($payload['body']??($rule['description']??'')));
+            if($body==='') throw new RuntimeException('Wall post body empty.');
+            $privacy=(string)($payload['privacy_level']??'private');
+            if(!in_array($privacy,['public','family','friends','specific_people','private'],true)) $privacy='private';
+            $post=$db->prepare('INSERT INTO posts(user_id,body,privacy_level) VALUES(:u,:body,:privacy)');
+            $post->execute(['u'=>(int)$rule['owner_id'],'body'=>$body,'privacy'=>$privacy]);
+            if(!(int)$db->lastInsertId()) throw new RuntimeException('Wall post was not persisted.');
+            return;
+        }
         $row=$db->prepare('SELECT * FROM scheduled_wall_posts WHERE id=:id AND owner_id=:owner AND deleted_at IS NULL LIMIT 1');
         $row->execute(['id'=>$scheduledId,'owner'=>(int)$rule['owner_id']]);
         $scheduled=$row->fetch(PDO::FETCH_ASSOC);
