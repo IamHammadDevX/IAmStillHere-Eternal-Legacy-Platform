@@ -3085,3 +3085,8 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
   .dashboard-pager .btn { flex: 1 1 0; min-width: 0; }
   .dashboard-pager .small { flex-basis: 100%; text-align: center; }
 }
+/* Memory folder drag-and-drop */
+.memory-drag-item { cursor: grab; }
+.memory-drag-item.is-dragging { opacity: .45; cursor: grabbing; }
+#memory-folders .folder-tree-node.is-drop-target { background: #dff7e8; outline: 2px dashed #198754; outline-offset: -2px; }
+@media (max-width: 767.98px) { .memory-drag-item { cursor: default; } }

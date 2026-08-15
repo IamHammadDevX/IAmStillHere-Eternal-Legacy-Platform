@@ -116,7 +116,10 @@ async function loadMemories(page = memoryPage) {
             const memoryStart = (memoryPage - 1) * DASHBOARD_PAGE_SIZE;
             data.memories.slice(memoryStart, memoryStart + DASHBOARD_PAGE_SIZE).forEach((memory, index) => {
                 const col = document.createElement('div');
-                col.className = 'col-md-4 mb-4';
+                col.className = 'col-md-4 mb-4 memory-drag-item';
+                col.draggable = true;
+                col.dataset.memoryId = String(memory.id);
+                col.title = 'Drag this memory onto a folder to move it';
 
                 let mediaHtml = '';
                 const fileName = memory.file_path.toLowerCase();
@@ -234,6 +237,8 @@ async function loadMemories(page = memoryPage) {
                         </div>
                     </div>
                 `;
+                col.addEventListener('dragstart', event => { event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', String(memory.id)); col.classList.add('is-dragging'); });
+                col.addEventListener('dragend', () => col.classList.remove('is-dragging'));
                 grid.appendChild(col);
                 loadMemoryComments(memory.id);
             });
@@ -887,6 +892,9 @@ async function loadMemoryFolders(search = '') {
     const byParent = new Map(); folders.forEach(f=>{const key=Number(f.parent_folder_id||0);if(!byParent.has(key))byParent.set(key,[]);byParent.get(key).push(f);});
     const renderLevel = (parentId, host, depth=0) => (byParent.get(Number(parentId))||[]).forEach(folder => {
         const row=document.createElement('div'); row.className=`folder-tree-node ${currentMemoryFolderId===Number(folder.id)?'is-selected':''}`; row.dataset.folderId=folder.id; row.style.setProperty('--folder-depth',depth);
+        row.addEventListener('dragover', event => { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; row.classList.add('is-drop-target'); });
+        row.addEventListener('dragleave', event => { if (!row.contains(event.relatedTarget)) row.classList.remove('is-drop-target'); });
+        row.addEventListener('drop', async event => { event.preventDefault(); row.classList.remove('is-drop-target'); const memoryId=Number(event.dataTransfer.getData('text/plain')); if(memoryId>0) await moveMemoryToFolder(memoryId, Number(folder.id)); });
         const children=byParent.get(Number(folder.id))||[]; const hasChildren=children.length>0; const toggle=document.createElement('button'); toggle.type='button'; toggle.className='folder-chevron'; toggle.innerHTML=hasChildren?'<i class="bi bi-chevron-right"></i>':'<span></span>'; toggle.setAttribute('aria-label',hasChildren?'Expand folder':'No subfolders');
         const content=document.createElement('button'); content.type='button'; content.className='folder-tree-main'; content.innerHTML=`<i class="bi bi-folder-fill folder-tree-icon"></i><span class="folder-tree-name"></span><span class="folder-tree-count">${Number(folder.memory_count||0)}</span>`; content.querySelector('.folder-tree-name').textContent=folder.name; content.title=folder.name;
         content.onclick=()=>{memoryPage=1;currentMemoryFolderId=Number(folder.id);localStorage.setItem('memoryFolder_'+currentUserId,currentMemoryFolderId);if(breadcrumb)breadcrumb.textContent=folder.name;loadMemories();loadMemoryFolders(search);};
@@ -913,19 +921,28 @@ async function folderPost(endpoint, payload) {
 async function renameFolder(folder) { const name=prompt('New folder name',folder.name); if(!name)return; const data=await folderPost('update',{folder_id:folder.id,name}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to rename folder','danger'); }
 async function createChildFolder(parent) { const name=prompt('Child folder name'); if(!name)return; const data=await folderPost('create',{name,parent_folder_id:parent.id,privacy_level:parent.privacy_level}); if(data.success)loadMemoryFolders();else showAlert(data.message||'Unable to create child folder','danger'); }
 async function deleteFolder(folder) { if(!confirm(`Delete empty folder "${folder.name}"?`))return; const data=await folderPost('delete',{folder_id:folder.id}); if(data.success){if(currentMemoryFolderId===folder.id){currentMemoryFolderId=0;loadMemories();}loadMemoryFolders();}else showAlert(data.message||'Folder must be empty','danger'); }
+async function moveMemoryToFolder(memoryId, folderId) {
+    const data = await folderPost('move_memory', { memory_id: Number(memoryId), folder_id: Number(folderId) || 0 });
+    if (data.success) {
+        showAlert('Memory moved successfully', 'success');
+        loadMemories();
+        loadMemoryFolders();
+    } else {
+        showAlert(data.message || 'Unable to move memory', 'danger');
+    }
+}
+
 async function moveMemory(memoryId) {
     const folders = await fetch(`/backend/memories/folders/list.php?user_id=${currentUserId}&_=${Date.now()}`).then(r => r.json());
     const available = folders.data?.folders || [];
-    const options = available.map(f => `${f.id}: ${f.name}`).join('\\n');
-    const choice = prompt(`Enter folder ID or exact folder name. Enter 0 to remove folder.\\n${options}`, '0');
+    const options = available.map(f => `${f.id}: ${f.name}`).join('\n');
+    const choice = prompt(`Choose a folder ID. Enter 0 to remove this memory from its folder.\n${options}`, '0');
     if (choice === null) return;
     const input = choice.trim();
     const selected = available.find(f => String(f.id) === input || String(f.name).toLowerCase() === input.toLowerCase());
-    const folderId = input === '0' ? 0 : (selected ? Number(selected.id) : parseInt(input, 10) || 0);
-    const data = await folderPost('move_memory', { memory_id: memoryId, folder_id: folderId });
-    if (data.success) { showAlert('Memory moved successfully', 'success'); loadMemories(); loadMemoryFolders(); }
-    else showAlert(data.message || 'Unable to move memory', 'danger');
+    await moveMemoryToFolder(memoryId, input === '0' ? 0 : (selected ? Number(selected.id) : parseInt(input, 10) || 0));
 }
+
 let editMemoryPrivacyWidget = null;
 async function editMemory(memoryId) {
     const memory = (window.lastLoadedMemories || []).find(item => Number(item.id) === Number(memoryId));
