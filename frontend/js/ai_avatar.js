@@ -14,6 +14,7 @@ function initAiAvatar() {
     document.getElementById('ai-avatar-source-search')?.addEventListener('input', renderAiAvatarSources);
     document.getElementById('ai-avatar-select-visible')?.addEventListener('click', selectVisibleAiAvatarSources);
     document.querySelectorAll('#ai-avatar-source-filters [data-filter]').forEach(btn => btn.addEventListener('click', () => setAiAvatarSourceFilter(btn)));
+    syncAiAvatarProfilePhoto();
     loadAiAvatarSources();
     loadAiAvatarConversations();
 }
@@ -28,6 +29,20 @@ function aiAvatarEscape(value) {
     const div = document.createElement('div');
     div.textContent = value == null ? '' : String(value);
     return div.innerHTML;
+}
+
+function aiAvatarProfilePhotoUrl() {
+    const profilePhoto = document.getElementById('profile-image');
+    return profilePhoto?.currentSrc || profilePhoto?.src || '/data/uploads/photos/default-profile.png';
+}
+
+function syncAiAvatarProfilePhoto() {
+    const avatar = document.getElementById('ai-avatar-photo');
+    const profilePhoto = document.getElementById('profile-image');
+    if (!avatar) return;
+    avatar.src = aiAvatarProfilePhotoUrl();
+    avatar.onerror = () => { avatar.src = '/data/uploads/photos/default-profile.png'; };
+    profilePhoto?.addEventListener('load', () => { avatar.src = aiAvatarProfilePhotoUrl(); });
 }
 
 
@@ -167,39 +182,35 @@ function renderAiAvatarMessages(messages) {
     const box = document.getElementById('ai-avatar-messages');
     if (!box) return;
     if (!messages.length) return renderAiAvatarEmpty();
-    box.innerHTML = messages.map(message => {
-        const mine = message.role === 'user';
-        const sources = mine ? '' : renderAiAvatarReferences(message.sources || []);
-        return `<div class="d-flex mb-3 ${mine ? 'justify-content-end' : 'justify-content-start'}">
-            <div class="ai-avatar-bubble ${mine ? 'ai-avatar-user' : 'ai-avatar-answer'}">
-                <div>${aiAvatarEscape(message.message_text)}</div>
-                ${sources}
-            </div>
-        </div>`;
-    }).join('');
+    box.innerHTML = messages.map(message => aiAvatarMessageMarkup(
+        message.role === 'user' ? 'user' : 'assistant',
+        message.message_text,
+        message.sources || []
+    )).join('');
     box.scrollTop = box.scrollHeight;
+}
+
+function aiAvatarMessageMarkup(role, text, sources = []) {
+    const mine = role === 'user';
+    const avatar = mine
+        ? `<img src="${aiAvatarEscape(aiAvatarProfilePhotoUrl())}" alt="You" onerror="this.src='/data/uploads/photos/default-profile.png'">`
+        : '<i class="bi bi-robot" aria-hidden="true"></i>';
+    const references = mine ? '' : renderAiAvatarReferences(sources);
+    return `<div class="ai-avatar-message ai-avatar-message-${mine ? 'user' : 'assistant'}">
+        <div class="ai-avatar-chat-avatar ${mine ? 'ai-avatar-chat-avatar-user' : 'ai-avatar-chat-avatar-ai'}">${avatar}</div>
+        <div class="ai-avatar-bubble ${mine ? 'ai-avatar-user' : 'ai-avatar-answer'}">
+            <div>${aiAvatarEscape(text)}</div>${references}
+        </div>
+    </div>`;
 }
 
 function appendAiAvatarMessage(role, text, sources = []) {
     const box = document.getElementById('ai-avatar-messages');
     if (!box) return;
     if (box.textContent.includes('Ask about memories')) box.innerHTML = '';
-    const mine = role === 'user';
-    const wrapper = document.createElement('div');
-    wrapper.className = `d-flex mb-3 ${mine ? 'justify-content-end' : 'justify-content-start'}`;
-    const bubble = document.createElement('div');
-    bubble.className = `ai-avatar-bubble ${mine ? 'ai-avatar-user' : 'ai-avatar-answer'}`;
-    const body = document.createElement('div');
-    body.textContent = text;
-    bubble.appendChild(body);
-    if (!mine && sources.length) {
-        const sourceDiv = document.createElement('div');
-        sourceDiv.className = 'ai-avatar-sources small mt-2';
-        sourceDiv.innerHTML = renderAiAvatarReferences(sources);
-        bubble.appendChild(sourceDiv);
-    }
-    wrapper.appendChild(bubble);
-    box.appendChild(wrapper);
+    const message = document.createElement('div');
+    message.innerHTML = aiAvatarMessageMarkup(role, text, sources);
+    box.appendChild(message.firstElementChild);
     box.scrollTop = box.scrollHeight;
 }
 

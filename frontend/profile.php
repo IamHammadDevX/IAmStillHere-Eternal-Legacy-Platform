@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081408" />
+  <link rel="stylesheet" href="css/style.css?v=2026081601" />
 </head>
 
 <body class="profile-page app-page">
@@ -156,7 +156,7 @@ if (!is_logged_in()) {
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                   <div class="d-flex align-items-center gap-2">
-                    <img id="ai-avatar-photo" src="images/default-profile.png" alt="AI Avatar" class="rounded-circle" style="width:42px;height:42px;object-fit:cover;">
+                    <img id="ai-avatar-photo" src="/data/uploads/photos/default-profile.png" alt="Your profile photo" class="ai-avatar-header-photo">
                     <div>
                       <h5 class="mb-0">AI Avatar</h5>
                       <div class="small text-muted">Grounded in approved memories and profile knowledge.</div>
@@ -499,7 +499,7 @@ if (!is_logged_in()) {
   <script src="js/auth.js?v=2026081123"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081407"></script>
   <script src="js/posts.js?v=2026081410"></script>
-  <script src="js/ai_avatar.js?v=2026081011"></script>
+  <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081402"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>
   <script src="js/gifts.js?v=2026081121"></script>

@@ -3133,3 +3133,102 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .family-requests-page .family-requests-empty > i { font-size: 3rem; color: #7b61b8; }
 .family-requests-page .family-requests-empty h5 { margin: 0; color: #334155; font-weight: 750; }
 .family-requests-page .family-requests-empty p { max-width: 30rem; margin: 0; }
+
+
+/* AI Avatar conversation: clear speaker identity without oversized bubbles. */
+.profile-page .ai-avatar-header-photo {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 5px 14px rgba(15, 23, 42, .18);
+}
+
+.profile-page #ai-avatar-messages {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+    padding: 1rem !important;
+}
+
+.profile-page .ai-avatar-message {
+    display: flex;
+    align-items: flex-end;
+    gap: .6rem;
+    width: 100%;
+}
+
+.profile-page .ai-avatar-message-user { justify-content: flex-end; }
+.profile-page .ai-avatar-message-user .ai-avatar-chat-avatar { order: 2; }
+.profile-page .ai-avatar-message-user .ai-avatar-bubble {
+    order: 1;
+    border-radius: 18px 18px 4px 18px !important;
+}
+.profile-page .ai-avatar-message-assistant .ai-avatar-bubble {
+    border-radius: 18px 18px 18px 4px !important;
+}
+
+.profile-page .ai-avatar-chat-avatar {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .16);
+}
+
+.profile-page .ai-avatar-chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-page .ai-avatar-chat-avatar-ai {
+    color: #fff;
+    background: linear-gradient(135deg, #6f3fb0, #3568d4);
+    font-size: 1rem;
+}
+
+.profile-page .ai-avatar-chat-avatar-user {
+    border: 2px solid #fff;
+    background: #eef2f7;
+}
+
+.profile-page .ai-avatar-bubble {
+    width: fit-content;
+    max-width: min(78%, 560px);
+    min-height: 0;
+    padding: .78rem 1rem;
+}
+
+.profile-page .ai-avatar-user {
+    color: #fff;
+    background: linear-gradient(135deg, #7040b2, #3d63cb);
+}
+
+.profile-page .ai-avatar-answer {
+    border-color: rgba(31, 41, 51, .10);
+    background: #fff;
+}
+
+@media (max-width: 575.98px) {
+    .profile-page .ai-avatar-header-photo {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+    .profile-page .ai-avatar-message { gap: .45rem; }
+    .profile-page .ai-avatar-chat-avatar {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+    }
+    .profile-page .ai-avatar-bubble {
+        max-width: calc(100% - 38px);
+        padding: .7rem .82rem;
+    }
+}
