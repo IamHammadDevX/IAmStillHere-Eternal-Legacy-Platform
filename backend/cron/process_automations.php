@@ -91,7 +91,13 @@ try{
             $key='automation-'.$rule['id'].'-'.$action['id'].'-'.gmdate('YmdHi',strtotime($rule['next_run_at']));
             try{
                 $run=$db->prepare("INSERT INTO automation_runs(rule_id,action_id,idempotency_key,status) VALUES(:r,:a,:k,'processing')");$run->execute(['r'=>$rule['id'],'a'=>$action['id'],'k'=>$key]);
-            }catch(Throwable $e){$skipped++;continue;}
+            }catch(Throwable $e){
+                $existing=$db->prepare("SELECT status FROM automation_runs WHERE idempotency_key=:k LIMIT 1");
+                $existing->execute(['k'=>$key]);
+                $existingStatus=$existing->fetchColumn();
+                if($existingStatus==='completed'){$skipped++;continue;}
+                $db->prepare("UPDATE automation_runs SET status='processing',error_message=NULL,completed_at=NULL WHERE idempotency_key=:k")->execute(['k'=>$key]);
+            }
             try{automation_worker_run_action($db,$rule,$action);$payloadDone=$action['payload']?json_decode($action['payload'],true):[];if(is_array($payloadDone)&&!empty($payloadDone['personalized_message_id'])){$db->prepare("UPDATE ai_personalized_messages SET status='sent', updated_at=UTC_TIMESTAMP() WHERE id=:id AND status='scheduled'")->execute(['id'=>(int)$payloadDone['personalized_message_id']]);}$db->prepare("UPDATE automation_runs SET status='completed',completed_at=CURRENT_TIMESTAMP WHERE idempotency_key=:k")->execute(['k'=>$key]);}
             catch(Throwable $e){$ruleFailed=true;$error=mb_substr($e->getMessage(),0,500);$db->prepare("UPDATE automation_runs SET status='failed',error_message=:e,completed_at=CURRENT_TIMESTAMP WHERE idempotency_key=:k")->execute(['e'=>$error,'k'=>$key]);}
         }

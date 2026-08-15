@@ -39,24 +39,24 @@ function automation_validate_rule(PDO $db, array $data, int $owner, bool $partia
     $desc=automation_clean((string)($data['description']??''),2000);
     $trigger=(string)($data['trigger_type']??'specific_datetime');
     $status=(string)($data['status']??'scheduled');
-    if($title==='') ApiResponse::validation(['title'=>'Title required.']);
-    if(!in_array($trigger,AUTOMATION_TRIGGER_TYPES,true)) ApiResponse::validation(['trigger_type'=>'Invalid trigger.']);
+    if($title==='') ApiResponse::validation(['title'=>'Title required.']); exit;
+    if(!in_array($trigger,AUTOMATION_TRIGGER_TYPES,true)) ApiResponse::validation(['trigger_type'=>'Invalid trigger.']); exit;
     if(!in_array($status,['draft','scheduled'],true)) $status='scheduled';
     $next=automation_next_run($data);
-    if($status==='scheduled' && !$next) ApiResponse::validation(['next_run_at'=>'Valid future trigger time/date required.']);
-    if($next && strtotime($next)<=time() && $trigger==='specific_datetime') ApiResponse::validation(['trigger_datetime'=>'Trigger must be in the future.']);
+    if($status==='scheduled' && !$next) ApiResponse::validation(['next_run_at'=>'Valid future trigger time/date required.']); exit;
+    if($next && strtotime($next)<=time() && $trigger==='specific_datetime') ApiResponse::validation(['trigger_datetime'=>'Trigger must be in the future.']); exit;
     $linkedType=$data['linked_resource_type']??null; $linkedId=(int)($data['linked_resource_id']??0);
     if($trigger==='linked_milestone_event'){
-        if(!in_array($linkedType,['milestone','event'],true)||$linkedId<=0) ApiResponse::validation(['linked_resource'=>'Valid milestone/event required.']);
+        if(!in_array($linkedType,['milestone','event'],true)||$linkedId<=0) ApiResponse::validation(['linked_resource'=>'Valid milestone/event required.']); exit;
         $found = false;
         if($linkedType==='milestone'){$s=$db->prepare('SELECT id FROM milestones WHERE id=:id AND user_id=:u LIMIT 1');$s->execute(['id'=>$linkedId,'u'=>$owner]);$found=(bool)$s->fetchColumn();}
         else{$s=$db->prepare('SELECT id,scheduled_date FROM scheduled_events WHERE id=:id AND user_id=:u LIMIT 1');$s->execute(['id'=>$linkedId,'u'=>$owner]);$row=$s->fetch(PDO::FETCH_ASSOC);$found=(bool)$row; if($row && empty($data['trigger_datetime'])) $next=automation_utc_datetime($row['scheduled_date']);}
-        if(!$found) ApiResponse::validation(['linked_resource'=>'Linked resource not found.']);
+        if(!$found) ApiResponse::validation(['linked_resource'=>'Linked resource not found.']); exit;
     } else { $linkedType=null; $linkedId=0; }
-    $actions=$data['actions']??[]; if(!is_array($actions)||!count($actions)) ApiResponse::validation(['actions'=>'At least one action required.']);
+    $actions=$data['actions']??[]; if(!is_array($actions)||!count($actions)) ApiResponse::validation(['actions'=>'At least one action required.']); exit;
     $safeActions=[];
     foreach($actions as $a){ $type=(string)($a['action_type']??''); if(!in_array($type,AUTOMATION_ACTION_TYPES,true)) continue; $payload=is_array($a['payload']??null)?$a['payload']:[]; $safeActions[]=['action_type'=>$type,'payload'=>$payload]; }
-    if(!count($safeActions)) ApiResponse::validation(['actions'=>'Valid action required.']);
+    if(!count($safeActions)) ApiResponse::validation(['actions'=>'Valid action required.']); exit;
     return compact('title','desc','trigger','status','next','linkedType','linkedId','safeActions');
 }
 function automation_format(array $r): array { $r['id']=(int)$r['id'];$r['owner_id']=(int)$r['owner_id'];$r['retry_count']=(int)$r['retry_count'];$r['max_retries']=(int)$r['max_retries'];return $r; }

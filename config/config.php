@@ -2,7 +2,7 @@
 // Application Configuration
 
 // Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     session_start();
 }
 
