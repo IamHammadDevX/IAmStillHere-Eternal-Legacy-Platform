@@ -566,7 +566,7 @@ function profileGalleryCard(memory, type) {
     const media = type === 'photos'
         ? `<img src="${filePath}" alt="${escapeHtml(memory.title || 'Memory photo')}" loading="lazy">`
         : `<video controls preload="metadata" ${memory.video_thumbnail_path ? `poster="/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}"` : ''}><source src="${filePath}" type="${escapeHtml(memory.file_type || 'video/mp4')}">Your browser cannot play this video.</video>`;
-    return `<article class="profile-gallery-card"><div class="profile-gallery-media">${media}</div><div class="profile-gallery-copy"><div class="profile-media-card-meta"><span><i class="bi bi-folder2"></i> ${escapeHtml(folder || 'Unfiled')}</span><span>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</span></div><h6>${escapeHtml(memory.title || (type === 'photos' ? 'Photo memory' : 'Video memory'))}</h6><p>${escapeHtml(memory.description || 'No description added.')}</p><a href="#memories-tab" class="profile-gallery-open" data-open-memory="${Number(memory.id)}">Open memory <i class="bi bi-arrow-right"></i></a></div></article>`;
+    return `<article class="profile-gallery-card" data-open-memory="${Number(memory.id)}" tabindex="0" role="link" aria-label="Open ${escapeHtml(memory.title || (type === 'photos' ? 'photo memory' : 'video memory'))}"><div class="profile-gallery-media">${media}<span class="profile-gallery-view"><i class="bi bi-arrows-fullscreen"></i> View memory</span></div><div class="profile-gallery-copy"><div class="profile-media-card-meta"><span><i class="bi bi-folder2"></i> ${escapeHtml(folder || 'Unfiled')}</span><span>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</span></div><h6>${escapeHtml(memory.title || (type === 'photos' ? 'Photo memory' : 'Video memory'))}</h6><p>${escapeHtml(memory.description || 'No description added.')}</p><span class="profile-gallery-open">Open exact memory <i class="bi bi-arrow-right"></i></span></div></article>`;
 }
 
 function renderProfileMediaBrowser(type) {
@@ -587,16 +587,29 @@ function renderProfileMediaBrowser(type) {
         renderProfileMediaBrowser(type);
         container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
-    container.querySelectorAll('[data-open-memory]').forEach(link => link.addEventListener('click', event => {
-        event.preventDefault();
+    const openExactMemory = (card, event) => {
+        if (event?.type === 'click' && event.target.closest('video,a,button,input')) return;
+        if (event?.type === 'keydown' && !['Enter', ' '].includes(event.key)) return;
+        event?.preventDefault();
         profileMediaState.memories.folderId = 0;
-        const memoryId = Number(link.dataset.openMemory);
+        const memoryId = Number(card.dataset.openMemory);
         const index = profileMemoriesCache.findIndex(memory => Number(memory.id) === memoryId);
         profileMediaState.memories.page = Math.max(1, Math.floor(index / PROFILE_MEDIA_PAGE_SIZE) + 1);
-        document.querySelector('[data-bs-target="#memories-tab"]')?.click();
+        const memoryTab = document.querySelector('[data-bs-toggle="tab"][href="#memories-tab"]');
+        if (memoryTab && window.bootstrap) bootstrap.Tab.getOrCreateInstance(memoryTab).show();
         renderProfileMediaBrowser('memories');
-        requestAnimationFrame(() => document.getElementById(`memory-card-${memoryId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    }));
+        requestAnimationFrame(() => {
+            const target = document.getElementById(`memory-card-${memoryId}`);
+            if (!target) return;
+            target.classList.add('profile-memory-focus');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => target.classList.remove('profile-memory-focus'), 2200);
+        });
+    };
+    container.querySelectorAll('[data-open-memory]').forEach(card => {
+        card.addEventListener('click', event => openExactMemory(card, event));
+        card.addEventListener('keydown', event => openExactMemory(card, event));
+    });
     if (type === 'memories') pageItems.forEach(memory => loadMemoryComments(memory.id));
 }
 
@@ -1205,6 +1218,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (href) history.replaceState(null, '', `${window.location.pathname}${window.location.search}${href}`);
     }));
 });
+
+// Give media libraries the full profile workspace and keep tab navigation visible.
+function syncProfileMediaWorkspace(activeHref = null) {
+    const href = activeHref || document.querySelector('.profile-tabs [data-bs-toggle="tab"].active')?.getAttribute('href') || window.location.hash;
+    const isMedia = ['#memories-tab', '#photos-tab', '#videos-tab'].includes(href);
+    document.body.classList.toggle('profile-media-workspace-active', isMedia);
+}
+
+document.addEventListener('shown.bs.tab', event => {
+    const tab = event.target.closest('.profile-tabs [data-bs-toggle="tab"]');
+    if (!tab) return;
+    const href = tab.getAttribute('href');
+    syncProfileMediaWorkspace(href);
+    if (['#memories-tab', '#photos-tab', '#videos-tab'].includes(href)) {
+        requestAnimationFrame(() => document.querySelector('.profile-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
+});
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => syncProfileMediaWorkspace(), 150));
 
 // Responsive profile tabs: keep visible tabs, move overflow to More dropdown.
 function initResponsiveProfileTabs() {

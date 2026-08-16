@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081606" />
+  <link rel="stylesheet" href="css/style.css?v=2026081607" />
 </head>
 
 <body class="profile-page app-page">
@@ -91,9 +91,9 @@ if (!is_logged_in()) {
 
   <!-- Main -->
   <div class="container mt-4">
-    <div class="row">
+    <div class="row profile-main-row">
       <!-- Sidebar -->
-      <div class="col-md-4">
+      <div class="col-md-4 profile-main-sidebar">
         <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title">About</h5>
@@ -114,7 +114,7 @@ if (!is_logged_in()) {
       </div>
 
       <!-- Main content -->
-      <div class="col-md-8">
+      <div class="col-md-8 profile-main-content">
         <ul class="nav nav-tabs profile-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
           <li class="nav-item"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
@@ -505,7 +505,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081602"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081603"></script>
   <script src="js/posts.js?v=2026081410"></script>
   <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081601"></script>
