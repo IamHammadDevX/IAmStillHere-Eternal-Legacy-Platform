@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081605" />
+  <link rel="stylesheet" href="css/style.css?v=2026081606" />
 </head>
 
 <body class="profile-page app-page">
@@ -236,16 +236,16 @@ if (!is_logged_in()) {
             <div class="card mb-4 journeys-overview-card"><div class="card-body"><div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2"><div><h5 class="mb-1">Shared Journeys</h5><p class="small text-muted mb-0">Build a life story together with approved memories, milestones, and event notes.</p></div><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3 mt-1"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
           </div>
           <div class="tab-pane fade" id="photos-tab">
-            <div id="photos-container" class="row g-3"><p class="text-muted">Photos from posts will appear here.</p></div>
+            <div id="photos-container"></div>
           </div>
           <div class="tab-pane fade" id="videos-tab">
-            <div id="videos-container" class="row g-3"><p class="text-muted">Videos from posts will appear here.</p></div>
+            <div id="videos-container"></div>
           </div>
           <div class="tab-pane fade" id="timeline-tab">
             <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Life Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div><div class="btn-group btn-group-sm" id="timeline-view-toggle" role="group"><button type="button" class="btn btn-outline-secondary active" data-timeline-view="combined">Personal + World</button><button type="button" class="btn btn-outline-secondary" data-timeline-view="personal">Personal Life</button><button type="button" class="btn btn-outline-secondary" data-timeline-view="world">World Events</button></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
-            <div class="row" id="memories-grid"></div>
+            <div id="memories-container"><div class="row" id="memories-grid"></div></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
             <div id="tribute-form" style="display:none;">
@@ -505,7 +505,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081601"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081602"></script>
   <script src="js/posts.js?v=2026081410"></script>
   <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081601"></script>

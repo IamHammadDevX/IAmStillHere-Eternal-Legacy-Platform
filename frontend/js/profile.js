@@ -2,6 +2,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const profileUserId = urlParams.get('user_id');
 let profileMemoriesCache = [];
 let profileMemoryFoldersCache = [];
+const PROFILE_MEDIA_PAGE_SIZE = 10;
+const profileMediaState = { memories: { page: 1, folderId: 0 }, photos: { page: 1, folderId: 0 }, videos: { page: 1, folderId: 0 } };
 let profileMemoryPrivacyWidget = null;
 let currentUser = null;
 let csrfToken = null;
@@ -459,175 +461,190 @@ async function deleteMilestone(milestoneId) {
     }
 }
 
-function renderMemoryVideoTab() {
-    const container = document.getElementById('videos-container');
-    if (!container) return;
-    const memories = (profileMemoriesCache || []).filter(m => {
-        const type = String(m.file_type || '').toLowerCase();
-        const name = String(m.file_path || '').toLowerCase();
-        return type.includes('video') || /\.(mp4|avi|mkv|mov|3gp|flv|wmv|webm|mpeg|mpg)$/.test(name);
+function profileMemoryKind(memory) {
+    const type = String(memory.file_type || '').toLowerCase();
+    const name = String(memory.file_path || '').toLowerCase();
+    if (type.includes('image') || /\.(jpg|jpeg|png|gif|webp|bmp|svg|tiff)$/.test(name)) return 'photo';
+    if (type.includes('video') || /\.(mp4|avi|mkv|mov|3gp|flv|wmv|webm|mpeg|mpg)$/.test(name)) return 'video';
+    if (type.includes('audio') || /\.(mp3|wav|aac|ogg|flac|m4a)$/.test(name)) return 'audio';
+    return 'document';
+}
+
+function profileMemoryMediaUrl(memory) {
+    const kind = profileMemoryKind(memory);
+    const directory = kind === 'photo' ? 'photos' : kind === 'video' ? 'videos' : kind === 'audio' ? 'audio' : 'documents';
+    return `/data/uploads/${directory}/${String(memory.file_path || '').split('/').map(safeUploadPathSegment).join('/')}`;
+}
+
+function profileFolderName(folderId) {
+    return profileMemoryFoldersCache.find(folder => Number(folder.id) === Number(folderId))?.name || '';
+}
+
+function profileMediaItems(type) {
+    let items = profileMemoriesCache || [];
+    if (type === 'photos') items = items.filter(memory => profileMemoryKind(memory) === 'photo');
+    if (type === 'videos') items = items.filter(memory => profileMemoryKind(memory) === 'video');
+    const folderId = profileMediaState[type].folderId;
+    return folderId ? items.filter(memory => Number(memory.folder_id || 0) === folderId) : items;
+}
+
+function renderProfileFolderTree(type) {
+    const host = document.querySelector(`[data-profile-folder-tree="${type}"]`);
+    if (!host) return;
+    const state = profileMediaState[type];
+    const allForType = type === 'photos'
+        ? profileMemoriesCache.filter(memory => profileMemoryKind(memory) === 'photo')
+        : type === 'videos'
+            ? profileMemoriesCache.filter(memory => profileMemoryKind(memory) === 'video')
+            : profileMemoriesCache;
+    const counts = new Map();
+    allForType.forEach(memory => counts.set(Number(memory.folder_id || 0), (counts.get(Number(memory.folder_id || 0)) || 0) + 1));
+    const byParent = new Map();
+    profileMemoryFoldersCache.forEach(folder => {
+        const parent = Number(folder.parent_folder_id || 0);
+        if (!byParent.has(parent)) byParent.set(parent, []);
+        byParent.get(parent).push(folder);
     });
-    if (!memories.length) return;
-    if (container.querySelector('[data-memory-video]')) return;
-    memories.forEach(memory => {
-        const col = document.createElement('div'); col.className = 'col-md-6'; col.dataset.memoryVideo = memory.id;
-        const src = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
+    byParent.forEach(folders => folders.sort((a, b) => String(a.name).localeCompare(String(b.name))));
+    const makeButton = (folder, depth) => {
+        const id = Number(folder?.id || 0);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `profile-media-folder ${state.folderId === id ? 'is-selected' : ''}`;
+        button.style.setProperty('--profile-folder-depth', depth);
+        button.innerHTML = `<i class="bi ${id ? 'bi-folder2' : 'bi-collection'}"></i><span></span><small>${id ? (counts.get(id) || 0) : allForType.length}</small>`;
+        button.querySelector('span').textContent = id ? folder.name : `All ${type}`;
+        button.addEventListener('click', () => {
+            state.folderId = id;
+            state.page = 1;
+            renderProfileMediaBrowser(type);
+        });
+        return button;
+    };
+    host.replaceChildren(makeButton(null, 0));
+    const appendLevel = (parent, depth) => (byParent.get(parent) || []).forEach(folder => {
+        host.appendChild(makeButton(folder, depth));
+        appendLevel(Number(folder.id), depth + 1);
+    });
+    appendLevel(0, 0);
+    if (!profileMemoryFoldersCache.length) {
+        const empty = document.createElement('p');
+        empty.className = 'profile-media-folder-empty';
+        empty.textContent = 'No memory folders are visible.';
+        host.appendChild(empty);
+    }
+}
+
+function profileMediaPagination(type, total, totalPages) {
+    if (totalPages <= 1) return '';
+    const page = profileMediaState[type].page;
+    return `<nav class="profile-media-pagination" aria-label="${type} pages"><button type="button" class="btn btn-outline-primary btn-sm" data-profile-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i> Previous</button><span>Page ${page} of ${totalPages} <small>(${total} items)</small></span><button type="button" class="btn btn-outline-primary btn-sm" data-profile-page="${page + 1}" ${page >= totalPages ? 'disabled' : ''}>Next <i class="bi bi-chevron-right"></i></button></nav>`;
+}
+
+function profileMemoryCard(memory) {
+    const kind = profileMemoryKind(memory);
+    const filePath = profileMemoryMediaUrl(memory);
+    let mediaHtml = '';
+    if (kind === 'photo') {
+        mediaHtml = `<div class="profile-memory-media"><img src="${filePath}" alt="${escapeHtml(memory.title || 'Memory photo')}" class="memory-image" loading="lazy"></div>`;
+    } else if (kind === 'video') {
         const poster = memory.video_thumbnail_path ? `/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}` : '';
-        col.innerHTML = `<div class="card h-100"><div class="video-memory-preview"><video controls preload="metadata" ${poster ? `poster="${poster}"` : ''}><source src="${src}" type="${escapeHtml(memory.file_type || 'video/mp4')}">Your browser cannot play this video.</video></div><div class="card-body"><h6>${escapeHtml(memory.title || 'Video memory')}</h6><p class="small text-muted mb-0">Video memory ? ${escapeHtml(memory.privacy_level || 'private')}</p></div></div>`;
-        container.appendChild(col);
-    });
+        mediaHtml = `<div class="profile-memory-media video-memory-preview"><video controls preload="metadata" ${poster ? `poster="${poster}"` : ''}><source src="${filePath}" type="${escapeHtml(memory.file_type || 'video/mp4')}">Your browser cannot play this video.</video></div>`;
+    } else if (kind === 'audio') {
+        mediaHtml = `<div class="profile-memory-file"><i class="bi bi-music-note-beamed"></i><audio controls preload="metadata"><source src="${filePath}" type="${escapeHtml(memory.file_type || '')}"></audio></div>`;
+    } else {
+        mediaHtml = `<div class="profile-memory-file"><i class="bi bi-file-earmark-text"></i><a href="${filePath}" target="_blank" class="btn btn-outline-primary btn-sm">View document</a></div>`;
+    }
+    const canManage = typeof loggedInUser !== 'undefined' && loggedInUser && (Number(loggedInUser.id) === Number(profileUserId) || loggedInUser.role === 'admin');
+    const folder = profileFolderName(memory.folder_id);
+    return `<div class="col-12 col-xl-6"><article id="memory-card-${Number(memory.id)}" class="card memory-card profile-memory-card h-100">${mediaHtml}<div class="card-body"><div class="profile-media-card-meta"><span class="badge bg-secondary">${escapeHtml(memory.privacy_level || 'private')}</span>${folder ? `<span><i class="bi bi-folder2"></i> ${escapeHtml(folder)}</span>` : '<span>Unfiled</span>'}</div><h5 class="card-title">${escapeHtml(memory.title || 'Untitled memory')}</h5><p class="card-text">${escapeHtml(memory.description || 'No description added.')}</p><div class="profile-memory-actions"><small>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</small><a href="${filePath}" download class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>${canManage ? `<button class="btn btn-sm btn-outline-secondary" onclick="editProfileMemory(${Number(memory.id)})" aria-label="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteMemory(${Number(memory.id)})" aria-label="Delete memory"><i class="bi bi-trash"></i></button>` : ''}</div><div class="memory-comments mt-3" data-memory-comments="${Number(memory.id)}"><div class="small text-muted">Loading comments...</div></div></div></article></div>`;
+}
+
+function profileGalleryCard(memory, type) {
+    const filePath = profileMemoryMediaUrl(memory);
+    const folder = profileFolderName(memory.folder_id);
+    const media = type === 'photos'
+        ? `<img src="${filePath}" alt="${escapeHtml(memory.title || 'Memory photo')}" loading="lazy">`
+        : `<video controls preload="metadata" ${memory.video_thumbnail_path ? `poster="/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}"` : ''}><source src="${filePath}" type="${escapeHtml(memory.file_type || 'video/mp4')}">Your browser cannot play this video.</video>`;
+    return `<article class="profile-gallery-card"><div class="profile-gallery-media">${media}</div><div class="profile-gallery-copy"><div class="profile-media-card-meta"><span><i class="bi bi-folder2"></i> ${escapeHtml(folder || 'Unfiled')}</span><span>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</span></div><h6>${escapeHtml(memory.title || (type === 'photos' ? 'Photo memory' : 'Video memory'))}</h6><p>${escapeHtml(memory.description || 'No description added.')}</p><a href="#memories-tab" class="profile-gallery-open" data-open-memory="${Number(memory.id)}">Open memory <i class="bi bi-arrow-right"></i></a></div></article>`;
+}
+
+function renderProfileMediaBrowser(type) {
+    const container = document.getElementById(type === 'memories' ? 'memories-container' : `${type}-container`);
+    if (!container) return;
+    const state = profileMediaState[type];
+    const items = profileMediaItems(type);
+    const totalPages = Math.max(1, Math.ceil(items.length / PROFILE_MEDIA_PAGE_SIZE));
+    state.page = Math.min(Math.max(1, state.page), totalPages);
+    const pageItems = items.slice((state.page - 1) * PROFILE_MEDIA_PAGE_SIZE, state.page * PROFILE_MEDIA_PAGE_SIZE);
+    const title = type === 'memories' ? 'Memory Library' : type === 'photos' ? 'Photo Gallery' : 'Video Gallery';
+    const description = type === 'memories' ? 'Browse this life story by folder.' : type === 'photos' ? 'Photos collected automatically from visible memories.' : 'Videos collected automatically from visible memories.';
+    const selected = state.folderId ? profileFolderName(state.folderId) : `All ${type}`;
+    container.innerHTML = `<section class="profile-media-browser profile-media-${type}"><header class="profile-media-heading"><div class="profile-media-heading-icon"><i class="bi ${type === 'photos' ? 'bi-images' : type === 'videos' ? 'bi-camera-video' : 'bi-journal-richtext'}"></i></div><div><h5>${title}</h5><p>${description}</p></div><span>${items.length} ${items.length === 1 ? 'item' : 'items'}</span></header><div class="profile-media-layout"><aside class="profile-media-sidebar"><div class="profile-media-sidebar-title"><span>Folders</span><small>Choose a folder</small></div><div data-profile-folder-tree="${type}" class="profile-media-folder-tree"></div></aside><main class="profile-media-content"><div class="profile-media-current"><span><i class="bi bi-folder2-open"></i> ${escapeHtml(selected)}</span><small>Showing ${pageItems.length} of ${items.length}</small></div>${pageItems.length ? (type === 'memories' ? `<div id="memories-grid" class="row g-3">${pageItems.map(profileMemoryCard).join('')}</div>` : `<div class="profile-gallery-grid">${pageItems.map(memory => profileGalleryCard(memory, type)).join('')}</div>`) : `<div class="profile-media-empty"><i class="bi ${type === 'photos' ? 'bi-image' : type === 'videos' ? 'bi-camera-video' : 'bi-journal'}"></i><strong>No ${type} in this folder</strong><span>${state.folderId ? 'Choose another folder or open All items.' : 'Visible items will appear here when they are added.'}</span></div>`}${profileMediaPagination(type, items.length, totalPages)}</main></div></section>`;
+    renderProfileFolderTree(type);
+    container.querySelectorAll('[data-profile-page]').forEach(button => button.addEventListener('click', () => {
+        state.page = Number(button.dataset.profilePage);
+        renderProfileMediaBrowser(type);
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+    container.querySelectorAll('[data-open-memory]').forEach(link => link.addEventListener('click', event => {
+        event.preventDefault();
+        profileMediaState.memories.folderId = 0;
+        const memoryId = Number(link.dataset.openMemory);
+        const index = profileMemoriesCache.findIndex(memory => Number(memory.id) === memoryId);
+        profileMediaState.memories.page = Math.max(1, Math.floor(index / PROFILE_MEDIA_PAGE_SIZE) + 1);
+        document.querySelector('[data-bs-target="#memories-tab"]')?.click();
+        renderProfileMediaBrowser('memories');
+        requestAnimationFrame(() => document.getElementById(`memory-card-${memoryId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    }));
+    if (type === 'memories') pageItems.forEach(memory => loadMemoryComments(memory.id));
+}
+
+function renderMemoryVideoTab() {
+    renderProfileMediaBrowser('photos');
+    renderProfileMediaBrowser('videos');
 }
 
 // ---------- Load Memories ----------
 async function loadMemories() {
+    const memoriesContainer = document.getElementById('memories-container');
+    if (memoriesContainer) memoriesContainer.innerHTML = '<div class="profile-media-loading"><span class="spinner-border spinner-border-sm"></span> Loading memories and folders...</div>';
     try {
-        const response = await fetch(`/backend/memories/list.php?user_id=${profileUserId}`);
-        const data = await response.json();
-        const grid = document.getElementById('memories-grid');
-        const focusMemoryId = Number(new URLSearchParams(window.location.search).get('focus_memory') || 0);
-        if (focusMemoryId && !(data.memories || []).some(memory => Number(memory.id) === focusMemoryId)) {
-            const focusResponse = await fetch(`/backend/memories/list.php?user_id=${profileUserId}&memory_id=${focusMemoryId}`);
-            const focusData = await focusResponse.json();
-            const focusMemory = (focusData.memories || [])[0];
-            if (focusData.success && focusMemory) data.memories = [focusMemory, ...(data.memories || [])];
-        }
-
+        const [memoryResponse, folderResponse] = await Promise.all([
+            fetch(`/backend/memories/list.php?user_id=${encodeURIComponent(profileUserId)}&per_page=100&page=1`),
+            fetch(`/backend/memories/folders/list.php?user_id=${encodeURIComponent(profileUserId)}&direction=asc&sort=name`)
+        ]);
+        const data = await memoryResponse.json();
+        const folderData = await folderResponse.json();
+        if (!data.success) throw new Error(data.message || 'Unable to load memories');
         profileMemoriesCache = data.memories || [];
-        if (data.success && data.memories.length > 0) {
-            grid.innerHTML = '';
-            data.memories.forEach(memory => {
-                const col = document.createElement('div');
-                col.className = 'col-md-6 mb-3';
-
-                let mediaHtml = '';
-                const fileName = memory.file_path.toLowerCase();
-                const fileType = memory.file_type.toLowerCase();
-
-                // Determine file category
-                let isImage = fileType.includes('image') ||
-                    ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'tiff'].some(ext => fileName.endsWith('.' + ext));
-
-                let isVideo = fileType.includes('video') ||
-                    ['mp4', 'avi', 'mkv', 'mov', '3gp', 'flv', 'wmv', 'webm', 'mpeg', 'mpg'].some(ext => fileName.endsWith('.' + ext));
-
-                let isAudio = fileType.includes('audio') ||
-                    ['mp3', 'wav', 'aac', 'ogg', 'flac', 'm4a'].some(ext => fileName.endsWith('.' + ext));
-
-                let filePath = '';
-                let downloadButton = '';
-
-                if (isImage) {
-                    filePath = `/data/uploads/photos/${memory.file_path}`;
-                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
-
-                    mediaHtml = `
-                        <img src="${filePath}" 
-                            alt="${memory.title}" 
-                            class="memory-image">
-                    `;
-                } else if (isVideo) {
-                    filePath = `/data/uploads/videos/${safeUploadPathSegment(memory.file_path)}`;
-                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
-                    const posterPath = memory.video_thumbnail_path
-                        ? `/data/uploads/${String(memory.video_thumbnail_path).split('/').map(safeUploadPathSegment).join('/')}`
-                        : '';
-
-                    mediaHtml = `
-                        <div class="video-memory-preview">
-                            <video controls preload="metadata" ${posterPath ? `poster="${posterPath}"` : ''}>
-                                <source src="${filePath}" type="${escapeHtml(memory.file_type)}">
-                                <p>
-                                    This video format may not be supported. 
-                                    <a href="${filePath}" download>Download the file</a> to view it.
-                                </p>
-                            </video>
-                        </div>
-                    `;
-                } else if (isAudio) {
-                    filePath = `/data/uploads/audio/${memory.file_path}`;
-                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i> Download</a>`;
-
-                    mediaHtml = `
-                        <div class="text-center p-4">
-                            <i class="bi bi-music-note-beamed display-1 text-success"></i>
-                            <p class="mt-2 mb-2"><strong>${memory.title}</strong></p>
-                            <audio 
-                                controls 
-                                preload="metadata"
-                                style="width: 100%;"
-                            >
-                                <source src="${filePath}" type="${memory.file_type}">
-                                <p>Audio format not supported. <a href="${filePath}" download>Download the file</a></p>
-                            </audio>
-                        </div>
-                    `;
-                } else {
-                    // Documents
-                    filePath = `/data/uploads/documents/${memory.file_path}`;
-                    downloadButton = `<a href="${filePath}" download="${memory.title}" class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>`;
-
-                    let fileIcon = 'bi-file-earmark-text';
-                    if (fileName.endsWith('.pdf')) fileIcon = 'bi-file-earmark-pdf';
-                    else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) fileIcon = 'bi-file-earmark-word';
-                    else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) fileIcon = 'bi-file-earmark-excel';
-                    else if (fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) fileIcon = 'bi-file-earmark-ppt';
-
-                    mediaHtml = `
-                        <div class="text-center p-4">
-                            <i class="${fileIcon} display-1 text-primary"></i>
-                            <p class="mt-2">
-                                <a href="${filePath}" 
-                                   target="_blank" 
-                                   class="btn btn-outline-primary btn-sm me-2">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                            </p>
-                        </div>
-                    `;
-                }
-
-                const canDelete = loggedInUser && (
-                    loggedInUser.id == profileUserId ||
-                    loggedInUser.role === 'admin'
-                );
-
-                col.innerHTML = `
-                    <div id="memory-card-${memory.id}" class="card memory-card">
-                        ${mediaHtml}
-                        <div class="card-body">
-                            <h5 class="card-title">${escapeHtml(memory.title)}</h5>
-                            <p class="card-text">${escapeHtml(memory.description || '')}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
-                                    ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
-                                </small>
-                                ${downloadButton}
-                                ${canDelete ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="editProfileMemory(${memory.id})" title="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
-                                    <i class="bi bi-trash"></i>
-                                </button>` : ''}
-                                
-                            </div>
-                            <div class="memory-comments mt-3" data-memory-comments="${memory.id}">
-                                <div class="small text-muted">Loading comments...</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(col);
-                loadMemoryComments(memory.id);
-            });
-        } else {
-            grid.innerHTML = '<p class="text-muted">No memories shared yet.</p>';
+        const pages = Number(data.pagination?.total_pages || 1);
+        for (let page = 2; page <= pages; page += 1) {
+            const next = await fetch(`/backend/memories/list.php?user_id=${encodeURIComponent(profileUserId)}&per_page=100&page=${page}`).then(response => response.json());
+            if (next.success) profileMemoriesCache.push(...(next.memories || []));
         }
+        profileMemoryFoldersCache = folderData.success ? (folderData.data?.folders || []) : [];
+        const focusMemoryId = Number(new URLSearchParams(window.location.search).get('focus_memory') || 0);
+        renderProfileMediaBrowser('memories');
         renderMemoryVideoTab();
         if (focusMemoryId) {
-            const focused = document.getElementById(`memory-card-${focusMemoryId}`);
-            if (focused) { focused.classList.add('about-item-focus'); focused.scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => focused.classList.remove('about-item-focus'), 1800); }
-            const url = new URL(window.location.href); url.searchParams.delete('focus_memory'); history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+            const index = profileMemoriesCache.findIndex(memory => Number(memory.id) === focusMemoryId);
+            if (index >= 0) {
+                profileMediaState.memories.page = Math.floor(index / PROFILE_MEDIA_PAGE_SIZE) + 1;
+                renderProfileMediaBrowser('memories');
+                requestAnimationFrame(() => {
+                    const focused = document.getElementById(`memory-card-${focusMemoryId}`);
+                    if (focused) { focused.classList.add('about-item-focus'); focused.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                });
+            }
+            const url = new URL(window.location.href);
+            url.searchParams.delete('focus_memory');
+            history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
         }
     } catch (error) {
         console.error('Error loading memories:', error);
+        if (memoriesContainer) memoriesContainer.innerHTML = '<div class="profile-media-empty"><i class="bi bi-exclamation-circle"></i><strong>Memories could not be loaded</strong><span>Please refresh the page and try again.</span></div>';
+        ['photos-container', 'videos-container'].forEach(id => { const container = document.getElementById(id); if (container) container.innerHTML = '<div class="profile-media-empty"><strong>Media unavailable</strong><span>Please try again shortly.</span></div>'; });
     }
 }
 
