@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/_event_helpers.php';
 header('Content-Type: application/json');
 
 try {
@@ -26,7 +26,7 @@ try {
     $conn = $db->getConnection();
 
     // Get event details
-    $stmt = $conn->prepare("SELECT user_id FROM scheduled_events WHERE id = :id");
+    $stmt = $conn->prepare("SELECT user_id, media_path FROM scheduled_events WHERE id = :id");
     $stmt->execute(['id' => $event_id]);
     $event = $stmt->fetch();
 
@@ -45,6 +45,8 @@ try {
     // Delete from database
     $stmt = $conn->prepare("DELETE FROM scheduled_events WHERE id = :id");
     $stmt->execute(['id' => $event_id]);
+    $mediaFile = event_media_file($event['media_path'] ?? null);
+    if ($mediaFile && is_file($mediaFile)) @unlink($mediaFile);
 
     echo json_encode([
         'success' => true,

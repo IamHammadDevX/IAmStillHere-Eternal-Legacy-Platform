@@ -1084,69 +1084,20 @@ async function loadEvents() {
 
 // Create Event Card
 function createEventCard(event, isPast) {
-    const card = document.createElement('div');
-    card.id = `event-${event.id}`;
-    card.className = `card mb-3 ${isPast ? 'bg-light' : 'border-info'}`;
-
+    const card = document.createElement('article');
+    card.id = `event-${Number(event.id)}`;
+    card.className = `card mb-3 event-display-card ${event.media_url ? 'has-media' : ''} ${isPast ? 'is-past' : 'is-upcoming'}`;
     const eventDate = new Date(event.scheduled_date);
-    const formattedDate = eventDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    const formattedTime = eventDate.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-    // Event type icons and colors
-    const eventTypes = {
-        'birthday': { icon: 'bi-cake2', color: 'text-danger', label: 'Birthday' },
-        'anniversary': { icon: 'bi-heart', color: 'text-danger', label: 'Anniversary' },
-        'memorial': { icon: 'bi-flower1', color: 'text-info', label: 'Memorial' },
-        'remembrance': { icon: 'bi-star', color: 'text-warning', label: 'Remembrance' },
-        'celebration': { icon: 'bi-balloon', color: 'text-success', label: 'Celebration' },
-        'other': { icon: 'bi-calendar-event', color: 'text-secondary', label: 'Other' }
-    };
-
-    const typeInfo = eventTypes[event.event_type] || eventTypes['other'];
-
-    // Privacy badge
-    const privacyBadges = {
-        'public': 'bg-success',
-        'family': 'bg-warning',
-        'private': 'bg-secondary'
-    };
-
-    const canDelete = loggedInUser && (
-        loggedInUser.id == profileUserId ||
-        loggedInUser.role === 'admin'
-    );
-
-    card.innerHTML = `
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-                <div class="flex-grow-1">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi ${typeInfo.icon} ${typeInfo.color} fs-4 me-2"></i>
-                        <h5 class="mb-0">${event.title}</h5>
-                        <span class="badge ${privacyBadges[event.privacy_level]} ms-2">${event.privacy_level}</span>
-                        ${isPast ? '<span class="badge bg-secondary ms-2">Past</span>' : ''}
-                    </div>
-                    <p class="text-muted mb-2">
-                        <i class="bi bi-calendar3"></i> ${formattedDate} at ${formattedTime}
-                    </p>
-                    ${event.message ? `<p class="mb-0 text-secondary">${event.message}</p>` : ''}
-                </div>
-                ${canDelete ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(${event.id})">
-                    <i class="bi bi-trash"></i>
-                </button>` : ''}
-                
-            </div>
-        </div>
-    `;
-
+    const formattedDate = eventDate.toLocaleDateString(undefined, {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const formattedTime = eventDate.toLocaleTimeString(undefined, {hour:'2-digit',minute:'2-digit'});
+    const eventTypes = {birthday:{icon:'bi-cake2',color:'text-danger'},anniversary:{icon:'bi-heart',color:'text-danger'},memorial:{icon:'bi-flower1',color:'text-info'},remembrance:{icon:'bi-star',color:'text-warning'},celebration:{icon:'bi-balloon',color:'text-success'},other:{icon:'bi-calendar-event',color:'text-secondary'}};
+    const typeInfo = eventTypes[event.event_type] || eventTypes.other;
+    const privacyBadges = {public:'bg-success',family:'bg-warning text-dark',friends:'bg-primary',private:'bg-secondary',specific_people:'bg-info text-dark',release_date:'bg-dark',release_event:'bg-dark'};
+    const canDelete = loggedInUser && (Number(loggedInUser.id) === Number(profileUserId) || loggedInUser.role === 'admin');
+    const media = event.media_url ? (event.media_type === 'video'
+        ? `<div class="event-card-media"><video controls preload="metadata"><source src="${escapeHtml(event.media_url)}" type="${escapeHtml(event.media_mime || 'video/mp4')}">Your browser cannot play this video.</video></div>`
+        : `<div class="event-card-media"><img src="${escapeHtml(event.media_url)}" alt="${escapeHtml(event.title || 'Event photo')}" loading="lazy"></div>`) : '';
+    card.innerHTML = `${media}<div class="card-body event-card-body"><div class="event-card-main"><div class="event-card-title-row"><span class="event-card-icon"><i class="bi ${typeInfo.icon} ${typeInfo.color}"></i></span><h5>${escapeHtml(event.title || 'Untitled event')}</h5><span class="badge ${privacyBadges[event.privacy_level] || 'bg-secondary'}">${escapeHtml(event.privacy_level || 'private')}</span>${isPast ? '<span class="badge bg-secondary">Past</span>' : '<span class="badge bg-info text-dark">Upcoming</span>'}</div><p class="event-card-date"><i class="bi bi-calendar3"></i> ${escapeHtml(formattedDate)} at ${escapeHtml(formattedTime)}</p>${event.message ? `<p class="event-card-message">${escapeHtml(event.message)}</p>` : ''}</div>${canDelete ? `<button class="btn btn-sm btn-outline-danger event-delete-button" onclick="deleteEvent(${Number(event.id)})" aria-label="Delete event"><i class="bi bi-trash"></i></button>` : ''}</div>`;
     return card;
 }
 
@@ -1222,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Give media libraries the full profile workspace and keep tab navigation visible.
 function syncProfileMediaWorkspace(activeHref = null) {
     const href = activeHref || document.querySelector('.profile-tabs [data-bs-toggle="tab"].active')?.getAttribute('href') || window.location.hash;
-    const isMedia = ['#memories-tab', '#photos-tab', '#videos-tab'].includes(href);
+    const isMedia = ['#memories-tab', '#photos-tab', '#videos-tab', '#events-tab'].includes(href);
     document.body.classList.toggle('profile-media-workspace-active', isMedia);
 }
 
@@ -1231,7 +1182,7 @@ document.addEventListener('shown.bs.tab', event => {
     if (!tab) return;
     const href = tab.getAttribute('href');
     syncProfileMediaWorkspace(href);
-    if (['#memories-tab', '#photos-tab', '#videos-tab'].includes(href)) {
+    if (['#memories-tab', '#photos-tab', '#videos-tab', '#events-tab'].includes(href)) {
         requestAnimationFrame(() => document.querySelector('.profile-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }
 });

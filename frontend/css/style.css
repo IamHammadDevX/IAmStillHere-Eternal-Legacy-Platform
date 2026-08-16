@@ -3509,3 +3509,62 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
   .profile-page.profile-media-workspace-active .profile-media-pagination { grid-template-columns: 1fr; }
   .profile-page.profile-media-workspace-active .profile-media-pagination span { grid-column: 1; }
 }
+
+
+/* Scheduled event media upload and display */
+.event-upload-preview { display: grid; min-height: 150px; margin-top: .75rem; place-items: center; overflow: hidden; border: 1px dashed rgba(112,69,173,.28); border-radius: 14px; background: #f4f2f8; }
+.event-upload-preview-media { display: block; width: 100%; height: auto; max-height: 280px; object-fit: contain; background: #eef1f5; }
+.event-display-card { overflow: hidden; border: 1px solid rgba(31,41,51,.10); border-radius: 20px; background: #fff; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
+.event-display-card.is-past { background: linear-gradient(145deg,#fff,#f7f8fa); }
+.event-display-card.is-upcoming { border-color: rgba(30,145,180,.28); }
+.event-display-card.has-media { display: grid; grid-template-columns: minmax(280px,38%) minmax(0,1fr); }
+.event-card-media { display: grid; min-width: 0; min-height: 240px; max-height: 390px; place-items: center; overflow: hidden; border-right: 1px solid rgba(31,41,51,.08); background: linear-gradient(145deg,#e9edf2,#f6f7f9); }
+.event-card-media img,.event-card-media video { display: block; width: 100% !important; height: 100% !important; min-height: 0 !important; max-height: 390px !important; object-fit: contain !important; object-position: center !important; background: transparent; }
+.event-card-body { display: flex; min-width: 0; gap: 1rem; align-items: flex-start; justify-content: space-between; padding: clamp(1rem,2vw,1.35rem); }
+.event-card-main { min-width: 0; flex: 1 1 auto; }
+.event-card-title-row { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
+.event-card-title-row h5 { min-width: 0; margin: 0; overflow-wrap: anywhere; font-weight: 800; }
+.event-card-icon { display: grid; width: 2.35rem; height: 2.35rem; flex: 0 0 auto; place-items: center; border-radius: 12px; background: #f2ecfa; font-size: 1.2rem; }
+.event-card-date { margin: .7rem 0 .45rem; color: #758198; font-size: .9rem; }
+.event-card-message { margin: 0; color: #5f6b7d; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.event-delete-button { flex: 0 0 auto; }
+@media (max-width: 991.98px) {
+  .event-display-card.has-media { grid-template-columns: minmax(230px,42%) minmax(0,1fr); }
+  .event-card-media { min-height: 220px; }
+}
+@media (max-width: 767.98px) {
+  .event-display-card.has-media { grid-template-columns: 1fr; }
+  .event-card-media { min-height: 0; max-height: none; aspect-ratio: 16/10; border-right: 0; border-bottom: 1px solid rgba(31,41,51,.08); }
+  .event-card-media img,.event-card-media video { max-height: none !important; }
+}
+@media (max-width: 575.98px) {
+  .event-display-card { border-radius: 16px; }
+  .event-card-media { aspect-ratio: 4/3; }
+  .event-card-body { gap: .65rem; padding: .85rem; }
+  .event-card-title-row { align-items: flex-start; }
+  .event-card-title-row h5 { flex: 1 1 calc(100% - 3rem); font-size: 1rem; }
+  .event-card-title-row .badge { font-size: .65rem; }
+  .event-card-date { font-size: .8rem; }
+  .event-delete-button { width: 2.25rem; height: 2.25rem; padding: 0; }
+}
+/* Profile header avatar sizing: keep the portrait prominent at every viewport. */
+.profile-page #profile-image.profile-photo {
+    width: clamp(156px, 14vw, 188px) !important;
+    height: clamp(156px, 14vw, 188px) !important;
+    flex: 0 0 clamp(156px, 14vw, 188px);
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .profile-page #profile-image.profile-photo { width: 164px !important; height: 164px !important; flex-basis: 164px; }
+}
+@media (max-width: 767.98px) {
+    .profile-page #cover-section, .profile-page #cover-section > .position-absolute { min-height: 450px !important; height: 450px !important; }
+    .profile-page #profile-image.profile-photo { width: clamp(150px, 42vw, 168px) !important; height: clamp(150px, 42vw, 168px) !important; flex-basis: clamp(150px, 42vw, 168px); }
+}
+@media (max-width: 359.98px) {
+    .profile-page #cover-section, .profile-page #cover-section > .position-absolute { min-height: 435px !important; height: 435px !important; }
+    .profile-page #profile-image.profile-photo { width: 146px !important; height: 146px !important; flex-basis: 146px; }
+}
