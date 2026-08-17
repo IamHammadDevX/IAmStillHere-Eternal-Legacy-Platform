@@ -3883,3 +3883,8 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .timeline-children .timeline-child-item .timeline-marker { position: absolute; left: -1.8rem; top: 1.05rem; width: .8rem; height: .8rem; margin: 0; border: 3px solid #fff; background: #e57ca8; box-shadow: 0 0 0 2px #eadcf0; }
 .timeline-children .timeline-child-item .timeline-content { padding: 0; }
 @media (max-width:576px) { .timeline-children { margin-left: .35rem; padding-left: 1rem; } .timeline-children .timeline-child-item { padding: .7rem; } .timeline-children .timeline-child-item::before { left: -1.05rem; width: .95rem; } .timeline-children .timeline-child-item .timeline-marker { left: -1.38rem; } }
+/* Child entries use the nested connector only; remove the parent timeline marker inheritance. */
+.timeline-children .timeline-child-item { padding-left: 0; }
+.timeline-children .timeline-child-item::before,
+.timeline-children .timeline-child-item::after { display: none; }
+.timeline-children .timeline-child-item .timeline-marker { display: block; z-index: 2; border-radius: 50%; }
