@@ -242,7 +242,7 @@ if (!is_logged_in()) {
             <div id="videos-container"></div>
           </div>
           <div class="tab-pane fade" id="timeline-tab">
-            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Life Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div><div class="btn-group btn-group-sm" id="timeline-view-toggle" role="group"><button type="button" class="btn btn-outline-secondary active" data-timeline-view="combined">Personal + World</button><button type="button" class="btn btn-outline-secondary" data-timeline-view="personal">Personal Life</button><button type="button" class="btn btn-outline-secondary" data-timeline-view="world">World Events</button></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
+            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Life Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
