@@ -67,13 +67,16 @@ async function loadTributeCount(userId) {
         const data = await response.json();
 
         if (data.success) {
-            document.getElementById('tribute-count').textContent = data.tribute_count;
+            const tributeCount = document.getElementById('tribute-count');
+            if (tributeCount) tributeCount.textContent = data.tribute_count;
         } else {
-            document.getElementById('tribute-count').textContent = '0';
+            const tributeCount = document.getElementById('tribute-count');
+            if (tributeCount) tributeCount.textContent = '0';
         }
     } catch (error) {
         console.error('Error loading tribute count:', error);
-        document.getElementById('tribute-count').textContent = '0';
+        const tributeCount = document.getElementById('tribute-count');
+        if (tributeCount) tributeCount.textContent = '0';
     }
 }
 
@@ -889,8 +892,9 @@ async function moveMemoryToFolder(memoryId, folderId) {
 async function moveMemory(memoryId) {
     const folders = await fetch(`/backend/memories/folders/list.php?user_id=${currentUserId}&_=${Date.now()}`).then(r => r.json());
     const available = folders.data?.folders || [];
-    const options = available.map(f => `${f.id}: ${f.name}`).join('\n');
-    const choice = prompt(`Choose a folder ID. Enter 0 to remove this memory from its folder.\n${options}`, '0');
+    const options = available.map(f => `${f.id}: ${f.name}`).join('\\n');
+    const choice = prompt(`Choose a folder ID. Enter 0 to remove this memory from its folder.
+${options}`, '0');
     if (choice === null) return;
     const input = choice.trim();
     const selected = available.find(f => String(f.id) === input || String(f.name).toLowerCase() === input.toLowerCase());
@@ -1199,17 +1203,16 @@ async function vaultDeleteFolder(folderId) {
     else vaultStatus(data.errors?.folder || data.message || 'Cannot delete this folder. Remove its documents and subfolders first.', 'danger');
 }
 
+function vaultRequestCode(doc) {
+    return new Promise(resolve => {
+        const modalId = 'vaultDownloadCodeModal'; document.getElementById(modalId)?.remove();
+        const wrapper=document.createElement('div'); wrapper.innerHTML=`<div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content vault-code-modal"><div class="modal-header"><h5 class="modal-title">Verify download</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p class="small text-muted">We sent a 6-digit code to your account email.</p><input id="vault-download-code" class="form-control text-center" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><div id="vault-download-code-error" class="small text-danger mt-2"></div></div><div class="modal-footer"><button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button><button type="button" id="vault-download-verify" class="btn btn-primary btn-sm">Verify</button></div></div></div></div>`;
+        document.body.appendChild(wrapper.firstElementChild); const modalEl=document.getElementById(modalId); const modal=bootstrap.Modal.getOrCreateInstance(modalEl); const finish=value=>{modal.hide();setTimeout(()=>modalEl.remove(),200);resolve(value);}; modalEl.querySelector('#vault-download-verify').onclick=()=>{const code=modalEl.querySelector('#vault-download-code').value.trim();if(!/^\d{6}$/.test(code)){modalEl.querySelector('#vault-download-code-error').textContent='Enter the 6-digit code.';return;}finish(code);}; modalEl.addEventListener('hidden.bs.modal',()=>finish(null),{once:true}); modal.show(); setTimeout(()=>modalEl.querySelector('#vault-download-code')?.focus(),250);
+    });
+}
 async function vaultDownload(doc) {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
-    try {
-        let data = await vaultJson('request_download_code', { document_id: doc.id });
-        if (!data.success) throw new Error(data.message || 'Unable to send verification code.');
-        const code = prompt('Enter the 6-digit code sent to your account email:');
-        if (!code) return;
-        data = await vaultJson('verify_download', { document_id: doc.id, code: code.trim() });
-        if (!data.success) throw new Error(data.message || 'Invalid verification code.');
-        const link = document.createElement('a'); link.href = `/backend/vault/download.php?document_id=${doc.id}&download_token=${encodeURIComponent(data.data.download_token)}`; link.download = doc.original_filename || doc.display_name; document.body.appendChild(link); link.click(); link.remove(); vaultStatus('Secure download started.', 'success');
-    } catch (error) { vaultStatus(error.message || 'Secure download failed.', 'danger'); }
+    try { let data=await vaultJson('request_download_code',{document_id:doc.id}); if(!data.success)throw new Error(data.message||'Unable to send verification code.'); const code=await vaultRequestCode(doc); if(!code)return; data=await vaultJson('verify_download',{document_id:doc.id,code}); if(!data.success)throw new Error(data.message||'Invalid verification code.'); const link=document.createElement('a'); link.href=`/backend/vault/download.php?document_id=${doc.id}&download_token=${encodeURIComponent(data.data.download_token)}`; link.download=doc.original_filename||doc.display_name; document.body.appendChild(link); link.click(); link.remove(); vaultStatus('Secure download started.','success'); } catch(error){vaultStatus(error.message||'Secure download failed.','danger');}
 }
 async function vaultRename(doc) {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');

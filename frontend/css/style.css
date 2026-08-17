@@ -3739,3 +3739,8 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .vault-document-actions .dropdown-menu.show { display: flex; }
 .vault-document-actions .dropdown-item { display: flex; align-items: center; justify-content: center; width: 2.45rem; height: 2.45rem; padding: .45rem; font-size: 0; }
 .vault-document-actions .dropdown-item i { margin: 0 !important; font-size: 1rem; }
+.vault-code-modal { border: 1px solid var(--color-border); border-radius: 18px; box-shadow: 0 20px 55px rgba(53,33,63,.2); }
+.vault-code-modal .modal-header { background: var(--color-surface-soft); border-bottom-color: var(--color-border); }
+.vault-code-modal #vault-download-code { font-size: 1.35rem; font-weight: 700; letter-spacing: .35rem; }
+#vault-upload-form { align-items: center; }
+#vault-upload-form .form-control { min-height: 38px; }
