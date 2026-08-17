@@ -8,7 +8,7 @@
     <meta name="description" content="A private, beautiful home for memories, family, and digital legacy."><title>IamAlwaysHere — Keep their story close</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="frontend/css/style.css?v=2026081602">
+    <link rel="stylesheet" href="frontend/css/style.css?v=2026081701">
 </head>
 
 <body class="landing-page">
@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="index.php">Home</a>
-                    </li>`n                    <li class="nav-item" id="nav-memories"><a class="nav-link" href="frontend/memorials.php">Memories</a></li>
+                    </li>                    <li class="nav-item" id="nav-memories"><a class="nav-link" href="frontend/memorials.php">Memories</a></li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
                         <a class="nav-link" href="frontend/dashboard.php">My dashboard</a>
                     </li>

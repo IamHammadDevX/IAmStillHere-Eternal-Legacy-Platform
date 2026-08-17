@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081609" />
+  <link rel="stylesheet" href="css/style.css?v=2026081701" />
 </head>
 
 <body class="profile-page app-page">
@@ -227,7 +227,7 @@ if (!is_logged_in()) {
           <div class="tab-pane fade" id="about-tab">
             <div class="card about-bio-card mb-4"><div class="card-body"><span class="about-eyebrow"><i class="bi bi-person-vcard"></i> Profile</span><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
             <section class="about-life-journal" aria-labelledby="about-life-journal-title">
-              <div class="about-journal-heading"><div><span class="about-eyebrow"><i class="bi bi-newspaper"></i> Life journal</span><h5 id="about-life-journal-title">Memories, milestones & events</h5><p>Highlights from this person's story. Open any card to see the original item.</p></div></div>
+              <div class="about-journal-heading"><div><span class="about-eyebrow"><i class="bi bi-newspaper"></i>Journals</span><h5 id="about-life-journal-title">Memories, milestones & events</h5><p>Highlights from this person's story. Open any card to see the original item.</p></div></div>
               <div id="about-life-journal" class="about-life-journal-list"><div class="about-journal-loading">Loading life highlights...</div></div>
               <div id="about-life-journal-pagination" class="about-life-journal-pagination" aria-label="Life journal pages"></div>
             </section>

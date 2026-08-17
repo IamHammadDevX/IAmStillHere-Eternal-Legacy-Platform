@@ -3638,3 +3638,18 @@ body { background:var(--hydrangea-bg); color:var(--hydrangea-plum); }
 .profile-tabs .nav-link.active { color:var(--hydrangea-primary); background:var(--hydrangea-lavender); border-bottom-color:var(--hydrangea-primary); }
 .profile-tabs-more .nav-link { border:0; border-radius:12px; }
 .dashboard-shell, .profile-page { background:var(--hydrangea-bg); }
+
+/* Final global navbar contract */
+.navbar { position: sticky !important; top: 0 !important; z-index: 3000 !important; }
+.navbar .navbar-nav > #nav-home { order: 1 !important; }
+.navbar .navbar-nav > #nav-memories { order: 2 !important; }
+.navbar .navbar-nav > #nav-dashboard { order: 3 !important; }
+.navbar .navbar-nav > #nav-profile { order: 4 !important; }
+.navbar .navbar-nav > #nav-notifications { order: 5 !important; }
+.navbar .navbar-nav > #nav-search { order: 6 !important; }
+.navbar .navbar-nav > #nav-logout { order: 7 !important; }
+.navbar .navbar-nav > #nav-login { order: 8 !important; }
+.navbar .navbar-nav > #nav-register { order: 9 !important; }
+.memory-actions-menu .dropdown-item { display:flex; align-items:center; justify-content:center; width:2.45rem; height:2.45rem; padding:.45rem; font-size:0; }
+.memory-actions-menu .dropdown-item i { margin:0 !important; font-size:1rem; }
+.memory-actions-menu .dropdown-menu { min-width:auto; display:flex; gap:.2rem; padding:.35rem; }
