@@ -3761,3 +3761,32 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) .nav-link { min-height: 40px; padding: .55rem .65rem !important; font-size: .72rem; }
   .profile-page .profile-tabs-more { display: block; }
 }
+/* Profile media folders: mobile-friendly wrapped explorer */
+.profile-page .profile-media-folder-tree { min-width: 0; }
+@media (max-width: 767.98px) {
+  .profile-page .profile-media-folder-tree,
+  .profile-page.profile-media-workspace-active .profile-media-folder-tree {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .45rem;
+    width: 100%;
+    overflow: visible !important;
+    padding: 0;
+  }
+  .profile-page .profile-media-folder,
+  .profile-page.profile-media-workspace-active .profile-media-folder {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: .5rem .55rem !important;
+    transform: none;
+  }
+  .profile-page .profile-media-folder span { min-width: 0; font-size: .78rem; }
+  .profile-page .profile-media-folder small { min-width: 1.45rem; height: 1.45rem; }
+  .profile-page .profile-media-folder-empty { min-width: 0; grid-column: 1 / -1; }
+}
+@media (max-width: 380px) {
+  .profile-page .profile-media-folder-tree,
+  .profile-page.profile-media-workspace-active .profile-media-folder-tree { grid-template-columns: 1fr; }
+}
