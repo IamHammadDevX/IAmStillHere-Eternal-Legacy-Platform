@@ -27,14 +27,14 @@
                             <i class="bi bi-search"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="memorials.php">Memorials</a>
+                    <li class="nav-item" id="nav-memories">
+                        <a class="nav-link" href="memorials.php">Memories</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
-                        <a class="nav-link" href="dashboard.php">Dashboard</a>
+                        <a class="nav-link" href="dashboard.php">My dashboard</a>
                     </li>
                     <li class="nav-item" id="nav-admin" style="display:none;">
                         <a class="nav-link" href="admin.php">Admin</a>
@@ -46,7 +46,7 @@
                         <a class="nav-link" href="register.php">Register</a>
                     </li>
                     <li class="nav-item" id="nav-profile" style="display:none;">
-                        <a class="nav-link" href="profile.php" id="username-display"></a>
+                        <a class="nav-link" href="profile.php" id="username-display">Public Profile</a>
                     </li>
                     <li class="nav-item" id="nav-logout" style="display:none;">
                         <a class="nav-link" href="#" onclick="logout()">Logout</a>

@@ -3591,3 +3591,50 @@ body.profile-page ul.profile-tabs > li.nav-item:not(.profile-tabs-more) > a.nav-
 .landing-page .home-kicker.dark i { color: #8d5aba !important; }
 .landing-page .home-cta-card .btn-outline-primary { color: #fff !important; border-color: rgba(255,255,255,.55) !important; }
 .landing-page .home-cta-card .btn-outline-primary:hover { color: #342650 !important; background: #fff !important; }
+
+/* Global application navigation */
+.navbar { position: sticky !important; top: 0; z-index: 3000; }
+.navbar-nav { display: flex; }
+.navbar-nav > #nav-home { order: 1; }
+.navbar-nav > #nav-memories { order: 2; }
+.navbar-nav > #nav-dashboard,
+.navbar-nav > #nav-admin { order: 3; }
+.navbar-nav > #nav-profile { order: 4; }
+.navbar-nav > #nav-notifications { order: 5; }
+.navbar-nav > #nav-search { order: 6; }
+.navbar-nav > #nav-logout { order: 7; }
+.navbar-nav > #nav-login { order: 8; }
+.navbar-nav > #nav-register { order: 9; }
+.navbar-nav > #nav-home a,
+.navbar-nav > #nav-memories a,
+.navbar-nav > #nav-dashboard a,
+.navbar-nav > #nav-profile a,
+.navbar-nav > #nav-search a,
+.navbar-nav > #nav-logout a { white-space: nowrap; }
+@media (max-width: 991.98px) {
+  .navbar-nav > li { order: initial !important; }
+}
+
+/* Hydrangea product theme */
+:root { --hydrangea-bg:#fbf8fc; --hydrangea-surface:#fff; --hydrangea-lavender:#f4eaf7; --hydrangea-plum:#35213f; --hydrangea-primary:#8e3fa6; --hydrangea-purple:#ad56c4; --hydrangea-pink:#ff8da1; --hydrangea-peach:#ffc2ba; --hydrangea-border:#e9dded; --hydrangea-muted:#756a7d; }
+body { background:var(--hydrangea-bg); color:var(--hydrangea-plum); }
+.card, .modal-content, .list-group-item { border-color:var(--hydrangea-border); }
+.btn-primary { background:var(--hydrangea-primary); border-color:var(--hydrangea-primary); }
+.btn-primary:hover, .btn-primary:focus { background:var(--hydrangea-plum); border-color:var(--hydrangea-plum); }
+.btn-outline-primary { color:var(--hydrangea-primary); border-color:var(--hydrangea-primary); }
+.btn-outline-primary:hover, .btn-outline-primary:focus { color:#fff; background:var(--hydrangea-primary); border-color:var(--hydrangea-primary); }
+.form-control:focus, .form-select:focus { border-color:var(--hydrangea-purple); box-shadow:0 0 0 .2rem rgba(173,86,196,.18); }
+.text-primary { color:var(--hydrangea-primary)!important; }
+.bg-primary { background-color:var(--hydrangea-primary)!important; }
+.memory-actions-menu { margin-left:auto; }
+.memory-actions-menu > button { width:2.35rem; height:2.35rem; padding:0; border-color:var(--hydrangea-border); color:var(--hydrangea-primary); background:var(--hydrangea-lavender); }
+.memory-actions-menu > button:hover, .memory-actions-menu > button:focus { color:#fff; background:var(--hydrangea-primary); border-color:var(--hydrangea-primary); }
+.memory-actions-menu .dropdown-menu { min-width:12rem; padding:.4rem; border:1px solid var(--hydrangea-border); border-radius:14px; box-shadow:0 16px 35px rgba(53,33,63,.16); }
+.memory-actions-menu .dropdown-item { border-radius:9px; padding:.55rem .7rem; color:var(--hydrangea-plum); }
+.memory-actions-menu .dropdown-item:hover, .memory-actions-menu .dropdown-item:focus { color:var(--hydrangea-plum); background:var(--hydrangea-lavender); }
+.memory-actions-menu .dropdown-item.text-danger:hover { color:#b42318!important; background:#fff0f0; }
+.profile-tabs .nav-link { color:var(--hydrangea-muted); border:0; border-bottom:3px solid transparent; }
+.profile-tabs .nav-link:hover { color:var(--hydrangea-primary); background:var(--hydrangea-lavender); }
+.profile-tabs .nav-link.active { color:var(--hydrangea-primary); background:var(--hydrangea-lavender); border-bottom-color:var(--hydrangea-primary); }
+.profile-tabs-more .nav-link { border:0; border-radius:12px; }
+.dashboard-shell, .profile-page { background:var(--hydrangea-bg); }

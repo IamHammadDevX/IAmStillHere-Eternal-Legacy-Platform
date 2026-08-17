@@ -28,14 +28,12 @@
                             <i class="bi bi-search"></i>
                         </a>
                     </li>
-                    <li>
-                        <a href="memorials.php" class="nav-link">Memorials</a>
-                    </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-memories"><a href="memorials.php" class="nav-link">Memories</a></li>
+                    <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
-                        <a class="nav-link" href="#">Dashboard</a>
+                        <a class="nav-link" href="dashboard.php">My dashboard</a>
                     </li>
                     <li class="nav-item" id="nav-admin" style="display:none;">
                         <a class="nav-link" href="admin.php">Admin</a>
@@ -47,7 +45,7 @@
                         <a class="nav-link" href="register.php">Register</a>
                     </li>
                     <li class="nav-item" id="nav-profile" style="display:none;">
-                        <a class="nav-link" href="profile.php" id="username-display"></a>
+                        <a class="nav-link" href="profile.php" id="username-display">Public Profile</a>
                     </li>
                     <li class="nav-item" id="nav-logout" style="display:none;">
                         <a class="nav-link" href="#" onclick="logout()">Logout</a>
@@ -82,7 +80,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-person-plus display-4 text-purple mb-3"></i>
-                        <h5 class="mt-2">Family Requests</h5>
+                        <h5 class="mt-2">Requests</h5>
                         <a href="family_requests.php" class="btn btn-sm btn-secondary mt-2">
                             View Requests
                             <span class="badge bg-danger ms-1" id="request-count-badge" style="display:none;">0</span>
@@ -106,7 +104,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-clock-history display-4 text-warning"></i>
-                        <h5 class="mt-2">Scheduled Events</h5>
+                        <h5 class="mt-2">Events</h5>
                         <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal"
                             data-bs-target="#scheduleEventModal">Schedule</button>
                     </div>

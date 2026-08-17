@@ -36,14 +36,14 @@ if (!is_logged_in()) {
               <i class="bi bi-search"></i>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="memorials.php" class="nav-link">Memorials</a>
+          <li class="nav-item" id="nav-memories">
+            <a href="memorials.php" class="nav-link">Memories</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" id="nav-home">
             <a class="nav-link" href="/index.php">Home</a>
           </li>
           <li class="nav-item" id="nav-dashboard" style="display:none;">
-            <a class="nav-link" href="dashboard.php">Dashboard</a>
+            <a class="nav-link" href="dashboard.php">My dashboard</a>
           </li>
           <li class="nav-item" id="nav-admin" style="display:none;">
             <a class="nav-link" href="admin.php">Admin</a>
@@ -55,7 +55,7 @@ if (!is_logged_in()) {
             <a class="nav-link" href="register.php">Register</a>
           </li>
           <li class="nav-item" id="nav-profile" style="display:none;">
-            <a class="nav-link" href="profile.php" id="username-display"></a>
+            <a class="nav-link" href="profile.php" id="username-display">Public Profile</a>
           </li>
           <li class="nav-item" id="nav-logout" style="display:none;">
             <a class="nav-link" href="#" onclick="logout()">Logout</a>
@@ -119,16 +119,16 @@ if (!is_logged_in()) {
           <li class="nav-item"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#autobiography-tab">Autobiography</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">AI Messages</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About Me</a></li>
+          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#family-tab">Family</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">Events</a></li>
         </ul>
 
         <div class="tab-content">

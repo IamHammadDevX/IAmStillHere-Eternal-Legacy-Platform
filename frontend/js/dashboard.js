@@ -212,7 +212,7 @@ async function loadMemories(page = memoryPage) {
                     loggedInUser.id == currentUserId ||
                     loggedInUser.role === 'admin'
                 );
-                console.log('loggedInUser: ', loggedInUser);
+                console.log('loggedInUser: ', loggedInUser);                const memoryActionsMenu = `<div class="dropdown memory-actions-menu"><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Memory actions"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end">${downloadButton ? `<li><a class="dropdown-item" href="${filePath}" download="${escapeHtml(memory.title)}"><i class="bi bi-download me-2"></i>Download</a></li>` : ''}}</ul></div>`;
 
                 col.innerHTML = `
                     <div class="card memory-card">
@@ -225,10 +225,8 @@ async function loadMemories(page = memoryPage) {
                                     <span class="badge bg-secondary privacy-badge">${memory.privacy_level}</span>
                                     ${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}
                                 </small>
-                                ${downloadButton}
-                                ${canDelete ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="editMemory(${memory.id})" title="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-secondary ms-1" onclick="moveMemory(${memory.id})" title="Move memory"><i class="bi bi-folder2-open"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteMemory(${memory.id})">
-                                    <i class="bi bi-trash"></i>
-                                </button>` : ''}
+                                ${memoryActionsMenu}
+                                
                                 
                             </div>
                             <div class="memory-comments mt-3" data-memory-comments="${memory.id}">
@@ -546,9 +544,7 @@ async function loadTimeline(page = timelinePage) {
                                     <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
                                 </small>
                             </div>
-                            ${canDelete ? `<button class="btn btn-sm btn-outline-primary me-1" onclick="editMilestone(${milestone.id})" title="Edit milestone"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
-                                <i class="bi bi-trash"></i>
-                            </button>` : ''}
+                            
                             
                         </div>
                     </div>
@@ -672,7 +668,7 @@ function createEventCard(event, isPast) {
     const media = event.media_url ? (event.media_type === 'video'
         ? `<div class="event-card-media"><video controls preload="metadata"><source src="${escapeHtml(event.media_url)}" type="${escapeHtml(event.media_mime || 'video/mp4')}">Your browser cannot play this video.</video></div>`
         : `<div class="event-card-media"><img src="${escapeHtml(event.media_url)}" alt="${escapeHtml(event.title || 'Event photo')}" loading="lazy"></div>`) : '';
-    card.innerHTML = `${media}<div class="card-body event-card-body"><div class="event-card-main"><div class="event-card-title-row"><span class="event-card-icon"><i class="bi ${typeInfo.icon} ${typeInfo.color}"></i></span><h5>${escapeHtml(event.title || 'Untitled event')}</h5><span class="badge ${privacyBadges[event.privacy_level] || 'bg-secondary'}">${escapeHtml(event.privacy_level || 'private')}</span>${isPast ? '<span class="badge bg-secondary">Past</span>' : '<span class="badge bg-info text-dark">Upcoming</span>'}</div><p class="event-card-date"><i class="bi bi-calendar3"></i> ${escapeHtml(formattedDate)} at ${escapeHtml(formattedTime)}</p>${event.message ? `<p class="event-card-message">${escapeHtml(event.message)}</p>` : ''}</div>${canDelete ? `<button class="btn btn-sm btn-outline-danger event-delete-button" onclick="deleteEvent(${Number(event.id)})" aria-label="Delete event"><i class="bi bi-trash"></i></button>` : ''}</div>`;
+    card.innerHTML = `${media}<div class="card-body event-card-body"><div class="event-card-main"><div class="event-card-title-row"><span class="event-card-icon"><i class="bi ${typeInfo.icon} ${typeInfo.color}"></i></span><h5>${escapeHtml(event.title || 'Untitled event')}</h5><span class="badge ${privacyBadges[event.privacy_level] || 'bg-secondary'}">${escapeHtml(event.privacy_level || 'private')}</span>${isPast ? '<span class="badge bg-secondary">Past</span>' : '<span class="badge bg-info text-dark">Upcoming</span>'}</div><p class="event-card-date"><i class="bi bi-calendar3"></i> ${escapeHtml(formattedDate)} at ${escapeHtml(formattedTime)}</p>${event.message ? `<p class="event-card-message">${escapeHtml(event.message)}</p>` : ''}</div></div>`;
     return card;
 }
 

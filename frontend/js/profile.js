@@ -541,6 +541,20 @@ function profileMediaPagination(type, total, totalPages) {
     return `<nav class="profile-media-pagination" aria-label="${type} pages"><button type="button" class="btn btn-outline-primary btn-sm" data-profile-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i> Previous</button><span>Page ${page} of ${totalPages} <small>(${total} items)</small></span><button type="button" class="btn btn-outline-primary btn-sm" data-profile-page="${page + 1}" ${page >= totalPages ? 'disabled' : ''}>Next <i class="bi bi-chevron-right"></i></button></nav>`;
 }
 
+async function moveProfileMemory(memoryId) {
+    try {
+        const result = await fetch(`/backend/memories/folders/list.php?user_id=${encodeURIComponent(profileUserId)}&_=${Date.now()}`).then(response => response.json());
+        const folders = result.data?.folders || [];
+        const options = folders.length ? folders.map(folder => `${folder.id}: ${folder.name}`).join('\n') : 'No folders available.';
+        const choice = prompt(`Choose a folder ID. Enter 0 to remove this memory from its folder.\n${options}`, '0');
+        if (choice === null) return;
+        const selected = folders.find(folder => String(folder.id) === choice.trim() || String(folder.name).toLowerCase() === choice.trim().toLowerCase());
+        const response = await fetch('/backend/memories/folders/move_memory.php', { method: 'POST', headers: {'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken}, body: JSON.stringify({memory_id: Number(memoryId), folder_id: choice.trim() === '0' ? 0 : Number(selected?.id || parseInt(choice, 10) || 0)}) });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Unable to move memory.');
+        await loadProfileMemories();
+    } catch (error) { showAlert(error.message || 'Unable to move memory.', 'danger'); }
+}
 function profileMemoryCard(memory) {
     const kind = profileMemoryKind(memory);
     const filePath = profileMemoryMediaUrl(memory);
@@ -557,7 +571,7 @@ function profileMemoryCard(memory) {
     }
     const canManage = typeof loggedInUser !== 'undefined' && loggedInUser && (Number(loggedInUser.id) === Number(profileUserId) || loggedInUser.role === 'admin');
     const folder = profileFolderName(memory.folder_id);
-    return `<div class="col-12 col-xl-6"><article id="memory-card-${Number(memory.id)}" class="card memory-card profile-memory-card h-100">${mediaHtml}<div class="card-body"><div class="profile-media-card-meta"><span class="badge bg-secondary">${escapeHtml(memory.privacy_level || 'private')}</span>${folder ? `<span><i class="bi bi-folder2"></i> ${escapeHtml(folder)}</span>` : '<span>Unfiled</span>'}</div><h5 class="card-title">${escapeHtml(memory.title || 'Untitled memory')}</h5><p class="card-text">${escapeHtml(memory.description || 'No description added.')}</p><div class="profile-memory-actions"><small>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</small><a href="${filePath}" download class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i> Download</a>${canManage ? `<button class="btn btn-sm btn-outline-secondary" onclick="editProfileMemory(${Number(memory.id)})" aria-label="Edit memory"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteMemory(${Number(memory.id)})" aria-label="Delete memory"><i class="bi bi-trash"></i></button>` : ''}</div><div class="memory-comments mt-3" data-memory-comments="${Number(memory.id)}"><div class="small text-muted">Loading comments...</div></div></div></article></div>`;
+    return `<div class="col-12 col-xl-6"><article id="memory-card-${Number(memory.id)}" class="card memory-card profile-memory-card h-100">${mediaHtml}<div class="card-body"><div class="profile-media-card-meta"><span class="badge bg-secondary">${escapeHtml(memory.privacy_level || 'private')}</span>${folder ? `<span><i class="bi bi-folder2"></i> ${escapeHtml(folder)}</span>` : '<span>Unfiled</span>'}</div><h5 class="card-title">${escapeHtml(memory.title || 'Untitled memory')}</h5><p class="card-text">${escapeHtml(memory.description || 'No description added.')}</p><div class="profile-memory-actions"><small>${memory.memory_date ? new Date(memory.memory_date).toLocaleDateString() : ''}</small><div class="dropdown memory-actions-menu"><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Memory actions"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="${filePath}" download><i class="bi bi-download me-2"></i>Download</a></li>${canManage ? `<li><button class="dropdown-item" type="button" onclick="editProfileMemory(${Number(memory.id)})"><i class="bi bi-pencil me-2"></i>Edit</button></li><li><button class="dropdown-item" type="button" onclick="moveProfileMemory(${Number(memory.id)})"><i class="bi bi-folder2-open me-2"></i>Move to folder</button></li><li><hr class="dropdown-divider"></li><li><button class="dropdown-item text-danger" type="button" onclick="deleteMemory(${Number(memory.id)})"><i class="bi bi-trash me-2"></i>Delete</button></li>` : ''}</ul></div></div><div class="memory-comments mt-3" data-memory-comments="${Number(memory.id)}"><div class="small text-muted">Loading comments...</div></div></div></article></div>`;
 }
 
 function profileGalleryCard(memory, type) {
@@ -1234,13 +1248,8 @@ function initResponsiveProfileTabs() {
         if (!available) return;
 
         moreItem.style.display = 'block';
-        let guard = 0;
-        while (tabs.scrollWidth > available + 2 && originalItems.length > guard) {
-            const visibleItems = originalItems.filter((item) => item.parentElement === tabs);
-            if (visibleItems.length <= 3) break;
-            moveToMenu(visibleItems[visibleItems.length - 1]);
-            guard++;
-        }
+        const visibleCount = 6;
+        originalItems.slice(visibleCount).forEach(moveToMenu);
         moreItem.style.display = moreMenu.children.length ? 'block' : 'none';
     }
 

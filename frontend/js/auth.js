@@ -14,8 +14,6 @@ async function checkSession() {
             
             if (data.user.role === 'admin') {
                 document.getElementById('nav-admin').style.display = 'block';
-                document.getElementById('nav-dashboard').style.display = 'none';
-                document.getElementById('username-display').style.display = 'none';
             }
         } else {
             document.getElementById('nav-login').style.display = 'block';
