@@ -1015,7 +1015,7 @@ function initVaultFeature() {
     document.getElementById('vault-refresh-btn')?.addEventListener('click', () => loadVault());
     document.getElementById('vault-reauth-form')?.addEventListener('submit', vaultReauth);
     document.getElementById('vault-upload-form')?.addEventListener('submit', vaultUpload); document.getElementById('vault-upload-trigger')?.addEventListener('click', () => { if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning'); document.getElementById('vault-file')?.click(); });
-    document.getElementById('vault-folder-create')?.addEventListener('click', vaultCreateFolder);
+    
     document.getElementById('vault-grant')?.addEventListener('click', () => vaultPermission('grant'));
     document.getElementById('vault-revoke')?.addEventListener('click', () => vaultPermission('revoke'));
     loadVault();
@@ -1059,7 +1059,7 @@ async function loadVault() {
 
 function setVaultLockedState(isVerified, verifiedUntil) {
     const sensitive = [
-        'vault-folder-name', 'vault-folder-create', 'vault-display-name', 'vault-file',
+        'vault-file',
         'vault-counsel-user-id', 'vault-grant', 'vault-revoke', 'vault-upload-trigger'
     ];
     sensitive.forEach(id => {
@@ -1090,49 +1090,22 @@ function renderVaultFolders(folders) {
 function renderVaultDocuments(documents) {
     const box = document.getElementById('vault-document-list');
     box.innerHTML = '';
-    if (!documents.length) {
-        box.innerHTML = '<div class="col-12 text-muted">No vault documents here.</div>';
-        return;
-    }
+    if (!documents.length) { box.innerHTML = '<div class="col-12 text-muted">No vault documents here.</div>'; return; }
     documents.forEach(doc => {
-        const col = document.createElement('div');
-        col.className = 'col-md-6';
-        const card = document.createElement('div');
-        card.className = 'card h-100';
-        const body = document.createElement('div');
-        body.className = 'card-body';
-        const title = document.createElement('h6');
-        title.textContent = doc.display_name;
-        const meta = document.createElement('div');
-        meta.className = 'small text-muted mb-2';
-        meta.textContent = `${doc.mime_type} - ${Math.ceil(doc.file_size / 1024)} KB`;
-        const hash = document.createElement('div');
-        hash.className = 'small text-muted text-truncate mb-2';
-        hash.title = doc.sha256;
-        hash.textContent = `SHA-256 ${doc.sha256}`;
-        const actions = document.createElement('div');
-        actions.className = 'd-flex flex-wrap gap-2';
-        const down = document.createElement('a');
-        down.className = 'btn btn-sm btn-outline-primary';
-        down.textContent = 'Download';
-        down.href = `/backend/vault/download.php?document_id=${doc.id}`;
-        const rename = document.createElement('button');
-        rename.className = 'btn btn-sm btn-outline-secondary';
-        rename.textContent = 'Rename';
-        rename.onclick = () => vaultRename(doc);
-        const del = document.createElement('button');
-        del.className = 'btn btn-sm btn-outline-danger';
-        del.textContent = 'Delete';
-        del.onclick = () => vaultDeleteDocument(doc.id);
-        actions.append(down, rename, del);
-        body.append(title, meta, hash, actions);
-        card.appendChild(body);
-        col.appendChild(card);
-        box.appendChild(col);
+        const col = document.createElement('div'); col.className = 'col-md-6';
+        const card = document.createElement('div'); card.className = 'card h-100';
+        const body = document.createElement('div'); body.className = 'card-body';
+        const title = document.createElement('h6'); title.textContent = doc.display_name || doc.original_filename;
+        const meta = document.createElement('div'); meta.className = 'small text-muted mb-2'; meta.textContent = `${doc.mime_type} - ${Math.ceil(doc.file_size / 1024)} KB`;
+        const hash = document.createElement('div'); hash.className = 'small text-muted text-truncate mb-2'; hash.title = doc.sha256; hash.textContent = `SHA-256 ${doc.sha256}`;
+        const actions = document.createElement('div'); actions.className = 'dropdown vault-document-actions text-end';
+        const toggle = document.createElement('button'); toggle.className = 'btn btn-sm btn-outline-secondary'; toggle.type = 'button'; toggle.dataset.bsToggle = 'dropdown'; toggle.setAttribute('aria-label', 'Document actions'); toggle.innerHTML = '<i class="bi bi-three-dots-vertical"></i>';
+        const menu = document.createElement('ul'); menu.className = 'dropdown-menu dropdown-menu-end';
+        const addAction = (icon, label, handler, danger = false) => { const li=document.createElement('li'); const item=document.createElement('button'); item.type='button'; item.className=`dropdown-item ${danger?'text-danger':''}`; item.title=label; item.setAttribute('aria-label',label); item.innerHTML=`<i class="bi ${icon}"></i>`; item.onclick=handler; li.appendChild(item); menu.appendChild(li); };
+        addAction('bi-download', 'Download', () => vaultDownload(doc)); addAction('bi-pencil', 'Rename', () => vaultRename(doc)); addAction('bi-trash', 'Delete', () => vaultDeleteDocument(doc.id), true);
+        actions.append(toggle, menu); body.append(title, meta, hash, actions); card.appendChild(body); col.appendChild(card); box.appendChild(col);
     });
-}
-
-function renderVaultPermissions(permissions) {
+}function renderVaultPermissions(permissions) {
     const box = document.getElementById('vault-permission-list');
     if (!box) return;
     box.innerHTML = permissions.length ? '' : 'No legal counsel users authorized.';
@@ -1175,17 +1148,17 @@ async function vaultReauth(event) {
 async function vaultUpload(event) {
     event.preventDefault();
     const fileInput = document.getElementById('vault-file');
-    const nameInput = document.getElementById('vault-display-name');
+    
     const uploadButton = document.querySelector('#vault-upload-form button[type="submit"]');
     const file = fileInput?.files?.[0];
     if (!file) { vaultStatus('Choose a file first.', 'danger'); return; }
     if (!vaultIsVerified) { vaultStatus('Unlock Vault first.', 'warning'); return; }
 
-    const displayName = nameInput?.value.trim() || file.name.replace(/\.[^/.]+$/, '');
+    const displayName = file.name;
     const form = new FormData();
     form.append('csrf_token', csrfToken || '');
-    form.append('folder_id', String(vaultCurrentFolderId || 0));
-    form.append('display_name', displayName);
+    form.append('folder_id', '0');
+    form.append('display_name', file.name);
     form.append('file', file, file.name);
 
     if (uploadButton) { uploadButton.disabled = true; uploadButton.textContent = 'Uploading...'; }
@@ -1226,6 +1199,18 @@ async function vaultDeleteFolder(folderId) {
     else vaultStatus(data.errors?.folder || data.message || 'Cannot delete this folder. Remove its documents and subfolders first.', 'danger');
 }
 
+async function vaultDownload(doc) {
+    if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
+    try {
+        let data = await vaultJson('request_download_code', { document_id: doc.id });
+        if (!data.success) throw new Error(data.message || 'Unable to send verification code.');
+        const code = prompt('Enter the 6-digit code sent to your account email:');
+        if (!code) return;
+        data = await vaultJson('verify_download', { document_id: doc.id, code: code.trim() });
+        if (!data.success) throw new Error(data.message || 'Invalid verification code.');
+        const link = document.createElement('a'); link.href = `/backend/vault/download.php?document_id=${doc.id}&download_token=${encodeURIComponent(data.data.download_token)}`; link.download = doc.original_filename || doc.display_name; document.body.appendChild(link); link.click(); link.remove(); vaultStatus('Secure download started.', 'success');
+    } catch (error) { vaultStatus(error.message || 'Secure download failed.', 'danger'); }
+}
 async function vaultRename(doc) {
     if (!vaultIsVerified) return vaultStatus('Unlock Vault first.', 'warning');
     const name = prompt('New vault document name', doc.display_name);

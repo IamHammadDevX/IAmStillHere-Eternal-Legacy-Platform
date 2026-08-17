@@ -460,6 +460,20 @@ class EmailHelper
         // return mail($toEmail, $subject, $message, $headers);
     }
 
+    public static function sendVaultDownloadCode($toEmail, $toName, $verificationCode, $documentName)
+    {
+        $mail = new PHPMailer(true);
+        try {
+            if (!self::configureMailer($mail)) return false;
+            $mail->addAddress($toEmail, $toName);
+            $mail->isHTML(true);
+            $mail->Subject = 'Vault download verification - IamAlwaysHere';
+            $safeName = htmlspecialchars((string)$documentName, ENT_QUOTES, 'UTF-8');
+            $mail->Body = "<p>Hello " . htmlspecialchars((string)$toName, ENT_QUOTES, 'UTF-8') . ",</p><p>Use this code to download your encrypted vault document <strong>{$safeName}</strong>:</p><h1 style=\"letter-spacing:6px\">{$verificationCode}</h1><p>This code expires in 10 minutes. If you did not request this download, change your password immediately.</p>";
+            $mail->AltBody = "Vault download code: {$verificationCode}. It expires in 10 minutes.";
+            $mail->send(); return true;
+        } catch (Exception $e) { error_log('Vault download email failed: '.$e->getMessage()); return false; }
+    }
     public static function generateVerificationCode()
     {
         return str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);

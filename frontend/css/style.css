@@ -3735,3 +3735,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 
 /* Focus visibility */
 :focus-visible { outline: 3px solid rgba(255,141,161,.65); outline-offset: 2px; }
+.vault-document-actions .dropdown-menu { min-width: auto; display: none; gap: .2rem; padding: .35rem; }
+.vault-document-actions .dropdown-menu.show { display: flex; }
+.vault-document-actions .dropdown-item { display: flex; align-items: center; justify-content: center; width: 2.45rem; height: 2.45rem; padding: .45rem; font-size: 0; }
+.vault-document-actions .dropdown-item i { margin: 0 !important; font-size: 1rem; }
