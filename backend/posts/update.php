@@ -10,7 +10,7 @@ try {
     if (!posts_require_csrf($data)) { ApiResponse::forbidden('Invalid CSRF token.'); exit; }
 
     $postId = (int) ($data['post_id'] ?? 0);
-    $body = trim((string) ($data['body'] ?? ''));
+    $body = posts_sanitize_body((string) ($data['body'] ?? ''));
     $privacy = (string) ($data['privacy_level'] ?? 'public');
     if (!in_array($privacy, ['public','family','friends','specific_people','private','release_date','release_event'], true)) $privacy = 'public';
     $legacyPrivacy = in_array($privacy, ['public','family','private'], true) ? $privacy : 'private';

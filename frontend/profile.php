@@ -96,7 +96,7 @@ if (!is_logged_in()) {
       <div class="col-md-4 profile-main-sidebar">
         <div class="card mb-4">
           <div class="card-body">
-            <h5 class="card-title">About</h5>
+            <h5 class="card-title">About Me</h5>
             <p id="profile-bio" class="card-text">No bio available.</p>
           </div>
         </div>
@@ -136,7 +136,7 @@ if (!is_logged_in()) {
             <div id="post-composer" class="card mb-4" style="display:none;">
               <div class="card-body">
                 <form id="post-form">
-                  <textarea id="post-body" class="form-control mb-3" rows="3" maxlength="5000" placeholder="What's on your mind?"></textarea>
+                  <div class="post-editor mb-3"><div class="post-editor-toolbar" role="toolbar" aria-label="Post formatting"><button type="button" class="btn btn-sm btn-light" data-post-command="bold" title="Bold"><strong>B</strong></button><button type="button" class="btn btn-sm btn-light" data-post-command="italic" title="Italic"><em>I</em></button><button type="button" class="btn btn-sm btn-light" data-post-command="underline" title="Underline"><u>U</u></button><button type="button" class="btn btn-sm btn-light" data-post-command="insertUnorderedList" title="Bullet list"><i class="bi bi-list-ul"></i></button><button type="button" class="btn btn-sm btn-light" id="post-emoji-button" title="Add emoji">😊</button></div><div id="post-body" class="form-control post-editor-surface" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="What's on your mind?"></div></div>
                   <div class="d-flex flex-column flex-md-row gap-2 align-items-md-center">
                     <select id="post-privacy" class="form-select form-select-sm" style="max-width: 150px;">
                       <option value="public">Public</option>
@@ -506,7 +506,7 @@ if (!is_logged_in()) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081702"></script>
-  <script src="js/posts.js?v=2026081410"></script>
+  <script src="js/posts.js?v=2026081801"></script>
   <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081601"></script>
   <script src="js/personalized_messages.js?v=2026081101"></script>

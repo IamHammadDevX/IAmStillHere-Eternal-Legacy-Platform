@@ -22,7 +22,45 @@ function el(tag, className = '', text = '') {
     return node;
 }
 
-function initPostsFeature() {
+function safePostHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = String(html || '');
+    const allowed = new Set(['STRONG', 'B', 'EM', 'I', 'U', 'UL', 'OL', 'LI', 'BR', 'P', 'DIV']);
+    template.content.querySelectorAll('*').forEach(node => {
+        if (!allowed.has(node.tagName)) node.replaceWith(document.createTextNode(node.textContent || ''));
+        else [...node.attributes].forEach(attribute => node.removeAttribute(attribute.name));
+    });
+    return template.innerHTML;
+}
+
+function initInlineEmojiPicker(button, target) {
+    button.addEventListener('click', () => {
+        let picker = button.parentElement.querySelector('.post-emoji-picker');
+        if (picker) { picker.remove(); return; }
+        picker = document.createElement('div'); picker.className = 'post-emoji-picker post-comment-emoji-picker';
+        ['❤️','😊','😂','😢','🙏','🎉','✨','🌸','🕊️','💜'].forEach(emoji => {
+            const item = document.createElement('button'); item.type = 'button'; item.className = 'post-emoji-option'; item.textContent = emoji; item.title = `Add ${emoji}`;
+            item.addEventListener('click', () => { target.value += emoji; picker.remove(); target.focus(); }); picker.appendChild(item);
+        });
+        button.parentElement.appendChild(picker);
+    });
+}
+function initPostEditor(){
+    document.querySelectorAll('[data-post-command]').forEach(button=>button.addEventListener('click',()=>{document.execCommand(button.dataset.postCommand,false,null);document.getElementById('post-body')?.focus();}));
+    const emojiButton=document.getElementById('post-emoji-button');
+    emojiButton?.addEventListener('click',()=>{
+        let picker=document.querySelector('.post-emoji-picker');
+        if(picker){picker.remove();return;}
+        picker=document.createElement('div'); picker.className='post-emoji-picker';
+        ['❤️','😊','😂','😢','🙏','🎉','✨','🌸','🕊️','💜'].forEach(emoji=>{
+            const item=document.createElement('button'); item.type='button'; item.className='post-emoji-option'; item.textContent=emoji; item.title=`Add ${emoji}`;
+            item.addEventListener('click',()=>{document.execCommand('insertText',false,emoji);picker.remove();document.getElementById('post-body')?.focus();}); picker.appendChild(item);
+        });
+        emojiButton.parentElement.appendChild(picker);
+    });
+}
+function postBodyHtml(){return document.getElementById('post-body')?.innerHTML.trim()||'';}
+function postBodyText(){return document.getElementById('post-body')?.innerText.trim()||'';}function initPostsFeature() {
     const composer = document.getElementById('post-composer');
     const viewerId = currentUser && (currentUser.id || currentUser.user_id);
     const isProfileOwner = viewerId && String(viewerId) === String(profileUserId);
@@ -38,6 +76,7 @@ function initPostsFeature() {
         postPrivacyWidget = privacyComponent('post', currentUser.id);
         oldPrivacy.parentElement.appendChild(postPrivacyWidget);
     }
+    initPostEditor();
     enhancePostComposerForScheduling();
     document.getElementById('post-form')?.addEventListener('submit', submitPost);
     loadPosts(1);
@@ -64,7 +103,7 @@ function enhancePostComposerForScheduling(){
 }
 async function submitScheduledPost(form){
     const fd=new FormData(); const rule=postPrivacyWidget?postPrivacyWidget.getRule():{visibility_type:document.getElementById('post-privacy').value,user_ids:[],release_at:'',release_event_id:0};
-    fd.append('body',document.getElementById('post-body').value.trim()); fd.append('privacy_level',rule.visibility_type); fd.append('csrf_token',csrfToken);
+    fd.append('body',postBodyHtml()); fd.append('privacy_level',rule.visibility_type); fd.append('csrf_token',csrfToken);
     fd.append('trigger_type',document.getElementById('post-schedule-trigger').value); fd.append('trigger_at',postLocalToIso(document.getElementById('post-schedule-at').value));
     const trigger=document.getElementById('post-schedule-trigger').value; const linked=Number(document.getElementById('post-linked-id').value||0); const linkedType=document.getElementById('post-linked-type').value; if(trigger==='linked_milestone_event'&&!linked){showAlert('Enter the event or milestone ID before scheduling.','warning');return;} if(linked>0){fd.append('linked_resource_type',linkedType);fd.append('linked_resource_id',linked);} const media=document.getElementById('post-media').files[0]; if(media)fd.append('media',media);
     const endpoint=editingScheduledPostId?POSTS_API+'/reschedule.php':POSTS_API+'/schedule.php';
@@ -83,7 +122,7 @@ function renderScheduledPostRow(p){
 }
 function editScheduledPost(id){
     const p=scheduledPostsCache.find(item=>Number(item.id)===Number(id)); if(!p)return;
-    editingScheduledPostId=Number(p.id||0); document.getElementById('post-body').value=p.body||''; document.getElementById('post-mode-schedule').checked=true; document.getElementById('post-schedule-fields').classList.remove('d-none'); document.getElementById('post-schedule-trigger').value=p.trigger_type||'specific_datetime';
+    editingScheduledPostId=Number(p.id||0); document.getElementById('post-body').innerHTML=p.body||''; document.getElementById('post-mode-schedule').checked=true; document.getElementById('post-schedule-fields').classList.remove('d-none'); document.getElementById('post-schedule-trigger').value=p.trigger_type||'specific_datetime';
     const d=p.trigger_at?new Date(String(p.trigger_at).replace(' ','T')+'Z'):null; if(d&&!Number.isNaN(d.getTime())){const pad=n=>String(n).padStart(2,'0');document.getElementById('post-schedule-at').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
     showAlert('Editing scheduled post. Submit again to save changes.','info'); document.getElementById('post-body').scrollIntoView({behavior:'smooth',block:'center'});
 }
@@ -175,7 +214,7 @@ function createPostCard(post) {
 
     if (post.body) {
         const text = el('div', 'post-body mb-2');
-        text.textContent = post.body;
+        text.innerHTML = safePostHtml(post.body);
         body.appendChild(text);
     }
 
@@ -232,7 +271,7 @@ async function submitPost(event) {
     if (submit?.disabled) return;
     if (submit) { submit.disabled = true; submit.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Posting...'; }
     const form = new FormData();
-    form.append('body', document.getElementById('post-body').value.trim());
+    form.append('body', postBodyHtml());
     form.append('privacy_level', postPrivacyWidget ? postPrivacyWidget.getRule().visibility_type : document.getElementById('post-privacy').value);
     form.append('csrf_token', csrfToken);
     const media = document.getElementById('post-media').files[0];
@@ -290,11 +329,13 @@ async function renderPostComments(container, postId, comments, total) {
         if (!csrfToken && typeof loadCsrfToken === 'function') await loadCsrfToken();
         if (!csrfToken) return;
         const form = el('form', 'post-comment-form mt-2');
-        const group = el('div', 'input-group input-group-sm');
+        const group = el('div', 'post-comment-composer');
         const input = document.createElement('input');
         input.className = 'form-control'; input.placeholder = 'Write a comment...'; input.maxLength = 2000; input.required = true;
+        const emojiButton = el('button', 'btn btn-light post-comment-emoji', '😊'); emojiButton.type = 'button'; emojiButton.title = 'Add emoji';
         const button = el('button', 'btn btn-primary', 'Post'); button.type = 'submit';
-        group.appendChild(input); group.appendChild(button); form.appendChild(group);
+        group.appendChild(input); group.appendChild(emojiButton); group.appendChild(button); form.appendChild(group);
+        initInlineEmojiPicker(emojiButton, input);
         form.addEventListener('submit', e => submitPostComment(e, postId, input));
         container.appendChild(form);
     }

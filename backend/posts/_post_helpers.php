@@ -13,6 +13,8 @@ const POST_COMMENT_MAX_LENGTH = 2000;
 const POST_CREATE_COOLDOWN = 3;
 const POST_COMMENT_COOLDOWN = 2;
 
+function posts_sanitize_body(string $body): string { $body=preg_replace('/<([a-z][a-z0-9]*)\\b[^>]*>/i','<$1>',$body) ?? $body; $body=strip_tags($body, '<strong><b><em><i><u><ul><ol><li><br><p><div>'); return trim($body); }
+
 function posts_connection(): PDO
 {
     $database = new Database();

@@ -10,7 +10,7 @@ try {
     if (!posts_recent_create_allowed('last_post_created_at', POST_CREATE_COOLDOWN)) { ApiResponse::send(false, [], 'Please wait before posting again.', [], 429); exit; }
 
     $userId = SessionHelper::getUserId();
-    $body = trim((string) ($_POST['body'] ?? ''));
+    $body = posts_sanitize_body((string) ($_POST['body'] ?? ''));
     $privacy = (string) ($_POST['privacy_level'] ?? 'public');
     if (!in_array($privacy, ['public', 'family', 'friends', 'specific_people', 'private', 'release_date', 'release_event'], true)) $privacy = 'public';
     $legacyPrivacy = in_array($privacy, ['public','family','private'], true) ? $privacy : 'private';

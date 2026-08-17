@@ -15,7 +15,7 @@ try {
     }
 
     $id = (int)($data['scheduled_post_id'] ?? 0);
-    $body = trim((string)($data['body'] ?? ''));
+    $body = posts_sanitize_body((string)($data['body'] ?? '')); 
     if ($body === '') {
         ApiResponse::validation(['body' => 'Post text is required.']);
         exit;
