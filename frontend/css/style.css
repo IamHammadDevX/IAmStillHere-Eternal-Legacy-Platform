@@ -3657,4 +3657,5 @@ body { padding-top: 56px; }
 .navbar .navbar-nav > #nav-register { order: 9 !important; }
 .memory-actions-menu .dropdown-item { display:flex; align-items:center; justify-content:center; width:2.45rem; height:2.45rem; padding:.45rem; font-size:0; }
 .memory-actions-menu .dropdown-item i { margin:0 !important; font-size:1rem; }
-.memory-actions-menu .dropdown-menu { min-width:auto; display:flex; gap:.2rem; padding:.35rem; }
+.memory-actions-menu .dropdown-menu { min-width:auto; display:none; gap:.2rem; padding:.35rem; }
+.memory-actions-menu .dropdown-menu.show { display:flex; }

@@ -208,11 +208,7 @@ async function loadMemories(page = memoryPage) {
                     `;
                 }
                 
-                const canDelete = loggedInUser && (
-                    loggedInUser.id == currentUserId ||
-                    loggedInUser.role === 'admin'
-                );
-                const memoryActionsMenu = `<div class="dropdown memory-actions-menu"><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Memory actions"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="${filePath}" download="${escapeHtml(memory.title)}" aria-label="Download memory" title="Download"><i class="bi bi-download"></i></a></li>${canDelete ? `<li><button class="dropdown-item" type="button" onclick="editMemory(${memory.id})" aria-label="Edit memory" title="Edit"><i class="bi bi-pencil"></i></button></li><li><button class="dropdown-item" type="button" onclick="moveMemory(${memory.id})" aria-label="Move memory to folder" title="Move to folder"><i class="bi bi-folder2-open"></i></button></li><li><button class="dropdown-item text-danger" type="button" onclick="deleteMemory(${memory.id})" aria-label="Delete memory" title="Delete"><i class="bi bi-trash"></i></button></li>` : ''}</ul></div>`;
+                const memoryActionsMenu = `<div class="dropdown memory-actions-menu"><button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Memory actions"><i class="bi bi-three-dots-vertical"></i></button><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="${filePath}" download="${escapeHtml(memory.title)}" aria-label="Download memory" title="Download"><i class="bi bi-download"></i></a></li><li><button class="dropdown-item" type="button" onclick="editMemory(${memory.id})" aria-label="Edit memory" title="Edit"><i class="bi bi-pencil"></i></button></li><li><button class="dropdown-item" type="button" onclick="moveMemory(${memory.id})" aria-label="Move memory to folder" title="Move to folder"><i class="bi bi-folder2-open"></i></button></li><li><button class="dropdown-item text-danger" type="button" onclick="deleteMemory(${memory.id})" aria-label="Delete memory" title="Delete"><i class="bi bi-trash"></i></button></li></ul></div>`;
 
                 col.innerHTML = `
                     <div class="card memory-card">
