@@ -3837,3 +3837,25 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
     #post-composer .btn-group label[for="post-mode-now"] { min-width: 4rem; }
     #post-composer .btn-group label[for="post-mode-schedule"] { min-width: 4.6rem; }
 }
+/* Post mode selector: both modes visible and readable on mobile */
+#post-composer [name="post-mode"] + label {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #fff !important;
+    background: #8e3dab !important;
+    border-color: #8e3dab !important;
+    white-space: nowrap !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+#post-composer [name="post-mode"]:checked + label {
+    color: #fff !important;
+    background: #1769e8 !important;
+    border-color: #1769e8 !important;
+}
+@media (max-width: 576px) {
+    #post-composer .d-flex.flex-wrap.gap-2.align-items-center.mb-2 { display: block !important; overflow: visible !important; }
+    #post-composer .btn-group { display: inline-flex !important; width: auto !important; min-width: 8.5rem; overflow: visible !important; }
+    #post-composer .btn-group .btn { display: inline-flex !important; visibility: visible !important; opacity: 1 !important; }
+}
