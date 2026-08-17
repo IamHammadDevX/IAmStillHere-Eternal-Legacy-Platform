@@ -3876,3 +3876,10 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .timeline-progress-modal .form-control { border-color:#dfd1e8; border-radius:10px; }
 .timeline-progress-modal .form-control:focus { border-color:#8e3dab; box-shadow:0 0 0 .2rem rgba(142,61,171,.14); }
 @media (max-width:576px) { .timeline-progress-modal .modal-dialog { margin:.75rem; } .timeline-progress-modal .modal-footer { flex-wrap:nowrap; } .timeline-progress-modal .modal-footer .btn { flex:1; } }
+/* Clearly nest child progress under its parent journey */
+.timeline-children { position: relative; margin: .9rem 0 0 1.1rem; padding: .15rem 0 .15rem 1.35rem; border-left: 2px solid #d9c8e5; }
+.timeline-children .timeline-child-item { position: relative; margin: 0 0 .8rem; padding: .75rem .9rem; border: 1px solid #eadcf0; border-radius: 14px; background: linear-gradient(135deg,#fff,#fcf7ff); }
+.timeline-children .timeline-child-item::before { content: ''; position: absolute; left: -1.45rem; top: 1.35rem; width: 1.35rem; border-top: 2px solid #d9c8e5; }
+.timeline-children .timeline-child-item .timeline-marker { position: absolute; left: -1.8rem; top: 1.05rem; width: .8rem; height: .8rem; margin: 0; border: 3px solid #fff; background: #e57ca8; box-shadow: 0 0 0 2px #eadcf0; }
+.timeline-children .timeline-child-item .timeline-content { padding: 0; }
+@media (max-width:576px) { .timeline-children { margin-left: .35rem; padding-left: 1rem; } .timeline-children .timeline-child-item { padding: .7rem; } .timeline-children .timeline-child-item::before { left: -1.05rem; width: .95rem; } .timeline-children .timeline-child-item .timeline-marker { left: -1.38rem; } }
