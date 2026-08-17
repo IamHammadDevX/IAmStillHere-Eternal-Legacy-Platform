@@ -3744,3 +3744,20 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .vault-code-modal #vault-download-code { font-size: 1.35rem; font-weight: 700; letter-spacing: .35rem; }
 #vault-upload-form { align-items: center; }
 #vault-upload-form .form-control { min-height: 38px; }
+/* Profile responsive cover and tabs final contract */
+.profile-page #cover-section { position: relative; overflow: hidden; }
+.profile-page #cover-section #cover-image { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; z-index: 0; }
+.profile-page #cover-section > .position-absolute { background: transparent !important; z-index: 1; }
+.profile-page #cover-section #profile-name, .profile-page #cover-section #profile-dates { text-shadow: 0 2px 8px rgba(0,0,0,.7); }
+.profile-page .profile-tabs { display: flex; align-items: center; gap: .25rem; min-width: 0; overflow: visible !important; }
+.profile-page .profile-tabs > .nav-item { flex: 0 0 auto; }
+.profile-page .profile-tabs-more { display: none; margin-left: auto; }
+.profile-page .profile-tabs-more > button.nav-link { width: 44px; min-width: 44px; padding: .65rem .5rem !important; }
+.profile-page .profile-tabs-more-menu { z-index: 4000; }
+@media (max-width: 767.98px) {
+  .profile-page #cover-section #cover-image { height: 100% !important; }
+  .profile-page #cover-section > .position-absolute { min-height: 100% !important; height: 100% !important; padding-top: 1rem !important; background: transparent !important; }
+  .profile-page .profile-tabs { flex-wrap: nowrap !important; padding: .35rem; border-radius: 16px; }
+  .profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) .nav-link { min-height: 40px; padding: .55rem .65rem !important; font-size: .72rem; }
+  .profile-page .profile-tabs-more { display: block; }
+}

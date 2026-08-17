@@ -1248,7 +1248,7 @@ function initResponsiveProfileTabs() {
         if (!available) return;
 
         moreItem.style.display = 'block';
-        const visibleCount = 6;
+        const visibleCount = window.innerWidth <= 767 ? 3 : 6;
         originalItems.slice(visibleCount).forEach(moveToMenu);
         moreItem.style.display = moreMenu.children.length ? 'block' : 'none';
     }
