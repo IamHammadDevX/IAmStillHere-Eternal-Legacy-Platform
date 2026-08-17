@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
@@ -14,23 +14,14 @@ try {
     $conn = $db->getConnection();
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $stmt = $conn->query("
-            SELECT 
-                a.id, 
-                u.username, 
-                a.action, 
-                a.details, 
-                a.ip_address, 
-                a.created_at
-            FROM activity_log a
-            LEFT JOIN users u ON a.user_id = u.id
-            ORDER BY a.created_at DESC
-            LIMIT 100
-        ");
-        
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = 10; $offset = ($page - 1) * $limit;
+        $total = (int)$conn->query('SELECT COUNT(*) FROM activity_log')->fetchColumn();
+        $stmt = $conn->prepare('SELECT a.id,u.username,a.action,a.details,a.ip_address,a.created_at FROM activity_log a LEFT JOIN users u ON a.user_id=u.id ORDER BY a.created_at DESC LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':limit',$limit,PDO::PARAM_INT); $stmt->bindValue(':offset',$offset,PDO::PARAM_INT); $stmt->execute();
         $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'logs' => $logs]);
-    } 
+        echo json_encode(['success'=>true,'logs'=>$logs,'pagination'=>['page'=>$page,'limit'=>$limit,'total'=>$total,'pages'=>(int)ceil($total/$limit)]]);
+    }
 
     elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Log a new activity (useful for recording admin/user actions)

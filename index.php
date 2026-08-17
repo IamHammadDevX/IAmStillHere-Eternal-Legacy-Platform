@@ -57,7 +57,7 @@
         <div class="container position-relative py-5">
             <div class="row align-items-center g-5 py-lg-5">
                 <div class="col-lg-7 text-center text-lg-start">
-                    <span class="home-kicker"><i class="bi bi-heart-pulse-fill"></i> Digital legacy, protected with care</span>
+                    <span class="home-kicker">Digital legacy, protected with care</span>
                     <h1 class="display-3 fw-bold mt-3 mb-3">Keep every story close, even when life moves forward.</h1>
                     <p class="lead mb-4">IamAlwaysHere brings memories, family connections, private documents, AI legacy tools, and future messages into one calm memorial platform.</p>
                     <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">

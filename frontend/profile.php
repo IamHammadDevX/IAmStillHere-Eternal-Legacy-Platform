@@ -280,16 +280,16 @@ if (!is_logged_in()) {
                   <form id="personalized-message-form" class="row g-2 mb-3">
                     <input type="hidden" id="pm-id">
                     <div class="col-md-4"><label class="form-label small">Recipient</label><select id="pm-recipient-user" class="form-select"><option value="">External email / wall post</option></select></div>
-                    <div class="col-md-4"><label class="form-label small">Recipient email</label><input id="pm-recipient-email" type="email" class="form-control" placeholder="email@example.com"></div>
+                    <div class="col-md-4"><label class="form-label small">Recipient email <span class="text-danger" aria-hidden="true">*</span></label><input id="pm-recipient-email" type="email" class="form-control" placeholder="email@example.com"></div>
                     <div class="col-md-4"><label class="form-label small">Recipient name</label><input id="pm-recipient-name" class="form-control" placeholder="Name"></div>
                     <div class="col-md-3"><label class="form-label small">Relationship</label><input id="pm-relationship" class="form-control" placeholder="Daughter, friend..."></div>
-                    <div class="col-md-3"><label class="form-label small">Event</label><select id="pm-event-type" class="form-select"><option value="birthday">Birthday</option><option value="graduation">Graduation</option><option value="wedding">Wedding</option><option value="anniversary">Anniversary</option><option value="new_job">New Job</option><option value="new_baby">New Baby</option><option value="custom">Custom</option></select></div>
+                    <div class="col-md-3"><label class="form-label small">Event <span class="text-danger" aria-hidden="true">*</span></label><select id="pm-event-type" class="form-select"><option value="birthday">Birthday</option><option value="graduation">Graduation</option><option value="wedding">Wedding</option><option value="anniversary">Anniversary</option><option value="new_job">New Job</option><option value="new_baby">New Baby</option><option value="custom">Custom</option></select></div>
                     <div class="col-md-3"><label class="form-label small">Trigger date</label><input id="pm-trigger-at" type="datetime-local" class="form-control"></div>
                     <div class="col-md-3"><label class="form-label small">Delivery</label><select id="pm-delivery" class="form-select"><option value="notification">Platform notification</option><option value="email">Email</option><option value="wall_post">Wall post</option></select></div>
                     <div class="col-md-4"><label class="form-label small">Tone/style</label><input id="pm-tone" class="form-control" value="Warm and sincere"></div>
                     <div class="col-md-8"><label class="form-label small">Optional instructions</label><input id="pm-instructions" class="form-control" placeholder="Mention pride, keep it short..."></div>
                     <div class="col-12"><label class="form-label small">Draft message</label><textarea id="pm-message" class="form-control" rows="6" placeholder="Generate a draft first, then edit before scheduling."></textarea></div>
-                    <div class="col-12 d-flex flex-wrap gap-2"><button id="pm-generate" class="btn btn-primary" type="button">Generate Draft</button><button id="pm-save" class="btn btn-outline-primary" type="button">Save Draft</button><button id="pm-schedule" class="btn btn-outline-success" type="button">Schedule</button><button id="pm-cancel" class="btn btn-outline-danger" type="button">Cancel Message</button></div>
+                    <div class="col-12 d-flex flex-wrap gap-2 align-items-center"><button id="pm-generate" class="btn btn-primary" type="button">Generate</button><button id="pm-save" class="btn btn-outline-primary" type="button">Save</button><button id="pm-schedule" class="btn btn-outline-success" type="button">Schedule</button><div class="dropdown"><button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More message actions"><i class="bi bi-three-dots"></i></button><ul class="dropdown-menu"><li><button id="pm-cancel" class="dropdown-item text-danger" type="button">Cancel</button></li></ul></div></div>
                   </form>
                 </div>
                 <div id="pm-status" class="small text-muted mb-2"></div>
@@ -509,7 +509,7 @@ if (!is_logged_in()) {
   <script src="js/posts.js?v=2026081801"></script>
   <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081601"></script>
-  <script src="js/personalized_messages.js?v=2026081101"></script>
+  <script src="js/personalized_messages.js?v=2026081801"></script>
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js?v=2026081601"></script>
