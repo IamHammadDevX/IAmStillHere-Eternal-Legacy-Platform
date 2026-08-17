@@ -3868,3 +3868,11 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .timeline-child-item .timeline-marker { width:10px; height:10px; margin-left:-1.72rem; background:#e57ca8; }
 .timeline-add-child { margin-top:.35rem; }
 @media (max-width:576px) { .timeline-story-heading h5 { font-size:1rem; line-height:1.35; } .timeline-children { padding-left:.7rem; } .timeline-story-heading .btn { flex:0 0 auto; } .timeline-expand-btn { max-width:100%; } }
+.timeline-progress-modal { border:1px solid #eadcf0; border-radius:20px; overflow:hidden; box-shadow:0 1.5rem 4rem rgba(48,20,57,.22); }
+.timeline-progress-modal .modal-header { background:linear-gradient(135deg,#fff7fc,#f4efff); border-bottom:1px solid #eadcf0; }
+.timeline-progress-modal .modal-title { color:#321c46; font-weight:700; }
+.timeline-modal-eyebrow { display:block; margin-bottom:.25rem; color:#8e3dab; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.timeline-progress-modal .form-label { color:#4d3b5b; font-weight:600; }
+.timeline-progress-modal .form-control { border-color:#dfd1e8; border-radius:10px; }
+.timeline-progress-modal .form-control:focus { border-color:#8e3dab; box-shadow:0 0 0 .2rem rgba(142,61,171,.14); }
+@media (max-width:576px) { .timeline-progress-modal .modal-dialog { margin:.75rem; } .timeline-progress-modal .modal-footer { flex-wrap:nowrap; } .timeline-progress-modal .modal-footer .btn { flex:1; } }
