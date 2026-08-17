@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../helpers/CsrfHelper.php';
 
 header('Content-Type: application/json');
 
@@ -16,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
+if (!CsrfHelper::validate(CsrfHelper::getTokenFromRequest())) { http_response_code(403); echo json_encode(['success'=>false,'message'=>'Invalid CSRF token']); exit; }
 
 $title = sanitize_input($data['title'] ?? '');
 $description = sanitize_input($data['description'] ?? '');
@@ -32,7 +34,7 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
     
-    $stmt = $conn->prepare("INSERT INTO milestones (user_id, title, description, milestone_date, category, privacy_level) VALUES (:user_id, :title, :description, :milestone_date, :category, :privacy_level)");
+    $stmt = $conn->prepare("INSERT INTO milestones (user_id, parent_id, title, description, milestone_date, category, privacy_level) VALUES (:user_id, :parent_id, :title, :description, :milestone_date, :category, :privacy_level)");
     
     $stmt->execute([
         'user_id' => $_SESSION['user_id'],

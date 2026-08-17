@@ -3859,3 +3859,12 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
     #post-composer .btn-group { display: inline-flex !important; width: auto !important; min-width: 8.5rem; overflow: visible !important; }
     #post-composer .btn-group .btn { display: inline-flex !important; visibility: visible !important; opacity: 1 !important; }
 }
+.timeline-story-card { position: relative; }
+.timeline-story-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; }
+.timeline-expand-btn { display:flex; align-items:center; gap:.4rem; margin-top:.8rem; padding:.45rem .7rem; border:1px solid var(--color-border); border-radius:999px; background:var(--color-surface-soft); color:var(--color-plum); font-weight:600; font-size:.82rem; cursor:pointer; }
+.timeline-expand-btn:hover { color:#fff; background:var(--color-primary); }
+.timeline-children { margin-top:1rem; padding-left:1.25rem; border-left:2px dashed #d9c8e5; }
+.timeline-child-item { margin-bottom:.8rem; }
+.timeline-child-item .timeline-marker { width:10px; height:10px; margin-left:-1.72rem; background:#e57ca8; }
+.timeline-add-child { margin-top:.35rem; }
+@media (max-width:576px) { .timeline-story-heading h5 { font-size:1rem; line-height:1.35; } .timeline-children { padding-left:.7rem; } .timeline-story-heading .btn { flex:0 0 auto; } .timeline-expand-btn { max-width:100%; } }

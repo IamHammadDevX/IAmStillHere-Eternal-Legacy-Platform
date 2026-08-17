@@ -256,7 +256,7 @@ function renderAutobiographyTimeline() {
     }).join('');
     if (pager) {
         pager.innerHTML = totalPages > 1 ? `<button type="button" class="btn btn-outline-secondary btn-sm" data-autobio-page="${aiAutobioTimelinePage - 1}" ${aiAutobioTimelinePage === 1 ? 'disabled' : ''}>? Previous</button>
-            <span class="small text-muted">Showing ${start + 1}?${Math.min(start + AI_AUTOBIO_TIMELINE_PAGE_SIZE, items.length)} of ${items.length}</span>
+            <span class="small text-muted">Showing ${start + 1} : ${Math.min(start + AI_AUTOBIO_TIMELINE_PAGE_SIZE, items.length)} of ${items.length}</span>
             <button type="button" class="btn btn-outline-secondary btn-sm" data-autobio-page="${aiAutobioTimelinePage + 1}" ${aiAutobioTimelinePage === totalPages ? 'disabled' : ''}>Next ?</button>` : `<span class="small text-muted">${items.length} timeline item${items.length === 1 ? '' : 's'}</span>`;
         pager.querySelectorAll('[data-autobio-page]').forEach(button => button.addEventListener('click', () => {
             aiAutobioTimelinePage = Number(button.dataset.autobioPage) || 1;

@@ -375,66 +375,19 @@ function openAboutItem(type, id) {
 
 async function loadTimeline() {
     try {
-        const response = await fetch(`/backend/milestones/list.php?user_id=${profileUserId}`);
-        const data = await response.json();
-
-        const container = document.getElementById('timeline-container');
-        container.innerHTML = '';
-
-        if (data.success && data.milestones.length > 0) {
-            data.milestones.forEach((milestone, index) => {
-                const item = document.createElement('div');
-                item.id = `milestone-${milestone.id}`;
-                item.className = 'timeline-item';
-                item.dataset.timelineYear = timelineYear(milestone.milestone_date) || 0;
-
-                const date = new Date(milestone.milestone_date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-
-                const canDelete = loggedInUser && (
-                    loggedInUser.id == profileUserId ||
-                    loggedInUser.role === 'admin'
-                );
-
-                item.innerHTML = `
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <h5 class="mb-1">
-                                    ${milestone.title}
-                                    ${milestone.category ? `<span class="badge bg-info ms-2">${milestone.category}</span>` : ''}
-                                </h5>
-                                <small class="text-muted"><i class="bi bi-calendar"></i> ${date}</small>
-                                <p class="text-muted mb-0">${milestone.description || ''}</p>
-                                <small class="text-muted">
-                                    <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
-                                </small>
-                            </div>
-                            ${canDelete ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${milestone.id})">
-                                <i class="bi bi-trash"></i>
-                            </button>` : ''}
-                            
-                        </div>
-                    </div>
-                `;
-
-
-                container.appendChild(item);
-            });
-        } else {
-            container.innerHTML = '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
-        }
-        timelinePersonalItems = data.milestones || [];
-        loadWorldEventsForTimeline(timelinePersonalItems);
-    } catch (error) {
-        console.error('Error loading timeline:', error);
-    }
+        const response = await fetch(`/backend/milestones/list.php?user_id=${profileUserId}`), data = await response.json(), container = document.getElementById('timeline-container');
+        container.innerHTML = ''; const all = data.milestones || [], children = new Map();
+        all.filter(item => item.parent_id).forEach(item => { if (!children.has(String(item.parent_id))) children.set(String(item.parent_id), []); children.get(String(item.parent_id)).push(item); });
+        const parents = all.filter(item => !item.parent_id), canManage = loggedInUser && (loggedInUser.id == profileUserId || loggedInUser.role === 'admin');
+        const dateText = value => new Date(value).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+        const card = (item, list = [], child = false) => `<div class="timeline-item ${child?'timeline-child-item':''}" id="milestone-${item.id}"><div class="timeline-marker"></div><div class="timeline-content timeline-story-card"><div class="timeline-story-heading"><div><h5>${escapeHtml(item.title||'Untitled')} ${item.category?`<span class="badge bg-info ms-2">${escapeHtml(item.category)}</span>`:''}</h5><small class="text-muted"><i class="bi bi-calendar"></i> ${escapeHtml(dateText(item.milestone_date))}</small></div>${canManage?`<button class="btn btn-sm btn-outline-danger" onclick="deleteMilestone(${item.id})" aria-label="Delete timeline item"><i class="bi bi-trash"></i></button>`:''}</div><p class="text-muted mb-2">${escapeHtml(item.description||'')}</p><span class="badge bg-secondary privacy-badge">${escapeHtml(item.privacy_level||'public')}</span>${!child?`<button type="button" class="timeline-expand-btn" data-timeline-toggle="${item.id}" aria-expanded="false"><i class="bi bi-chevron-down"></i><span>${list.length?`${list.length} progress update${list.length===1?'':'s'}`:'Expand journey'}</span></button><div class="timeline-children d-none" data-timeline-children="${item.id}">${list.map(x=>card(x,[],true)).join('')}${canManage?`<button type="button" class="btn btn-sm btn-outline-primary timeline-add-child" data-parent-id="${item.id}"><i class="bi bi-plus-circle me-1"></i>Add progress update</button>`:''}</div>`:''}</div></div>`;
+        container.innerHTML = parents.length ? parents.map(x=>card(x,children.get(String(x.id))||[])).join('') : '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
+        container.querySelectorAll('[data-timeline-toggle]').forEach(button=>button.addEventListener('click',()=>{const box=container.querySelector(`[data-timeline-children="${button.dataset.timelineToggle}"]`),open=!box.classList.toggle('d-none');button.setAttribute('aria-expanded',String(open));button.querySelector('i').className=open?'bi bi-chevron-up':'bi bi-chevron-down';}));
+        container.querySelectorAll('.timeline-add-child').forEach(button=>button.addEventListener('click',()=>addTimelineProgress(button.dataset.parentId)));
+        timelinePersonalItems=all; loadWorldEventsForTimeline(all);
+    } catch (error) { console.error('Error loading timeline:', error); }
 }
-
+async function addTimelineProgress(parentId) { const title=prompt('Progress update title:'); if(!title?.trim())return; const description=prompt('What did you accomplish?')||''; const date=prompt('Date (YYYY-MM-DD):',new Date().toISOString().slice(0,10)); if(!date)return; const response=await fetch('/backend/milestones/create.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({title:title.trim(),description:description.trim(),milestone_date:date,category:'Progress',privacy_level:'public',parent_id:Number(parentId),csrf_token:csrfToken})}); const result=await response.json(); if(!result.success){showAlert(result.message||'Unable to add progress update.','danger');return;} loadTimeline(); }
 async function deleteMilestone(milestoneId) {
     if (!confirm('Are you sure you want to delete this milestone?')) {
         return;
