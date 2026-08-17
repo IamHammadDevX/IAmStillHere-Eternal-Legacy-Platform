@@ -3888,3 +3888,13 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .timeline-children .timeline-child-item::before,
 .timeline-children .timeline-child-item::after { display: none; }
 .timeline-children .timeline-child-item .timeline-marker { display: block; z-index: 2; border-radius: 50%; }
+/* Composer layering and contrast fixes */
+.post-editor { position: relative; isolation: isolate; }
+.post-editor-toolbar { position: relative; z-index: 3; min-height: 3rem; }
+.post-editor-surface { position: relative; z-index: 1; display: block; margin-top: 0; padding-top: .85rem !important; }
+.post-emoji-picker { z-index: 20; }
+#post-composer [name="post-mode"] + label,
+#post-composer [name="post-mode"]:checked + label,
+#post-composer [name="post-mode"] + label:hover { color: #fff !important; text-shadow: 0 1px 1px rgba(0,0,0,.18); }
+#profile-dates { display: inline-block; margin-top: .25rem; padding: .2rem .55rem; border-radius: 999px; color: #fff !important; background: rgba(25, 18, 38, .72); text-shadow: 0 1px 2px rgba(0,0,0,.7); font-weight: 600; }
+@media (max-width:576px) { .post-editor-toolbar { border-radius: 12px 12px 0 0; } .post-editor-surface { min-height: 115px; padding-top: .8rem !important; } #profile-dates { font-size: .72rem; background: rgba(25,18,38,.8); } }
