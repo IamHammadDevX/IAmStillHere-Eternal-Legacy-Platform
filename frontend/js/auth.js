@@ -9,7 +9,7 @@ async function checkSession() {
             document.getElementById('nav-dashboard').style.display = 'block';
             document.getElementById('nav-profile').style.display = 'block';
             document.getElementById('nav-logout').style.display = 'block';
-            document.getElementById('username-display').textContent = data.user.full_name;
+            document.getElementById('username-display').textContent = 'Public Profile';
             setupNotificationBell();
             
             if (data.user.role === 'admin') {

@@ -18,7 +18,7 @@ async function init() {
         if (sessionData.logged_in) {
             currentUser = sessionData.user;
             window.dispatchEvent(new CustomEvent('profile-session-ready'));
-            document.getElementById('username-display').textContent = currentUser.full_name;
+            document.getElementById('username-display').textContent = 'Public Profile';
             document.getElementById('nav-logout').style.display = 'inline-block';
             await loadCsrfToken();
         }

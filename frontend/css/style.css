@@ -3640,7 +3640,12 @@ body { background:var(--hydrangea-bg); color:var(--hydrangea-plum); }
 .dashboard-shell, .profile-page { background:var(--hydrangea-bg); }
 
 /* Final global navbar contract */
-.navbar { position: sticky !important; top: 0 !important; z-index: 3000 !important; }
+.navbar { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: 3000 !important; }
+body { padding-top: 56px; }
+@media (max-width: 991.98px) {
+  body { padding-top: 56px; }
+  .navbar .navbar-collapse.show { max-height: calc(100vh - 56px); overflow-y: auto; }
+}
 .navbar .navbar-nav > #nav-home { order: 1 !important; }
 .navbar .navbar-nav > #nav-memories { order: 2 !important; }
 .navbar .navbar-nav > #nav-dashboard { order: 3 !important; }
