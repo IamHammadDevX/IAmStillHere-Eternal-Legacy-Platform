@@ -504,62 +504,17 @@ async function deleteMemory(memoryId) {
 async function loadTimeline(page = timelinePage) {
     timelinePage = Math.max(1, Number(page) || 1);
     try {
-        const response = await fetch(`/backend/milestones/list.php?user_id=${currentUserId}`);
-        const data = await response.json();
-
-        const container = document.getElementById('timeline-container');
-        container.innerHTML = '';
-
-        milestoneCache = data.milestones || [];
-        if (data.success && data.milestones.length > 0) {
-            const milestoneStart = (timelinePage - 1) * DASHBOARD_PAGE_SIZE;
-            data.milestones.slice(milestoneStart, milestoneStart + DASHBOARD_PAGE_SIZE).forEach((milestone, index) => {
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-
-                const date = new Date(milestone.milestone_date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-
-                const canDelete = loggedInUser && (
-                    loggedInUser.id == currentUserId ||
-                    loggedInUser.role === 'admin'
-                );
-
-                item.innerHTML = `
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <h5 class="mb-1">
-                                    ${milestone.title}
-                                    ${milestone.category ? `<span class="badge bg-info ms-2">${milestone.category}</span>` : ''}
-                                </h5>
-                                <small class="text-muted"><i class="bi bi-calendar"></i> ${date}</small>
-                                <p class="text-muted mb-0">${milestone.description || ''}</p>
-                                <small class="text-muted">
-                                    <span class="badge bg-secondary privacy-badge">${milestone.privacy_level}</span>
-                                </small>
-                            </div>
-                            
-                            
-                        </div>
-                    </div>
-                `;
-
-                container.appendChild(item);
-            });
-            appendDashboardPager(container, timelinePage, data.milestones.length, nextPage => loadTimeline(nextPage));
-        } else {
-            container.innerHTML = '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
-        }
-    } catch (error) {
-        console.error('Error loading timeline:', error);
-    }
+        const response = await fetch(`/backend/milestones/list.php?user_id=${currentUserId}`), data = await response.json(), container = document.getElementById('timeline-container');
+        container.innerHTML = ''; milestoneCache = data.milestones || [];
+        const all = milestoneCache, children = new Map(); all.filter(x=>x.parent_id).forEach(x=>{if(!children.has(String(x.parent_id)))children.set(String(x.parent_id),[]);children.get(String(x.parent_id)).push(x);});
+        const parents = all.filter(x=>!x.parent_id), canManage = loggedInUser && (loggedInUser.id == currentUserId || loggedInUser.role === 'admin');
+        const card = (m,list=[],child=false) => `<div class="timeline-item ${child?'timeline-child-item':''}"><div class="timeline-marker"></div><div class="timeline-content timeline-story-card"><div class="timeline-story-heading"><div><h5>${escapeHtml(m.title||'Untitled')} ${m.category?`<span class="badge bg-info ms-2">${escapeHtml(m.category)}</span>`:''}</h5><small class="text-muted"><i class="bi bi-calendar"></i> ${escapeHtml(new Date(m.milestone_date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}))}</small></div></div><p class="text-muted mb-2">${escapeHtml(m.description||'')}</p><span class="badge bg-secondary privacy-badge">${escapeHtml(m.privacy_level||'public')}</span>${!child?`<button type="button" class="timeline-expand-btn" data-dashboard-toggle="${m.id}" aria-expanded="false"><i class="bi bi-chevron-down"></i><span>${list.length?`${list.length} progress update${list.length===1?'':'s'}`:'Expand journey'}</span></button><div class="timeline-children d-none" data-dashboard-children="${m.id}">${list.map(x=>card(x,[],true)).join('')}${canManage?`<button type="button" class="btn btn-sm btn-outline-primary timeline-add-child" data-dashboard-parent="${m.id}"><i class="bi bi-plus-circle me-1"></i>Add progress update</button>`:''}</div>`:''}</div></div>`;
+        container.innerHTML = parents.length ? parents.map(x=>card(x,children.get(String(x.id))||[])).join('') : '<p class="text-muted text-center">No milestones yet. Add your first milestone!</p>';
+        container.querySelectorAll('[data-dashboard-toggle]').forEach(button=>button.addEventListener('click',()=>{const box=container.querySelector(`[data-dashboard-children="${button.dataset.dashboardToggle}"]`),open=!box.classList.toggle('d-none');button.setAttribute('aria-expanded',String(open));button.querySelector('i').className=open?'bi bi-chevron-up':'bi bi-chevron-down';}));
+        container.querySelectorAll('[data-dashboard-parent]').forEach(button=>button.addEventListener('click',()=>addDashboardTimelineProgress(button.dataset.dashboardParent)));
+    } catch (error) { console.error('Error loading timeline:', error); }
 }
-
+async function addDashboardTimelineProgress(parentId) { const title=prompt('Progress update title:'); if(!title?.trim())return; const description=prompt('What did you accomplish?')||''; const date=prompt('Date (YYYY-MM-DD):',new Date().toISOString().slice(0,10)); if(!date)return; const response=await fetch('/backend/milestones/create.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({title:title.trim(),description:description.trim(),milestone_date:date,category:'Progress',privacy_level:'public',parent_id:Number(parentId),csrf_token:csrfToken})}); const result=await response.json(); if(!result.success){showAlert(result.message||'Unable to add progress update.','danger');return;} loadTimeline(); }
 async function deleteMilestone(milestoneId) {
     if (!confirm('Are you sure you want to delete this milestone?')) {
         return;
