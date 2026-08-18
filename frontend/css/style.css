@@ -4004,3 +4004,26 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #autobio-sections > .autobio-section-card .card-body > .d-flex .btn { flex:0 0 auto; }
 #autobio-sections > .autobio-section-card textarea { display:block; width:100%; min-height:220px; max-height:none; overflow-y:auto; resize:vertical; box-shadow:none !important; }
 @media (max-width:576px) { #autobiography-tab > .card > .card-body > .d-flex:first-child { align-items:flex-start !important; } #autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex { width:100%; overflow-x:auto; padding-bottom:.15rem; } #autobio-sections > .autobio-section-card .card-body > .d-flex { gap:.45rem; } #autobio-sections > .autobio-section-card .card-body > .d-flex h6 { overflow:hidden; text-overflow:ellipsis; } }
+/* Autobiography tooltip and rounded story cards */
+#autobiography-tab > .card > .card-body > .d-flex:first-child { overflow:visible; z-index:20; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info { z-index:30; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info::after { left:0; top:calc(100% + .65rem); bottom:auto; width:min(360px,70vw); transform:translate(0,-.35rem); }
+#autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info::before { left:0; top:calc(100% + .28rem); bottom:auto; border-top-color:transparent; border-bottom-color:#241238; transform:translateX(.2rem); }
+#autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info:hover::after,
+#autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info:focus-visible::after { transform:translate(0,0); }
+#autobio-sections > .autobio-section-card { border-radius:20px !important; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex { border-radius:20px 20px 0 0; }
+#autobio-sections > .autobio-section-card textarea,
+#autobio-sections > .autobio-section-card p { border-radius:0 0 20px 20px; }
+@media (max-width:576px) { #autobiography-tab > .card > .card-body > .d-flex:first-child .feature-info::after { position:absolute; left:0; right:auto; width:min(290px,calc(100vw - 2rem)); } }
+/* Final autobiography card system: remove legacy corner decoration */
+#autobio-sections > .autobio-section-card::before,
+#autobio-sections > .autobio-section-card::after,
+.profile-page .autobio-section-card::before,
+.profile-page .autobio-section-card::after { display:none !important; content:none !important; }
+#autobio-sections > .autobio-section-card { border:1px solid #eadcf0 !important; border-radius:20px !important; overflow:hidden !important; background:#fff !important; box-shadow:0 8px 24px rgba(60,20,90,.06) !important; transform:none !important; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex { border-radius:0 !important; }
+#autobio-sections > .autobio-section-card h6 { border-radius:0 !important; letter-spacing:.01em; }
+#autobio-sections > .autobio-section-card textarea,
+#autobio-sections > .autobio-section-card p { border-radius:0 !important; background:#fff !important; }
+#autobio-sections > .autobio-section-card .btn { box-shadow:0 3px 10px rgba(60,20,90,.08); }
