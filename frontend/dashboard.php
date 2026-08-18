@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081802">
+    <link rel="stylesheet" href="css/style.css?v=2026081804">
 </head>
 
 <body class="dashboard-page app-page">
@@ -33,7 +33,7 @@
                         <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
-                        <a class="nav-link" href="dashboard.php">My dashboard</a>
+                        <a class="nav-link" href="dashboard.php">My Dashboard</a>
                     </li>
                     <li class="nav-item" id="nav-admin" style="display:none;">
                         <a class="nav-link" href="admin.php">Admin</a>
@@ -82,7 +82,7 @@
                         <i class="bi bi-person-plus display-4 text-purple mb-3"></i>
                         <h5 class="mt-2">Requests</h5>
                         <a href="family_requests.php" class="btn btn-sm btn-secondary mt-2">
-                            View Requests
+                            Manage
                             <span class="badge bg-danger ms-1" id="request-count-badge" style="display:none;">0</span>
                         </a>
                     </div>
@@ -112,7 +112,7 @@
             </div>
             <div class="col-md-3 mb-3">
                 <a id="dashboard-tributes-link" class="dashboard-feature-link" href="profile.php#tributes-tab" aria-label="View all tributes">
-                    <div class="card text-center h-100"><div class="card-body"><i class="bi bi-people display-4 text-info"></i><h5 class="mt-2">Tributes</h5><span class="btn btn-sm btn-outline-info mt-2">View all tributes</span></div></div>
+                    <div class="card text-center h-100"><div class="card-body"><i class="bi bi-people display-4 text-info"></i><h5 class="mt-2">Tributes</h5><span class="btn btn-sm btn-outline-info mt-2">View</span></div></div>
                 </a>
             </div>
         </div>

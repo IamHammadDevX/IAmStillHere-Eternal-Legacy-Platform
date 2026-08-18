@@ -43,7 +43,7 @@ if (!is_logged_in()) {
             <a class="nav-link" href="/index.php">Home</a>
           </li>
           <li class="nav-item" id="nav-dashboard" style="display:none;">
-            <a class="nav-link" href="dashboard.php">My dashboard</a>
+            <a class="nav-link" href="dashboard.php">My Dashboard</a>
           </li>
           <li class="nav-item" id="nav-admin" style="display:none;">
             <a class="nav-link" href="admin.php">Admin</a>
@@ -158,7 +158,7 @@ if (!is_logged_in()) {
                   <div class="d-flex align-items-center gap-2">
                     <img id="ai-avatar-photo" src="/data/uploads/photos/default-profile.png" alt="Your profile photo" class="ai-avatar-header-photo">
                     <div>
-                      <h5 class="mb-0">AI Avatar</h5>
+                      <h5 class="mb-0 feature-heading">AI Avatar <button type="button" class="feature-info" aria-label="About AI Avatar" data-tooltip="Answers questions using only approved memories, milestones, and details.">i</button></h5>
                       <div class="small text-muted">Grounded in approved memories and profile knowledge.</div>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ if (!is_logged_in()) {
               <div class="card-body">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
                   <div>
-                    <h5 class="mb-1">AI Autobiography</h5>
+                    <h5 class="mb-1 feature-heading">AI Autobiography <button type="button" class="feature-info" aria-label="About AI Autobiography" data-tooltip="Builds a structured life story from approved memories, milestones, posts, and journeys.">i</button></h5>
                     <div class="small text-muted">Build a structured life story from approved AI knowledge sources.</div>
                   </div>
                   <div class="d-flex flex-wrap gap-2">
@@ -216,7 +216,7 @@ if (!is_logged_in()) {
                   <div class="text-muted text-center py-4">Generate your autobiography after building AI knowledge.</div>
                 </div>
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-1 align-items-md-center mb-2">
-                  <h6 class="mb-0">Life Timeline / Pictograph</h6>
+                  <h6 class="mb-0 feature-heading">Life Timeline / Pictograph <button type="button" class="feature-info" aria-label="About Life Timeline" data-tooltip="Organizes important life milestones by date and expandable progress updates.">i</button></h6>
                   <span class="small text-muted">Existing dated memories, milestones, posts, and journeys</span>
                 </div>
                 <div id="autobio-timeline" class="autobio-timeline"></div>
@@ -233,7 +233,7 @@ if (!is_logged_in()) {
             </section>
           </div>
           <div class="tab-pane fade" id="journeys-tab">
-            <div class="card mb-4 journeys-overview-card"><div class="card-body"><div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2"><div><h5 class="mb-1">Shared Journeys</h5><p class="small text-muted mb-0">Build a life story together with approved memories, milestones, and event notes.</p></div><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3 mt-1"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
+            <div class="card mb-4 journeys-overview-card"><div class="card-body"><div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2"><div><h5 class="mb-1 feature-heading">Shared Journeys <button type="button" class="feature-info" aria-label="About Shared Journeys" data-tooltip="Build a life story together from approved memories, milestones, and event notes.">i</button></h5><p class="small text-muted mb-0">Build a life story together with approved memories, milestones, and event notes.</p></div><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3 mt-1"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
           </div>
           <div class="tab-pane fade" id="photos-tab">
             <div id="photos-container"></div>
@@ -242,7 +242,7 @@ if (!is_logged_in()) {
             <div id="videos-container"></div>
           </div>
           <div class="tab-pane fade" id="timeline-tab">
-            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
+            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1 feature-heading">Timeline <button type="button" class="feature-info" aria-label="About Timeline" data-tooltip="View milestones chronologically with expandable child progress updates.">i</button></h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
@@ -273,7 +273,7 @@ if (!is_logged_in()) {
             <div class="card mb-4" id="personalized-messages-card">
               <div class="card-body">
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-                  <div><h5 class="mb-1">Personalized AI Messages</h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
+                  <div><h5 class="mb-1 feature-heading">Personalized AI Messages <button type="button" class="feature-info" aria-label="About Personalized AI Messages" data-tooltip="Create approved messages for future birthdays, weddings, graduations, and milestones.">i</button></h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
                   <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-message-form-wrap">New message</button>
                 </div>
                 <div class="collapse show" id="personalized-message-form-wrap">

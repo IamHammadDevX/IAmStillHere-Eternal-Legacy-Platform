@@ -34,7 +34,7 @@
                         <a class="nav-link" href="/index.php">Home</a>
                     </li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
-                        <a class="nav-link" href="dashboard.php">My dashboard</a>
+                        <a class="nav-link" href="dashboard.php">My Dashboard</a>
                     </li>
                     <li class="nav-item" id="nav-admin" style="display:none;">
                         <a class="nav-link" href="admin.php">Admin</a>
