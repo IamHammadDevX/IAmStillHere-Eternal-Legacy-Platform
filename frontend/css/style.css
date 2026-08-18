@@ -4070,3 +4070,22 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .profile-page .feature-info:hover::after,
   .profile-page .feature-info:focus-visible::after { transform: translateY(0); }
 }
+/* Homepage cool-tips: tap support and stable responsive placement */
+.landing-page .home-info { flex: 0 0 auto; }
+.landing-page .home-info.is-open::after,
+.landing-page .home-info.is-open::before { opacity: 1; visibility: visible; }
+.landing-page .home-info.is-open::after { transform: translate(-50%,0); }
+.landing-page .home-info.is-open::before { transform: translateX(-50%); }
+.landing-page .home-hero .home-info-light { align-self: center; margin-top: -.7rem; }
+@media (max-width: 575.98px) {
+  .landing-page .home-info.is-open::after { position: fixed; z-index: 10000; left: 1rem; right: 1rem; top: 4.25rem; bottom: auto; width: auto; max-height: 42vh; overflow: auto; transform: translateY(-.35rem); }
+  .landing-page .home-info.is-open::before { display: none; }
+  .landing-page .home-info.is-open::after { transform: translateY(0); }
+  .landing-page .home-hero .home-info-light { margin-top: -.65rem; }
+}
+/* iOS final override: autobiography/profile tooltip cannot exceed viewport */
+@media (max-width: 576px) {
+  .profile-page .feature-info::after { position: fixed !important; z-index: 10000 !important; left: 8px !important; right: auto !important; top: 4.25rem !important; bottom: auto !important; width: calc(100vw - 16px) !important; max-width: calc(100vw - 16px) !important; max-height: 42vh !important; overflow-y: auto !important; transform: translateY(-.35rem) !important; box-sizing: border-box !important; }
+  .profile-page .feature-info:hover::after,
+  .profile-page .feature-info:focus-visible::after { transform: translateY(0) !important; }
+}
