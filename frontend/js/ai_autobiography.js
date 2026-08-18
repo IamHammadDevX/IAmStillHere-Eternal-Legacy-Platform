@@ -230,7 +230,7 @@ function renderAutobiographyTimeline() {
     if (!items.length) {
         box.innerHTML = `<div class="autobio-timeline-empty">
             <i class="bi bi-calendar2-heart" aria-hidden="true"></i>
-            <div><strong>Your life timeline will appear here.</strong><span>Add dated memories, milestones, posts, or journeys to build your pictograph.</span></div>
+            <div><strong>Your timeline will appear here.</strong><span>Add dated memories, milestones, posts, or journeys to build your pictograph.</span></div>
         </div>`;
         if (pager) pager.innerHTML = '';
         return;

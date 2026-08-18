@@ -3898,3 +3898,9 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #post-composer [name="post-mode"] + label:hover { color: #fff !important; text-shadow: 0 1px 1px rgba(0,0,0,.18); }
 #profile-dates { display: inline-block; margin-top: .25rem; padding: .2rem .55rem; border-radius: 999px; color: #fff !important; background: rgba(25, 18, 38, .72); text-shadow: 0 1px 2px rgba(0,0,0,.7); font-weight: 600; }
 @media (max-width:576px) { .post-editor-toolbar { border-radius: 12px 12px 0 0; } .post-editor-surface { min-height: 115px; padding-top: .8rem !important; } #profile-dates { font-size: .72rem; background: rgba(25,18,38,.8); } }
+/* Dashboard feature order: Memories, Milestones, Events, Tributes, Requests */
+.dashboard-feature-grid > .col-md-3:nth-child(1) { order: 1; }
+.dashboard-feature-grid > .col-md-3:nth-child(3) { order: 2; }
+.dashboard-feature-grid > .col-md-3:nth-child(4) { order: 3; }
+.dashboard-feature-grid > .col-md-3:nth-child(5) { order: 4; }
+.dashboard-feature-grid > .col-md-3:nth-child(2) { order: 5; }

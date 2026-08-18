@@ -242,7 +242,7 @@ if (!is_logged_in()) {
             <div id="videos-container"></div>
           </div>
           <div class="tab-pane fade" id="timeline-tab">
-            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Life Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
+            <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1">Timeline</h5><p class="small text-muted mb-0">See personal milestones alongside notable world events from the same years.</p></div></div><div id="timeline-container"></div><div id="world-events-status" class="small text-muted mt-2"></div></div></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
@@ -505,7 +505,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081804"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081805"></script>
   <script src="js/posts.js?v=2026081801"></script>
   <script src="js/ai_avatar.js?v=2026081601"></script>
   <script src="js/ai_autobiography.js?v=2026081601"></script>
