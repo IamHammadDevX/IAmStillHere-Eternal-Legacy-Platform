@@ -4027,3 +4027,20 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #autobio-sections > .autobio-section-card textarea,
 #autobio-sections > .autobio-section-card p { border-radius:0 !important; background:#fff !important; }
 #autobio-sections > .autobio-section-card .btn { box-shadow:0 3px 10px rgba(60,20,90,.08); }
+/* Compact AI Avatar conversation spacing */
+.profile-page #ai-avatar-messages { min-height:180px !important; max-height:420px; padding: .75rem !important; gap:.55rem; }
+.profile-page .ai-avatar-message { gap:.45rem; }
+.profile-page .ai-avatar-bubble { max-width:min(70%,520px); padding:.55rem .8rem; line-height:1.4; box-shadow:0 6px 16px rgba(15,23,42,.06); }
+.profile-page .ai-avatar-user { min-height:0 !important; height:auto !important; }
+.profile-page .ai-avatar-answer { min-height:0 !important; height:auto !important; }
+.profile-page .ai-avatar-bubble .small { line-height:1.35; }
+@media (max-width:575.98px) { .profile-page #ai-avatar-messages { min-height:150px !important; padding:.6rem !important; } .profile-page .ai-avatar-bubble { max-width:calc(100% - 36px); padding:.5rem .7rem; } }
+/* Final reset: chat rows and bubbles size to their content */
+.profile-page #ai-avatar-messages { display:flex !important; flex-direction:column !important; height:auto !important; min-height:120px !important; max-height:360px !important; align-items:stretch !important; }
+.profile-page #ai-avatar-messages > .ai-avatar-message { display:flex !important; flex:0 0 auto !important; height:auto !important; min-height:0 !important; align-items:flex-end !important; }
+.profile-page .ai-avatar-message-user { align-items:flex-start !important; }
+.profile-page .ai-avatar-bubble { display:inline-block !important; flex:0 1 auto !important; align-self:flex-start !important; height:auto !important; min-height:0 !important; max-height:none !important; vertical-align:top; }
+.profile-page .ai-avatar-message-user .ai-avatar-bubble { flex:0 0 auto !important; }
+.profile-page .ai-avatar-bubble > div { min-height:0 !important; height:auto !important; }
+.profile-page .ai-avatar-chat-avatar { flex:0 0 34px !important; height:34px !important; }
+@media (max-width:575.98px) { .profile-page #ai-avatar-messages { min-height:100px !important; max-height:300px !important; } .profile-page .ai-avatar-chat-avatar { flex-basis:30px !important; height:30px !important; } }
