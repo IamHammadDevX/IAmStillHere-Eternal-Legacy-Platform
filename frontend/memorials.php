@@ -28,7 +28,7 @@
                         </a>
                     </li>
                     <li class="nav-item" id="nav-memories">
-                        <a href="#" class="nav-link">Memories</a>
+                        <a href="#" class="nav-link">Memorials</a>
                     </li>
                     <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="/index.php">Home</a>
@@ -182,3 +182,4 @@
 </body>
 
 </html>
+

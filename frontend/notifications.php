@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../config/config.php';
 
 if (!is_logged_in()) {
@@ -24,7 +24,7 @@ if (!is_logged_in()) {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" id="nav-search"><a class="nav-link" href="memorials.php"><i class="bi bi-search"></i></a></li>
-          <li class="nav-item" id="nav-memories"><a class="nav-link" href="memorials.php">Memories</a></li>
+          <li class="nav-item" id="nav-memories"><a class="nav-link" href="memorials.php">Memorials</a></li>
           <li class="nav-item" id="nav-home"><a class="nav-link" href="/index.php">Home</a></li>
           <li class="nav-item" id="nav-dashboard" style="display:none;"><a class="nav-link" href="dashboard.php">My Dashboard</a></li>
           <li class="nav-item" id="nav-admin" style="display:none;"><a class="nav-link" href="admin.php">Admin</a></li>
@@ -49,3 +49,4 @@ if (!is_logged_in()) {
   <script src="js/auth.js"></script>
 </body>
 </html>
+

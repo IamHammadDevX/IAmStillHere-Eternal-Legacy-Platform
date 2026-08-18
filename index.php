@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="frontend/images/favicon.png">
-    <meta name="description" content="A private, beautiful home for memories, family, and digital legacy."><title>IamAlwaysHere — Keep their story close</title>
+    <meta name="description" content="A private, beautiful home for memories, family, and digital legacy."><title>IamAlwaysHere â€” Keep their story close</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="frontend/css/style.css?v=2026081701">
+    <link rel="stylesheet" href="frontend/css/style.css?v=2026081801">
 </head>
 
 <body class="landing-page">
@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="index.php">Home</a>
-                    </li>                    <li class="nav-item" id="nav-memories"><a class="nav-link" href="frontend/memorials.php">Memories</a></li>
+                    </li>                    <li class="nav-item" id="nav-memories"><a class="nav-link" href="frontend/memorials.php">Memorials</a></li>
                     <li class="nav-item" id="nav-dashboard" style="display:none;">
                         <a class="nav-link" href="frontend/dashboard.php">My Dashboard</a>
                     </li>
@@ -58,8 +58,8 @@
             <div class="row align-items-center g-5 py-lg-5">
                 <div class="col-lg-7 text-center text-lg-start">
                     <span class="home-kicker">Digital legacy, protected with care</span>
-                    <h1 class="display-3 fw-bold mt-3 mb-3">Keep every story close, even when life moves forward.</h1>
-                    <p class="lead mb-4">IamAlwaysHere brings memories, family connections, private documents, AI legacy tools, and future messages into one calm memorial platform.</p>
+                    <h1 class="display-3 fw-bold mt-3 mb-3">Keep every story close, even when life moves on.</h1>
+                    <p class="lead mb-4">IamAlwaysHere brings memories, family connections, private documents, interactive AI tools, future messages and gifting into one integrated platform.</p>
                     <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
                         <a href="frontend/register.php" class="btn btn-primary btn-lg px-4"><i class="bi bi-plus-circle me-2"></i>Create Memorial</a>
                         <a href="frontend/memorials.php" class="btn btn-light btn-lg px-4"><i class="bi bi-collection-heart me-2"></i>View Memorials</a>
@@ -176,9 +176,34 @@
         </div>
     </footer> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    (() => {
+      const tips = {
+        'Share Memories':'Upload photos, videos, and documents from a memorial’s Memories section. Add captions or descriptions, then save them for future generations.',
+        'Timeline & Milestones':'Add an event date, title, description, and related media. Use it for births, graduations, marriages, careers, family events, and retirement.',
+        'Tributes & Messages':'Friends and family can open a memorial, select Leave a Tribute, write a personal memory, story, condolence, or anniversary remembrance, and submit it.',
+        'Layered Privacy Control':'Choose Public, Family Only, or Private visibility in memorial settings. Public is open, Family Only is for relatives, and Private is for personal records.',
+        'Scheduled Messages & Posts':'Create a future message or post, enter its content, choose a delivery date, and save it for birthdays, anniversaries, holidays, or legacy moments.',
+        'Albums & Memory Folders':'Organize photos, videos, documents, and files into folders such as Childhood, Family Vacations, Weddings, Career, Military Service, and Celebrations.',
+        'Family Tree & Friends':'Add a relationship, choose its type, then link an existing member or create a new profile. Supported relationships include parent, child, sibling, spouse, and extended family.',
+        'Shared Journeys':'Collaborate on vacations, weddings, school years, reunions, and community events with multiple contributors, approval controls, shared photos, and storytelling.',
+        'Secure Vault':'Store wills, trusts, insurance, property, family, and legal documents with encryption, controlled access, audit logging, and restricted permissions.',
+        'AI Avatar & Knowledge Base':'The AI uses only approved memories and profile information for respectful, grounded conversations. Families control shared knowledge and should review it regularly.',
+        'AI Autobiography':'Add memories and milestones, launch AI Autobiography, review the generated story, edit it as needed, and publish the completed autobiography.',
+        'Notifications & Admin Tools':'Notifications cover friend requests, family invitations, tributes, approvals, scheduled reminders, and system alerts. Review them regularly and monitor privacy settings.'
+      };
+      const addTip=(el,text)=>{ if(!el||el.querySelector('.home-info')) return; const b=document.createElement('button'); b.type='button'; b.className='home-info'; b.setAttribute('aria-label','About '+text); b.dataset.tooltip=tips[text]; b.textContent='i'; el.append(' ',b); };
+      document.querySelectorAll('.home-feature-card h5').forEach(h=>{ const key=Object.keys(tips).find(k=>h.textContent.trim()===k); if(key) addTip(h,key); });
+      const heroTips={ 'Create Memorial':'Create a dedicated memorial by entering the person’s name, birth date, passing date, biography, and memorial image, then choose its privacy settings.', 'View Memorials':'Search or browse memorial pages you are allowed to access, then explore their timeline, media, and tributes.' };
+      document.querySelectorAll('.home-hero a.btn').forEach(a=>{const key=a.textContent.trim(); if(heroTips[key]){const b=document.createElement('button');b.type='button';b.className='home-info home-info-light';b.setAttribute('aria-label','About '+key);b.dataset.tooltip=heroTips[key];b.textContent='i';a.after(b);}});
+      const register=document.querySelector('#nav-register a'); if(register){const b=document.createElement('button');b.type='button';b.className='home-info home-info-light';b.setAttribute('aria-label','About Register');b.dataset.tooltip='Create an account from the homepage, enter your personal information, verify your email, and then log in with your credentials.';b.textContent='i';register.append(' ',b);}
+    })();
+    </script>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="frontend/js/auth.js"></script>
     <script src="frontend/js/search.js"></script>
 </body>
 
 </html>
+
+
+

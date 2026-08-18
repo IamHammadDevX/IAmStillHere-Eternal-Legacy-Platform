@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,7 +28,7 @@
                             <i class="bi bi-search"></i>
                         </a>
                     </li>
-                    <li class="nav-item" id="nav-memories"><a href="memorials.php" class="nav-link">Memories</a></li>
+                    <li class="nav-item" id="nav-memories"><a href="memorials.php" class="nav-link">Memorials</a></li>
                     <li class="nav-item" id="nav-home">
                         <a class="nav-link" href="/index.php">Home</a>
                     </li>
@@ -148,3 +148,4 @@
 </body>
 
 </html>
+
