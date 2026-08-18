@@ -4089,3 +4089,12 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .profile-page .feature-info:hover::after,
   .profile-page .feature-info:focus-visible::after { transform: translateY(0) !important; }
 }
+/* Homepage iOS final tooltip override */
+@media (max-width: 575.98px) {
+  .landing-page .home-feature-card .home-info.is-open::after,
+  .landing-page .home-hero .home-info.is-open::after,
+  .landing-page .home-brand .home-info.is-open::after { position: fixed !important; z-index: 10000 !important; left: 8px !important; right: auto !important; top: 4.25rem !important; bottom: auto !important; width: calc(100vw - 16px) !important; max-width: calc(100vw - 16px) !important; max-height: 42vh !important; overflow-y: auto !important; box-sizing: border-box !important; transform: translateY(0) !important; }
+  .landing-page .home-feature-card .home-info.is-open::before,
+  .landing-page .home-hero .home-info.is-open::before,
+  .landing-page .home-brand .home-info.is-open::before { display: none !important; }
+}

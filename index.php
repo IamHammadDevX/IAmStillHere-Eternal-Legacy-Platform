@@ -8,7 +8,7 @@
     <meta name="description" content="A private, beautiful home for memories, family, and digital legacy."><title>IamAlwaysHere â€” Keep their story close</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="frontend/css/style.css?v=2026081803">
+    <link rel="stylesheet" href="frontend/css/style.css?v=2026081804">
 </head>
 
 <body class="landing-page">
@@ -196,6 +196,7 @@
       document.querySelectorAll('.home-feature-card h5').forEach(h=>{ const key=Object.keys(tips).find(k=>h.textContent.trim()===k); if(key) addTip(h,key); });
       const heroTips={ 'Create Memorial':'Create a dedicated memorial by entering the person’s name, birth date, passing date, biography, and memorial image, then choose its privacy settings.', 'View Memorials':'Search or browse memorial pages you are allowed to access, then explore their timeline, media, and tributes.' };
       document.querySelectorAll('.home-hero a.btn').forEach(a=>{const key=a.textContent.trim(); if(heroTips[key]){const b=document.createElement('button');b.type='button';b.className='home-info home-info-light';b.setAttribute('aria-label','About '+key);b.dataset.tooltip=heroTips[key];b.textContent='i';a.after(b);}});
+      const brand=document.querySelector('.home-brand'); if(brand&&!brand.querySelector('.home-info')){const b=document.createElement('button');b.type='button';b.className='home-info home-info-light';b.setAttribute('aria-label','About IamAlwaysHere');b.dataset.tooltip='IamAlwaysHere preserves memories and documents, supports memorial pages, timelines, tributes, privacy controls, AI legacy tools, future messages, and gifting for loved ones.';b.textContent='i';brand.append(' ',b);}
       const register=document.querySelector('#nav-register a'); if(register){const b=document.createElement('button');b.type='button';b.className='home-info home-info-light';b.setAttribute('aria-label','About Register');b.dataset.tooltip='Create an account from the homepage, enter your personal information, verify your email, and then log in with your credentials.';b.textContent='i';register.append(' ',b);}
       document.querySelectorAll('.home-info').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();document.querySelectorAll('.home-info.is-open').forEach(x=>{if(x!==b)x.classList.remove('is-open')});b.classList.toggle('is-open')})); document.addEventListener('click',()=>document.querySelectorAll('.home-info.is-open').forEach(x=>x.classList.remove('is-open')));
     })();
@@ -205,6 +206,7 @@
 </body>
 
 </html>
+
 
 
 
