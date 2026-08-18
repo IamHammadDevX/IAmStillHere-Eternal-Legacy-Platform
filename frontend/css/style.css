@@ -3953,3 +3953,54 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .feature-info:hover::after, .feature-info:focus-visible::after { transform:translate(-50%,0); }
 .feature-info:hover::before, .feature-info:focus-visible::before { transform:translateX(-50%); }
 @media (max-width:576px) { .feature-info::after { top:calc(100% + .55rem); bottom:auto; left:0; right:auto; width:min(280px,calc(100vw - 2rem)); transform:translate(0,-.35rem); } .feature-info:hover::after, .feature-info:focus-visible::after { transform:translate(0,0); } }
+/* Modern Autobiography workspace */
+#autobiography-tab > .card { border:0 !important; background:transparent !important; box-shadow:none !important; }
+#autobiography-tab > .card > .card-body { padding:0 !important; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child { position:relative; min-height:218px; margin-bottom:1.35rem !important; padding:2.8rem 2.5rem !important; border:1px solid #ede3f3; border-radius:22px; overflow:hidden; background:linear-gradient(120deg,#fbf1fc 0%,#fce9f6 48%,#fdedea 100%); align-items:center !important; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child::after { content:''; position:absolute; right:-80px; top:-110px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle,#ff9ce9,transparent 68%); opacity:.25; pointer-events:none; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child > div:first-child { position:relative; z-index:1; max-width:650px; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child h5 { color:#200f35; font-family:Georgia,'Times New Roman',serif; font-size:2rem; font-weight:500; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child .small { color:#5b4b70 !important; font-size:1rem; line-height:1.55; }
+#autobio-title { border-color:#ede3f3; border-radius:12px; background:#fff; }
+#autobio-sections { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+#autobio-sections > .autobio-section-card { margin:0 !important; border:1px solid #ede3f3 !important; border-radius:18px; background:#fff; box-shadow:none; }
+#autobio-sections > .autobio-section-card:hover { box-shadow:0 14px 30px -14px rgba(60,20,90,.22); transform:translateY(-2px); }
+.autobio-section-card .card-body { padding:1.35rem; }
+.autobio-section-card h6 { color:#200f35; font-family:Georgia,'Times New Roman',serif; font-size:1.15rem; }
+.autobio-section-card .form-control { border-color:#ede3f3; border-radius:10px; }
+#autobio-timeline { padding:1rem; border:1px solid #ede3f3; border-radius:18px; background:#fff; }
+.autobio-timeline-item { border-color:#ede3f3 !important; border-radius:14px !important; background:#fff !important; }
+#autobio-status { min-height:1.25rem; }
+@media (max-width:991.98px) { #autobio-sections { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:576px) { #autobiography-tab > .card > .card-body > .d-flex:first-child { min-height:0; padding:1.5rem 1.1rem !important; } #autobiography-tab > .card > .card-body > .d-flex:first-child h5 { font-size:1.65rem; } #autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex { width:100%; } #autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex .btn { width:100%; } #autobio-sections { grid-template-columns:1fr; } }
+/* Autobiography detail reference layout */
+#autobiography-tab > .card > .card-body > .d-flex:first-child h5 { font-family:Georgia,'Times New Roman',serif; font-size:2rem; }
+#autobiography-tab #autobio-generate { background:#8e3dab; border-color:#8e3dab; color:#fff; font-weight:700; }
+#autobiography-tab #autobio-save { color:#7029a0; border-color:#b04bd0; font-weight:700; }
+#autobiography-tab #autobio-publish { color:#e33d58; border-color:#ff526e; font-weight:700; }
+#autobio-title { height:3.1rem; padding:.75rem 1rem; color:#241238; font:600 1rem Georgia,'Times New Roman',serif; }
+#autobio-sections { display:block; }
+#autobio-sections > .autobio-section-card { margin-bottom:1.25rem !important; padding:0; overflow:hidden; border-radius:16px; }
+#autobio-sections > .autobio-section-card .card-body { padding:0; }
+#autobio-sections > .autobio-section-card h6 { display:flex; align-items:center; justify-content:space-between; min-height:3.9rem; margin:0 !important; padding:.75rem 1.25rem; color:#fff !important; font:600 1rem Georgia,'Times New Roman',serif; }
+#autobio-sections > .autobio-section-card h6::before { content:''; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex { min-height:3.9rem; margin:0 !important; padding:.75rem 1.25rem; align-items:center; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex h6 { flex:1; padding:0; min-height:0; }
+#autobio-sections > .autobio-section-card textarea,
+#autobio-sections > .autobio-section-card p { margin:0; padding:1.2rem 1.25rem; border:0; border-radius:0; color:#4b3b62; background:#fff; line-height:1.65; }
+#autobio-sections > .autobio-section-card textarea { min-height:170px; }
+#autobio-sections > .autobio-section-card .small.text-muted { padding:0 1.25rem 1rem; }
+#autobio-sections > .autobio-theme-life-events h6, #autobio-sections > .autobio-theme-life-events .card-body > .d-flex { background:linear-gradient(100deg,#ff91a5,#ffb6b8); }
+#autobio-sections > .autobio-theme-career h6, #autobio-sections > .autobio-theme-career .card-body > .d-flex { background:linear-gradient(100deg,#d86bdc,#ff9ce9); }
+#autobio-sections > .autobio-theme-achievements h6, #autobio-sections > .autobio-theme-achievements .card-body > .d-flex { background:linear-gradient(100deg,#76c7b0,#b8e7ca); }
+#autobio-sections > .autobio-theme-wisdom h6, #autobio-sections > .autobio-theme-wisdom .card-body > .d-flex { background:linear-gradient(100deg,#9d86d5,#d6c6f4); }
+#autobio-sections > .autobio-section-card .btn { border:0; border-radius:10px; background:#fff; color:#4b2a73; font-weight:700; }
+@media (max-width:576px) { #autobiography-tab > .card > .card-body > .d-flex:first-child h5 { font-size:1.65rem; } #autobio-sections > .autobio-section-card h6, #autobio-sections > .autobio-section-card .card-body > .d-flex { padding-inline:.9rem; } #autobio-sections > .autobio-section-card textarea, #autobio-sections > .autobio-section-card p { padding:1rem .9rem; } }
+/* Autobiography action/header alignment */
+#autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex { flex-wrap:nowrap !important; align-items:center; white-space:nowrap; }
+#autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex .btn { white-space:nowrap; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex h6 { justify-content:flex-start !important; white-space:nowrap; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex { flex-wrap:nowrap !important; }
+#autobio-sections > .autobio-section-card .card-body > .d-flex .btn { flex:0 0 auto; }
+#autobio-sections > .autobio-section-card textarea { display:block; width:100%; min-height:220px; max-height:none; overflow-y:auto; resize:vertical; box-shadow:none !important; }
+@media (max-width:576px) { #autobiography-tab > .card > .card-body > .d-flex:first-child { align-items:flex-start !important; } #autobiography-tab > .card > .card-body > .d-flex:first-child > .d-flex { width:100%; overflow-x:auto; padding-bottom:.15rem; } #autobio-sections > .autobio-section-card .card-body > .d-flex { gap:.45rem; } #autobio-sections > .autobio-section-card .card-body > .d-flex h6 { overflow:hidden; text-overflow:ellipsis; } }
