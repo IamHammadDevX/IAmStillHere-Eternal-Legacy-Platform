@@ -4052,3 +4052,21 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #autobio-sections > .autobio-theme-legacy h6, #autobio-sections > .autobio-theme-legacy .card-body > .d-flex { background:linear-gradient(100deg,#f5a08c,#ffc2ba); }
 /* Homepage client cool-tip help */
 .landing-page .home-brand{display:inline-flex;align-items:center;gap:.35rem}.home-info{position:relative;display:inline-grid;place-items:center;width:1.2rem;height:1.2rem;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;color:#7b3fb0;font:700 .72rem/1 Arial;vertical-align:middle;cursor:help}.home-info::after{content:attr(data-tooltip);position:absolute;z-index:100;left:50%;bottom:calc(100% + .65rem);width:min(330px,78vw);padding:.8rem .9rem;border-radius:11px;background:#241238;color:#fff;font:500 .78rem/1.5 Inter,Arial,sans-serif;text-align:left;box-shadow:0 12px 28px rgba(36,18,56,.28);opacity:0;visibility:hidden;transform:translate(-50%,.35rem);transition:.15s ease;pointer-events:none}.home-info::before{content:'';position:absolute;z-index:101;left:50%;bottom:calc(100% + .3rem);border:.35rem solid transparent;border-top-color:#241238;opacity:0;visibility:hidden;transform:translateX(-50%)}.home-info:hover::after,.home-info:focus-visible::after,.home-info:hover::before,.home-info:focus-visible::before{opacity:1;visibility:visible;transform:translate(-50%,0)}.home-info-light{color:#fff;margin-left:-.65rem}.home-feature-card h5{display:flex;align-items:center;gap:.35rem}.home-feature-card h5 .home-info{flex:0 0 auto}.home-feature-card .home-info::after{left:0;transform:translate(0,.35rem)}.home-feature-card .home-info:hover::after,.home-feature-card .home-info:focus-visible::after{transform:translate(0,0)}@media(max-width:575.98px){.home-info::after{width:min(280px,calc(100vw - 2rem));left:0;transform:translate(0,.35rem)}.home-info:hover::after,.home-info:focus-visible::after{transform:translate(0,0)}.home-info-light{margin-left:-.5rem}}
+/* Final mobile tooltip visibility fix */
+.landing-page .home-feature-card { overflow: visible; }
+@media (max-width: 575.98px) {
+  .landing-page .home-feature-card .home-info::after,
+  .landing-page .home-info::after { left: 50%; right: auto; width: min(320px, calc(100vw - 2rem)); transform: translate(-50%, .35rem); }
+  .landing-page .home-feature-card .home-info:hover::after,
+  .landing-page .home-feature-card .home-info:focus-visible::after,
+  .landing-page .home-info:hover::after,
+  .landing-page .home-info:focus-visible::after { transform: translate(-50%, 0); }
+  .landing-page .home-feature-card .home-info::before,
+  .landing-page .home-info::before { left: 50%; transform: translateX(-50%); }
+}
+/* Final profile tooltip mobile fix: viewport-bound, never clipped by cards */
+@media (max-width: 576px) {
+  .profile-page .feature-info::after { position: fixed; z-index: 9999; left: 1rem; right: 1rem; top: 4.5rem; bottom: auto; width: auto; max-height: 40vh; overflow: auto; transform: translateY(-.35rem); }
+  .profile-page .feature-info:hover::after,
+  .profile-page .feature-info:focus-visible::after { transform: translateY(0); }
+}
