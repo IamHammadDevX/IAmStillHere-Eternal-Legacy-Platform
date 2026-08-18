@@ -3943,3 +3943,13 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .feature-info:hover::after, .feature-info:hover::before, .feature-info:focus-visible::after, .feature-info:focus-visible::before { opacity:1; visibility:visible; transform:translate(-50%,0); }
 .feature-info:focus-visible { outline:2px solid #ff8da1; outline-offset:2px; }
 @media (max-width:576px) { .feature-info::after { position:fixed; left:1rem; right:1rem; bottom:1rem; width:auto; transform:translateY(.35rem); } .feature-info:hover::after, .feature-info:focus-visible::after { transform:translateY(0); } .feature-info::before { display:none; } }
+/* Keep feature tooltips visible inside tabs/cards */
+.profile-page .tab-pane,
+.profile-page .tab-pane .card,
+.profile-page .tab-pane .card-body,
+.profile-page .feature-heading { overflow: visible !important; }
+.feature-info::after { top:calc(100% + .65rem); bottom:auto; transform:translate(-50%,-.35rem); }
+.feature-info::before { top:calc(100% + .28rem); bottom:auto; border-top-color:transparent; border-bottom-color:#241238; transform:translateX(-50%); }
+.feature-info:hover::after, .feature-info:focus-visible::after { transform:translate(-50%,0); }
+.feature-info:hover::before, .feature-info:focus-visible::before { transform:translateX(-50%); }
+@media (max-width:576px) { .feature-info::after { top:calc(100% + .55rem); bottom:auto; left:0; right:auto; width:min(280px,calc(100vw - 2rem)); transform:translate(0,-.35rem); } .feature-info:hover::after, .feature-info:focus-visible::after { transform:translate(0,0); } }
