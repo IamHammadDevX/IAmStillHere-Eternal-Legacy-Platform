@@ -16,9 +16,14 @@ try {
     $password = $data['password'] ?? '';
     $full_name = sanitize_input($data['full_name'] ?? '');
     $date_of_birth = sanitize_input($data['date_of_birth'] ?? '');
+    $terms_accepted = filter_var($data['terms_accepted'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
     if (empty($username) || empty($email) || empty($password) || empty($full_name)) {
         throw new Exception('All required fields must be filled');
+    }
+
+    if (!$terms_accepted) {
+        throw new Exception('You must accept the Terms and Conditions to register.');
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

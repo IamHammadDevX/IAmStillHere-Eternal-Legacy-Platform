@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="images/favicon.png"><title>Terms and Conditions - IamAlwaysHere</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=2026081920"></head>
+<body class="terms-page"><nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand" href="../index.php">♥ IamAlwaysHere</a></div></nav>
+<main class="container terms-shell"><header class="terms-hero"><span class="terms-kicker">Legal</span><h1>Terms and Conditions of Use</h1><p>Effective date: 1 August 2026</p></header><article class="terms-document">
+<p>Welcome to IamAlwaysHere. These Terms govern your access to and use of our website, applications, AI features, memorial profiles, legacy tools, social features, storage services and future communications. By creating an account or using the platform, you agree to these Terms.</p>
+<h2>1. Purpose</h2><p>IamAlwaysHere is a digital legacy and memory-preservation platform for recording, organizing, protecting and sharing memories, stories, relationships, documents, memorial content and future communications.</p>
+<h2>2. Eligibility</h2><p>You must be legally capable of entering a binding agreement. When acting for another person, estate or memorial, you confirm you have the required authority and permissions.</p>
+<h2>3. User accounts</h2><p>Provide accurate information, protect your credentials and report unauthorized access. You are responsible for activity through your account.</p>
+<h2>4. User content and ownership</h2><p>You retain ownership of your content and grant us a limited licence to host, process, display, back up and transmit it to provide the service. You confirm that you have all necessary rights and consent.</p>
+<h2>5. Legacy information and future communications</h2><p>You are responsible for recipients, timing, accuracy and permissions for legacy instructions and scheduled communications. Delivery may depend on valid details and third-party services.</p>
+<h2>6. Content and community standards</h2><p>Do not upload unlawful, infringing, abusive, deceptive, harmful, discriminatory or privacy-violating content; impersonate others; distribute malware; interfere with the service; scrape data without permission; or commit fraud. Violating content may be restricted or removed.</p>
+<h2>7. Memorial and legacy disclaimer</h2><p>Memorial and legacy tools do not establish inheritance, probate, guardianship, ownership or estate instructions and do not replace legally executed documents.</p>
+<h2>8. No professional advice</h2><p>Platform and AI content is informational and creative assistance, not legal, financial, medical, psychological or other professional advice.</p>
+<h2>9. Social networking disclaimer</h2><p>User interactions are their own responsibility. We do not endorse user statements or guarantee identity, intentions or conduct.</p>
+<h2>10. Privacy, data protection and security</h2><p>Personal data is handled under applicable law and our privacy practices. We use reasonable safeguards, but no system guarantees absolute security or availability. Keep independent copies of important materials.</p>
+<h2>11. Intellectual property</h2><p>Our platform, branding, software and interfaces belong to IamAlwaysHere or its licensors and may not be copied, reverse engineered or resold except where law permits.</p>
+<h2>12. Third-party services</h2><p>External services are governed by their own terms and privacy practices. Their availability and conduct are outside our control.</p>
+<h2>13. Warranties</h2><p>The platform is supplied “as is” and “as available.” Implied warranties and guarantees of uninterrupted or error-free service are disclaimed to the extent permitted by law.</p>
+<h2>14. Liability</h2><p>To the extent permitted by law, we are not liable for indirect, incidental, special, consequential or punitive damages or loss of data, profit, goodwill or opportunity.</p>
+<h2>15. Subscriptions and pricing</h2><p>Paid limits, renewals, taxes and cancellation terms are shown before purchase. Plans may change with notice. Charges are non-refundable unless law requires otherwise.</p>
+<h2>16. Indemnification</h2><p>You agree to indemnify IamAlwaysHere and its operators against claims arising from your content, misuse, violation of these Terms or infringement of rights.</p>
+<h2>17. Suspension and termination</h2><p>Access may be suspended or terminated for security, legal compliance, non-payment or material violations.</p>
+<h2>18. Changes</h2><p>We may update these Terms. Material changes will be communicated reasonably. Continued use after revised Terms take effect constitutes acceptance.</p>
+<h2>19. Governing law</h2><p>These Terms are governed by laws applicable in New Delhi, India, whose courts have jurisdiction unless consumer law requires otherwise.</p>
+<div class="terms-notice"><h2>Important legal notice</h2><p>Digital legacy tools do not replace a will, trust, power of attorney or formal legal instrument. Seek qualified advice for binding estate instructions.</p></div>
+<h2>Contact</h2><p>Email <a href="mailto:support@iamalwayshere.com">support@iamalwayshere.com</a>.</p></article></main>
+<footer class="bg-dark text-light py-4 auth-footer"><div class="container text-center"><p class="mb-0 small">&copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.</p></div></footer>
+<script>document.getElementById("current-year").textContent=new Date().getFullYear();</script></body></html>

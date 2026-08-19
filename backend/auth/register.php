@@ -16,9 +16,15 @@ $email = sanitize_input($data['email'] ?? '');
 $password = $data['password'] ?? '';
 $full_name = sanitize_input($data['full_name'] ?? '');
 $date_of_birth = sanitize_input($data['date_of_birth'] ?? '');
+$terms_accepted = filter_var($data['terms_accepted'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
 if (empty($username) || empty($email) || empty($password) || empty($full_name)) {
     echo json_encode(['success' => false, 'message' => 'All fields are required']);
+    exit;
+}
+
+if (!$terms_accepted) {
+    echo json_encode(['success' => false, 'message' => 'You must accept the Terms and Conditions to register.']);
     exit;
 }
 

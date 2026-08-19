@@ -8,7 +8,7 @@
     <title>Register - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081918">
+    <link rel="stylesheet" href="css/style.css?v=2026081920">
 </head>
 
 <body class="auth-page">
@@ -54,8 +54,14 @@
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
                                 <input type="password" class="form-control" id="confirm_password" required>
                             </div>
+                            <div class="form-check terms-acceptance mb-3">
+                                <input class="form-check-input" type="checkbox" id="terms_accepted" required>
+                                <label class="form-check-label" for="terms_accepted">
+                                    I ACCEPT the <a href="terms.php" target="_blank" rel="noopener">Terms and Conditions</a>
+                                </label>
+                            </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="register-submit" disabled>Register</button>
                             </div>
                         </form>
                         <div class="text-center mt-3">
@@ -82,7 +88,7 @@
 
             <!-- Copyright -->
             <p class="mb-0 small">
-                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.
             </p>
         </div>
     </footer>
@@ -94,11 +100,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth.js"></script>
     <script>
+        const termsCheckbox = document.getElementById('terms_accepted');
+        const registerSubmit = document.getElementById('register-submit');
+        termsCheckbox.addEventListener('change', () => {
+            registerSubmit.disabled = !termsCheckbox.checked;
+        });
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const password = document.getElementById('password').value;
             const confirm_password = document.getElementById('confirm_password').value;
+
+            if (!termsCheckbox.checked) {
+                showAlert('You must accept the Terms and Conditions to register.', 'warning');
+                termsCheckbox.focus();
+                return;
+            }
 
             if (password !== confirm_password) {
                 showAlert('Passwords do not match', 'danger');
@@ -115,7 +133,8 @@
                 email: document.getElementById('email').value,
                 password: password,
                 full_name: document.getElementById('full_name').value,
-                date_of_birth: document.getElementById('date_of_birth').value
+                date_of_birth: document.getElementById('date_of_birth').value,
+                terms_accepted: true
             };
 
             try {

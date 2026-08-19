@@ -8,7 +8,7 @@
     <title>Family Requests - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081918">
+    <link rel="stylesheet" href="css/style.css?v=2026081920">
 </head>
 
 <body class="family-requests-page">
@@ -143,7 +143,7 @@
                 </a>
             </div>
             <p class="mb-0 small">
-                &copy; <span id="current-year"></span> <strong>KodeBros.</strong> All rights reserved.
+                &copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.
             </p>
         </div>
     </footer>
