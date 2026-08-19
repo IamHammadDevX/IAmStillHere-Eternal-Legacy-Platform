@@ -1,4 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
+﻿const urlParams = new URLSearchParams(window.location.search);
 const profileUserId = urlParams.get('user_id');
 let profileMemoriesCache = [];
 let profileMemoryFoldersCache = [];
@@ -1033,7 +1033,7 @@ async function loadEvents() {
         // Display past events
         if (pastEvents.length > 0) {
             const pastSection = document.createElement('div');
-            pastSection.innerHTML = '<h6 class="text-muted mb-3"><i class="bi bi-clock"></i> Past Events</h6>';
+            pastSection.className = 'past-events-section mb-4'; pastSection.innerHTML = '<h6 class="text-muted mb-3 past-events-heading"><i class="bi bi-clock" aria-hidden="true"></i><span>Past Events</span></h6>';
 
             pastEvents.forEach(event => {
                 pastSection.appendChild(createEventCard(event, true));
@@ -1278,3 +1278,4 @@ document.addEventListener('click', (event) => {
     setProfileActiveTabByHref(href);
     setTimeout(() => setProfileActiveTabByHref(href), 80);
 });
+
