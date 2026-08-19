@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Terms and Conditions - IamAlwaysHere</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2026081922">
+<link rel="stylesheet" href="css/style.css?v=2026082008">
 </head>
 <body class="terms-page">
 <nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand" href="../index.php">♥ IamAlwaysHere</a></div></nav>
@@ -117,7 +117,24 @@
 <p>Medical advice</p>
 <p>Mental health counseling</p>
 <p>Users should consult qualified professionals regarding legal, financial, healthcare, and estate-planning matters.</p>
-<h2>9. Social Networking Disclaimer</h2>
+<h2>9. Use of Artificial Intelligence</h2>
+<p>9.1 AI-Generated Content</p>
+<p>This Service uses artificial intelligence (&quot;AI&quot;) to generate conversational responses, including content based on stored memories, milestones, and profile information you or others have provided. You acknowledge and agree that:</p>
+<p>AI-generated responses may be inaccurate, incomplete, outdated, or misleading, and should not be relied upon as factual, historical, or authoritative statements.</p>
+<p>Responses do not represent verified facts, official records, or confirmed statements made by any real individual, living or deceased.</p>
+<p>The Company makes no warranty as to the accuracy, reliability, or completeness of any AI-generated output.</p>
+<p>9.2 Not a Real Person</p>
+<p>Where the Service generates responses styled as, or based on, a real individual (including deceased persons), you acknowledge that:</p>
+<p>Any such persona is an AI-generated approximation only, created from available data (e.g., memories, biographical details, milestones) and does not reflect the actual thoughts, feelings, consent, or statements of that individual.</p>
+<p>The Service is not, and should not be understood or presented as, communication with the actual person, their consciousness, or their afterlife.</p>
+<p>Interacting with this Service is interacting with an AI system, not a human being.</p>
+<p>9.3 Not Professional Advice or Support</p>
+<p>The Service is not a substitute for professional medical, psychological, grief, legal, or financial advice. If you are experiencing distress, grief, or a mental health crisis, please seek support from a qualified professional or relevant crisis resource.</p>
+<p>9.4 Data Used to Generate Responses</p>
+<p>Information used to generate AI responses (including memories, biographical details, photos, or other personal data) is processed as described in our [Privacy Policy]. Where such data relates to a third party (e.g., a deceased relative or other individual who cannot provide direct consent), you represent that you have the necessary rights or authority to submit that data for use in the Service.</p>
+<p>9.5 No Liability for Reliance on AI Output</p>
+<p>To the fullest extent permitted by law, the Company disclaims liability for any decisions made, or harm arising from, reliance on AI-generated content produced by the Service.</p>
+<h2>10. Social Networking Disclaimer</h2>
 <p>IamAlwaysHere.com may enable interactions between members.</p>
 <p>We do not:</p>
 <p>Verify the identity of every user.</p>
@@ -125,10 +142,10 @@
 <p>Guarantee the accuracy of user information.</p>
 <p>Endorse user statements or opinions.</p>
 <p>Users are solely responsible for their interactions with others both online and offline.</p>
-<h2>10. Privacy and Data Protection</h2>
+<h2>11. Privacy and Data Protection</h2>
 <p>Your use of the Platform is also governed by our Privacy Policy.</p>
 <p>By using the Website, you acknowledge and agree that information submitted to the Platform may be collected, stored, and processed in accordance with our Privacy Policy and applicable laws.</p>
-<p>10.1Data Security, Privacy, and Data Loss Disclaimer</p>
+<p>11.1Data Security, Privacy, and Data Loss Disclaimer</p>
 <p>While IamAlwaysHere.com employs commercially reasonable administrative, technical, and security measures to protect user information and content, no website, electronic storage system, network, cloud service, or internet transmission can be guaranteed to be completely secure or immune from unauthorized access, cyberattacks, system failures, or data breaches.</p>
 <p>By using the Platform, you acknowledge and agree that:</p>
 <p>Any information, documents, photographs, videos, messages, personal data, or other content uploaded to the Platform is stored and transmitted at your own risk.</p>
@@ -143,10 +160,10 @@
 <p>Service interruptions, system outages, or technical failures.</p>
 <p>Reliance on the availability or retention of any content stored on the Platform.</p>
 <p>Nothing in this disclaimer shall limit liability to the extent such limitation is prohibited by applicable law.</p>
-<h2>11. Intellectual Property</h2>
+<h2>12. Intellectual Property</h2>
 <p>All Website content, software, trademarks, logos, graphics, designs, and functionality are owned by or licensed to IamAlwaysHere.com and are protected by intellectual property laws.</p>
 <p>No user may copy, reproduce, distribute, modify, or commercially exploit any portion of the Platform without prior written consent.</p>
-<h2>12. Third-Party Services</h2>
+<h2>13. Third-Party Services</h2>
 <p>The Platform may contain links to third-party websites or services.</p>
 <p>We do not control or endorse third-party services and are not responsible for:</p>
 <p>Their availability</p>
@@ -154,7 +171,7 @@
 <p>Their privacy practices</p>
 <p>Any resulting damages or losses</p>
 <p>Use of third-party services is at your own risk.</p>
-<h2>13. Disclaimer of Warranties</h2>
+<h2>14. Disclaimer of Warranties</h2>
 <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, IAMALWAYSHERE.COM IS PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS.</p>
 <p>WE MAKE NO WARRANTIES REGARDING:</p>
 <p>Platform availability</p>
@@ -165,7 +182,7 @@
 <p>Uninterrupted operation</p>
 <p>Error-free performance</p>
 <p>ALL WARRANTIES, EXPRESS OR IMPLIED, ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW.</p>
-<h2>14. Limitation of Liability</h2>
+<h2>15. Limitation of Liability</h2>
 <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, IAMALWAYSHERE.COM, ITS OWNERS, OFFICERS, EMPLOYEES, AFFILIATES, AND SERVICE PROVIDERS SHALL NOT BE LIABLE FOR:</p>
 <p>Data loss</p>
 <p>Loss of memories or uploaded content</p>
@@ -178,7 +195,7 @@
 <p>Incidental damages</p>
 <p>ARISING FROM OR RELATED TO THE USE OF THE PLATFORM.</p>
 <p>YOUR USE OF THE PLATFORM IS AT YOUR SOLE RISK.IamAlwaysHere.com shall not be liable for any losses, damages, or claims arising from changes to subscription fees, pricing plans, premium features, storage limits, service offerings, or billing practices, provided such changes are made in accordance with these Terms and applicable law.</p>
-<h2>15. Subscription Fees and Pricing Changes</h2>
+<h2>16. Subscription Fees and Pricing Changes</h2>
 <p>IamAlwaysHere.com may offer free and paid services, subscriptions, premium features, storage plans, or other paid products (&quot;Subscription Services&quot;).</p>
 <p>By purchasing a Subscription Service, you agree to pay all applicable fees and charges associated with your selected plan.</p>
 <h3>Changes to Fees</h3>
@@ -195,30 +212,30 @@
 <p>IamAlwaysHere.com reserves the right to modify, suspend, discontinue, or replace any feature, functionality, storage allocation, service offering, or subscription plan at any time. Such modifications may occur without liability to users, provided that any prepaid services will continue to be provided through the applicable subscription period unless otherwise permitted by law.</p>
 <h3>No Guarantee of Future Pricing</h3>
 <p>Users acknowledge that promotional pricing, introductory offers, discounts, grandfathered plans, or special rates may be modified or discontinued at any time and do not create any right or expectation of continued pricing in the future.</p>
-<h2>16. Indemnification</h2>
+<h2>17. Indemnification</h2>
 <p>You agree to defend, indemnify, and hold harmless IamAlwaysHere.com and its affiliates, officers, employees, contractors, and partners from any claims, liabilities, damages, losses, costs, and expenses resulting from:</p>
 <p>Your use of the Platform.</p>
 <p>Your violation of these Terms.</p>
 <p>Content submitted by you.</p>
 <p>Violation of any third-party rights.</p>
-<h2>17. Suspension and Termination</h2>
+<h2>18. Suspension and Termination</h2>
 <p>We reserve the right, at our sole discretion, to:</p>
 <p>Remove content.</p>
 <p>Restrict access.</p>
 <p>Suspend accounts.</p>
 <p>Permanently terminate accounts.</p>
 <p>Without prior notice for violations of these Terms or applicable law.</p>
-<h2>18. Modifications</h2>
+<h2>19. Modifications</h2>
 <p>IamAlwaysHere.com may modify these Terms at any time.</p>
 <p>Updated Terms will be posted on the Website and become effective immediately upon publication unless otherwise stated.</p>
 <p>Continued use of the Platform constitutes acceptance of any revisions.</p>
-<h2>19. Governing Law</h2>
+<h2>20. Governing Law</h2>
 <p>These Terms shall be governed by the laws of the New Delhi, India, without regard to conflict-of-law principles.</p>
 <p>Any dispute arising out of or relating to these Terms shall be subject to the exclusive jurisdiction of the courts located in New Delhi, India.</p>
 <h2>IMPORTANT LEGAL DISCLAIMER</h2>
 <p>IamAlwaysHere.com provides a digital platform for preserving memories, sharing legacy information, storing personal content, and connecting individuals and families. The Platform does not guarantee the permanent storage, preservation, accessibility, authenticity, or future delivery of any content, message, document, photograph, video, or digital asset. Users remain solely responsible for maintaining backup copies of all important materials. Content posted by users represents the views and opinions of those users alone and does not reflect the views of IamAlwaysHere.com. Use of the Platform is entirely at your own risk.Users acknowledge that digital information storage and transmission inherently involve risks. IamAlwaysHere.com does not warrant that user content, personal information, legacy records, or communications will remain secure, private, uninterrupted, or permanently available, and users assume all risks associated with storing information on the Platform.</p>
 <h2>Contact Information</h2>
-<p>IamAlwaysHere.comEmail: support@iamalwayshere.com | Website: https://iamalwayshere.com</p>
+<p>IamAlwaysHere.com Email: support@iamalwayshere.com | Website: https://iamalwayshere.com</p>
 </article>
 </main>
 <footer class="bg-dark text-light py-4 auth-footer"><div class="container text-center"><p class="mb-0 small">&copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.</p></div></footer>
