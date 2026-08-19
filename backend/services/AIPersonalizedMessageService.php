@@ -113,7 +113,7 @@ class AIPersonalizedMessageService
     }
     private function row(int $owner,int $id): ?array {$s=$this->db->prepare('SELECT * FROM ai_personalized_messages WHERE id=:id AND owner_id=:owner AND deleted_at IS NULL LIMIT 1');$s->execute(['id'=>$id,'owner'=>$owner]);$r=$s->fetch(PDO::FETCH_ASSOC);return $r?:null;}
     private function get(int $owner,int $id): array {$r=$this->row($owner,$id); if(!$r) throw new RuntimeException('ai_message_not_found'); return $this->format($r);}
-    private function format(array $r): array {foreach(['id','owner_id','recipient_user_id','automation_rule_id'] as $k)$r[$k]=$r[$k]!==null?(int)$r[$k]:null;return $r;}
+    private function format(array $r): array {foreach(['id','owner_id','recipient_user_id','automation_rule_id'] as $k){$r[$k]=array_key_exists($k,$r)&&$r[$k]!==null?(int)$r[$k]:null;}return $r;}
     private function context(array $chunks): string {$out='';$n=0;foreach($chunks as $c){$line=($c['resource_type']??'source').': '.($c['title']??'Untitled')."\\n".trim((string)$c['chunk_text'])."\\n\\n";if($n+strlen($line)>9000)break;$out.=$line;$n+=strlen($line);}return trim($out);}
     private function utc(string $v): ?string {if(trim($v)==='')return null;try{return (new DateTimeImmutable($v))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');}catch(Throwable $e){return null;}}
     private function requireOwner(int $owner): void {if(!SessionHelper::isAuthenticated() || (int)SessionHelper::getUserId()!==$owner) throw new RuntimeException('ai_message_forbidden');}
