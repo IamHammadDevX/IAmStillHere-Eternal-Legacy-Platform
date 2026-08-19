@@ -4194,3 +4194,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 /* Autobiography reference colors: Early Life and Childhood are distinct */
 #autobio-sections > .autobio-theme-early h6, #autobio-sections > .autobio-theme-early .card-body > .d-flex { background:linear-gradient(100deg,#ff91a5,#ffb6b8) !important; }
 #autobio-sections > .autobio-theme-childhood h6, #autobio-sections > .autobio-theme-childhood .card-body > .d-flex { background:linear-gradient(100deg,#ff9aa8,#ff79d8) !important; }
+/* Timeline wording and quiet controls */
+#timeline-container .timeline-add-child { font-size:0; }
+#timeline-container .timeline-add-child::after { content:'Add update'; font-size:.82rem; }
+#timeline-container .timeline-story-heading > .btn { display:none !important; }
