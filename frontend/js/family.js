@@ -9,6 +9,7 @@ let loggedInUser = null; // set after check_session
 let familyMembersCache = [];
 let familyTreeCache = null;
 let familyViewMode = ['grid', 'list', 'tree'].includes(localStorage.getItem('familyViewMode')) ? localStorage.getItem('familyViewMode') : 'grid';
+let familyManageMode = false;
 
 function showAlert(message, type = 'success') {
     const alertDiv = document.createElement('div');
@@ -116,6 +117,15 @@ function canRemoveFamilyMember() {
     return loggedInUser && (String(loggedInUser.id) === String(profileUserId) || loggedInUser.role === 'admin');
 }
 
+function updateFamilyManageToggle() {
+    const button = document.getElementById('family-manage-toggle');
+    if (!button) return;
+    const allowed = canRemoveFamilyMember();
+    button.classList.toggle('d-none', !allowed);
+    button.textContent = familyManageMode ? 'Done' : 'Manage';
+    button.setAttribute('aria-pressed', familyManageMode ? 'true' : 'false');
+    button.classList.toggle('active', familyManageMode);
+}
 function createRemoveButton(member, memberName, extraClass = '') {
     const button = document.createElement('button');
     button.type = 'button';
@@ -159,7 +169,7 @@ function createGridMember(member) {
     imageLink.appendChild(image);
     imageWrap.appendChild(imageLink);
 
-    if (canRemoveFamilyMember()) {
+    if (canRemoveFamilyMember() && familyManageMode) {
         imageWrap.appendChild(createRemoveButton(member, memberName, 'rounded-circle position-absolute family-grid-remove-btn'));
     }
 
@@ -232,7 +242,7 @@ function createListMember(member) {
     row.appendChild(imageLink);
     row.appendChild(body);
 
-    if (canRemoveFamilyMember()) {
+    if (canRemoveFamilyMember() && familyManageMode) {
         row.appendChild(createRemoveButton(member, memberName, 'family-list-remove-btn'));
     }
 
@@ -514,6 +524,16 @@ function wireFamilyViewToggle() {
         });
     });
     updateFamilyToggleButtons();
+    const manageButton = document.getElementById('family-manage-toggle');
+    if (manageButton && !manageButton.dataset.wired) {
+        manageButton.dataset.wired = 'true';
+        manageButton.addEventListener('click', () => {
+            familyManageMode = !familyManageMode;
+            updateFamilyManageToggle();
+            renderFamilyMembers(familyMembersCache);
+        });
+    }
+    updateFamilyManageToggle();
 }
 
 async function loadFamilyMembers() {

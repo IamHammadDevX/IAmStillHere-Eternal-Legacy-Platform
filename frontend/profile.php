@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../config/config.php';
 
 if (!is_logged_in()) {
@@ -360,7 +360,7 @@ if (!is_logged_in()) {
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
-                  <h5 class="mb-0">Family Members</h5>
+                  <div class="d-flex align-items-center gap-2"><h5 class="mb-0">Family Members</h5><button type="button" id="family-manage-toggle" class="btn btn-outline-secondary btn-sm d-none" aria-pressed="false">Manage</button></div>
                   <div class="btn-group btn-group-sm" role="group" aria-label="Family view toggle">
                     <button type="button" class="btn btn-outline-secondary active" id="family-grid-view-btn" data-family-view="grid">
                       <i class="bi bi-grid-3x3-gap"></i> Grid
@@ -516,7 +516,7 @@ if (!is_logged_in()) {
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js?v=2026081601"></script>
   <script src="js/friends.js?v=2026081601"></script>
-  <script src="js/family.js?v=2026081601"></script>
+  <script src="js/family.js?v=2026081901"></script>
   <script src="js/search.js"></script>
 
 <div class="modal fade" id="journeyModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Shared journey</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="journeyForm"><input type="hidden" id="journey-id"><label class="form-label">Title</label><input id="journey-title" class="form-control mb-2" maxlength="180" required><label class="form-label">Description</label><textarea id="journey-description" class="form-control mb-2" maxlength="5000"></textarea><label class="form-label">Journey cover <span class="text-muted small">(optional photo or video)</span></label><input id="journey-cover-media" type="file" class="form-control mb-2" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"><div class="row"><div class="col-md-6"><label class="form-label">Start date</label><input id="journey-start" type="date" class="form-control mb-2"></div><div class="col-md-6"><label class="form-label">End date</label><input id="journey-end" type="date" class="form-control mb-2"></div></div><label class="form-label">Status</label><select id="journey-status" class="form-select mb-3"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select><div id="journey-privacy"></div><div id="journey-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="journeyForm" class="btn btn-primary" id="journey-save">Save</button></div></div></div></div>
