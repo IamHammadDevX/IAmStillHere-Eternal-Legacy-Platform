@@ -1,4 +1,4 @@
-let currentUserId = null;
+﻿let currentUserId = null;
 let loggedInUser = null;
 let csrfToken = null;
 let currentMemoryFolderId = 0;
@@ -22,7 +22,7 @@ async function init() {
     const savedFolder = Number(localStorage.getItem('memoryFolder_' + currentUserId) || 0);
     currentMemoryFolderId = Number.isFinite(savedFolder) && savedFolder > 0 ? savedFolder : 0;
     const memoryPrivacy = document.getElementById('memory-privacy'); if(memoryPrivacy && typeof privacyComponent==='function'){ memoryPrivacy.style.display='none'; memoryPrivacyWidget=privacyComponent('memory',currentUserId); memoryPrivacy.parentElement.appendChild(memoryPrivacyWidget); }
-    const milestonePrivacy = document.getElementById('milestone-privacy'); if(milestonePrivacy && typeof privacyComponent==='function'){ milestonePrivacy.style.display='none'; milestonePrivacyWidget=privacyComponent('milestone',currentUserId); milestonePrivacy.parentElement.appendChild(milestonePrivacyWidget); }
+    const milestonePrivacy = document.getElementById('milestone-privacy'); if(milestonePrivacy && typeof privacyComponent==='function'){ milestonePrivacy.style.display='none'; if(milestonePrivacy.previousElementSibling) milestonePrivacy.previousElementSibling.style.display='none'; milestonePrivacyWidget=privacyComponent('milestone',currentUserId); milestonePrivacy.parentElement.appendChild(milestonePrivacyWidget); }
     await loadCsrfToken();
 
     loadMemories();
@@ -728,8 +728,8 @@ document.getElementById('milestoneForm').addEventListener('submit', async (e) =>
     try {
         const response = await fetch('/backend/milestones/create.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(milestoneData)
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken || '' },
+            body: JSON.stringify({ ...milestoneData, csrf_token: csrfToken || '' })
         });
 
         const data = await response.json();
@@ -1042,9 +1042,9 @@ function vaultBlockLockedClick(event) {
 }
 function renderVaultFolders(folders) {
     const box=document.getElementById('vault-folder-list'); if(!box)return; box.innerHTML='';
-    if(vaultCurrentFolderId){const back=document.createElement('button');back.className='list-group-item list-group-item-action';back.textContent='â† Back';back.onclick=()=>{const path=window.vaultFolderPath||[];vaultCurrentFolderId=path.length?(path[path.length-1].parent_folder_id||0):0;loadVault();};box.appendChild(back);}
+    if(vaultCurrentFolderId){const back=document.createElement('button');back.className='list-group-item list-group-item-action';back.textContent='Ã¢â€ Â Back';back.onclick=()=>{const path=window.vaultFolderPath||[];vaultCurrentFolderId=path.length?(path[path.length-1].parent_folder_id||0):0;loadVault();};box.appendChild(back);}
     const all=document.createElement('button');all.className=`list-group-item list-group-item-action ${vaultCurrentFolderId===0?'active':''}`;all.textContent='All documents';all.onclick=()=>{vaultCurrentFolderId=0;loadVault();};box.appendChild(all);
-    folders.forEach(folder=>{const row=document.createElement('div');row.className='list-group-item d-flex justify-content-between align-items-center gap-2';const open=document.createElement('button');open.className='btn btn-sm btn-link text-start flex-grow-1';open.textContent='ðŸ“ '+folder.name;open.onclick=()=>{vaultCurrentFolderId=folder.id;loadVault();};const del=document.createElement('button');del.className='btn btn-sm btn-outline-danger';del.textContent='Delete';del.onclick=()=>vaultDeleteFolder(folder.id);row.append(open,del);box.appendChild(row);});
+    folders.forEach(folder=>{const row=document.createElement('div');row.className='list-group-item d-flex justify-content-between align-items-center gap-2';const open=document.createElement('button');open.className='btn btn-sm btn-link text-start flex-grow-1';open.textContent='Ã°Å¸â€œÂ '+folder.name;open.onclick=()=>{vaultCurrentFolderId=folder.id;loadVault();};const del=document.createElement('button');del.className='btn btn-sm btn-outline-danger';del.textContent='Delete';del.onclick=()=>vaultDeleteFolder(folder.id);row.append(open,del);box.appendChild(row);});
 }
 function renderVaultDocuments(documents) {
     const box = document.getElementById('vault-document-list');
@@ -1228,3 +1228,11 @@ function collectAutomationPayload(){const actions=[...document.querySelectorAll(
 async function submitAutomation(e){e.preventDefault(); const err=document.getElementById('automation-error'); const save=document.getElementById('automation-save'); err.textContent=''; save.disabled=true; try{const payload=collectAutomationPayload(); const endpoint=payload.automation_id?'update':'create'; const data=await automationJson(endpoint,payload); if(!data.success)throw new Error(data.message||'Unable to save automation'); bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide(); showAlert(data.message||'Automation saved','success'); loadAutomations();}catch(ex){err.textContent=ex.message;}finally{save.disabled=false;}}
 async function setAutomationStatus(id,action){const data=await automationJson('cancel',{automation_id:id,action}); showAlert(data.message||'Done',data.success?'success':'danger'); if(data.success)loadAutomations();}
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);});
+
+
+(function initDashboardMobileTabs(){
+  const tabs=document.querySelector('.dashboard-page > .dashboard-shell > .nav-tabs');
+  const more=document.querySelector('.dashboard-tabs-more'); if(!tabs||!more)return;
+  const sync=()=>{const active=tabs.querySelector('.nav-link.active'); tabs.querySelectorAll('.nav-item').forEach(li=>li.classList.toggle('dashboard-tab-visible',li.contains(active))); more.querySelectorAll('.dropdown-item').forEach(a=>a.classList.toggle('active',a.getAttribute('href')===active?.getAttribute('href')));};
+  tabs.addEventListener('shown.bs.tab',sync); sync();
+})();
