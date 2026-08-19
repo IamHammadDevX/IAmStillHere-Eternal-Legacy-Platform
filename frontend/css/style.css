@@ -3780,7 +3780,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .profile-page #cover-section #cover-image { height: 100% !important; }
   .profile-page #cover-section > .position-absolute { min-height: 100% !important; height: 100% !important; padding-top: 1rem !important; background: transparent !important; }
   .profile-page .profile-tabs { flex-wrap: nowrap !important; padding: .35rem; border-radius: 16px; }
-  .profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) .nav-link { min-height: 40px; padding: .55rem .65rem !important; font-size: .72rem; }
+  .profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) .nav-link { min-height: 40px; padding: .55rem .65rem !important; }
   .profile-page .profile-tabs-more { display: block; }
 }
 /* Profile media folders: mobile-friendly wrapped explorer */
@@ -4266,3 +4266,27 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 /* Upload Memory modal: clean privacy widget container */
 #uploadMemoryModal #memoryForm .privacy-component { margin-top:0; }
 #uploadMemoryModal #memoryForm .privacy-component > .form-label { margin-bottom:.35rem; }
+
+/* Match Public Profile tab typography to Dashboard navigation. */
+.profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) > .nav-link,
+.profile-page .profile-tabs-more > button.nav-link {
+  font-size:1rem !important;
+  font-weight:750 !important;
+  line-height:1.25;
+}
+.profile-page .profile-tabs-more-menu .dropdown-item {
+  font-size:1rem;
+  font-weight:750;
+}
+@media (max-width:767.98px) {
+  .profile-page .profile-tabs > .nav-item:not(.profile-tabs-more) > .nav-link,
+  .profile-page .profile-tabs-more > button.nav-link {
+    min-height:44px;
+    padding:.65rem .75rem !important;
+    font-size:.875rem !important;
+  }
+  .profile-page .profile-tabs-more-menu .dropdown-item {
+    padding:.7rem .85rem;
+    font-size:.875rem;
+  }
+}
