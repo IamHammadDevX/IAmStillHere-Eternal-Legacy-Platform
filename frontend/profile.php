@@ -294,7 +294,7 @@ if (!is_logged_in()) {
                     <div class="col-12 d-flex flex-wrap gap-2 align-items-center"><button id="pm-generate" class="btn btn-primary" type="button">Generate</button><button id="pm-save" class="btn btn-outline-primary" type="button">Save</button><button id="pm-schedule" class="btn btn-outline-success" type="button">Schedule</button><div class="dropdown"><button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More message actions"><i class="bi bi-three-dots"></i></button><ul class="dropdown-menu"><li><button id="pm-cancel" class="dropdown-item text-danger" type="button">Cancel</button></li></ul></div></div>
                   </form>
                 </div>
-                <div id="pm-status" class="small text-muted mb-2"></div>
+                <div id="pm-status" class="ai-disclaimer mb-2"></div>
                 <div id="personalized-messages-list" class="row g-2"></div>
               </div>
             </div>
