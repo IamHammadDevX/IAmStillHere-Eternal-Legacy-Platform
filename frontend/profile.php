@@ -158,7 +158,7 @@ if (!is_logged_in()) {
                   <div class="d-flex align-items-center gap-2">
                     <img id="ai-avatar-photo" src="/data/uploads/photos/default-profile.png" alt="Your profile photo" class="ai-avatar-header-photo">
                     <div>
-                      <h5 class="mb-0 feature-heading">AI Avatar <button type="button" class="feature-info" aria-label="About AI Avatar" data-tooltip="The AI Avatar learns only from the memories, milestones, and profile details you have approved as knowledge sources. When someone asks it a question, it answers in this personâ€™s voice, drawing solely from that approved content â€” nothing outside it is ever used.">i</button></h5>
+                      <h5 class="mb-0 feature-heading">AI Avatar <button type="button" class="feature-info" aria-label="About AI Avatar" data-tooltip="The AI Avatar learns only from the memories, milestones, and profile details you have approved as knowledge sources. When someone asks it a question, it answers in this person's voice, drawing solely from that approved content - nothing outside it is ever used.">i</button></h5>
                       <div class="small text-muted">Grounded in approved memories and profile knowledge.</div>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ if (!is_logged_in()) {
               <div class="card-body">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
                   <div>
-                    <h5 class="mb-1 feature-heading">AI Autobiography <button type="button" class="feature-info" aria-label="About AI Autobiography" data-tooltip="AI reads the memories, milestones, and posts you have approved, then drafts each chapter in a natural, first-person narrative. Nothing is added to your story until you review and approve it â€” you can edit, regenerate, or leave any chapter untouched.">i</button></h5>
+                    <h5 class="mb-1 feature-heading">AI Autobiography <button type="button" class="feature-info" aria-label="About AI Autobiography" data-tooltip="AI reads the memories, milestones, and posts you have approved, then drafts each chapter in a natural, first-person narrative. Nothing is added to your story until you review and approve it - you can edit, regenerate, or leave any chapter untouched.">i</button></h5>
                     <div class="small text-muted">Build a structured life story from approved AI knowledge sources.</div>
                   </div>
                   <div class="d-flex flex-wrap gap-2">
@@ -273,7 +273,7 @@ if (!is_logged_in()) {
             <div class="card mb-4" id="personalized-messages-card">
               <div class="card-body">
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-                  <div><h5 class="mb-1 feature-heading">Personalized AI Messages <button type="button" class="feature-info" aria-label="About Personalized AI Messages" data-tooltip="Draft a message yourself or have AI write it for you, choose an email or post, then set the date it should go out. AI Messages holds it securely and delivers it automatically on that date â€” you can edit or cancel any message anytime before it sends.">i</button></h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
+                  <div><h5 class="mb-1 feature-heading">Personalized AI Messages <button type="button" class="feature-info" aria-label="About Personalized AI Messages" data-tooltip="Draft a message yourself or have AI write it for you, choose an email or post, then set the date it should go out. AI Messages holds it securely and delivers it automatically on that date - you can edit or cancel any message anytime before it sends.">i</button></h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
                   <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-message-form-wrap">New message</button>
                 </div>
                 <div class="collapse show" id="personalized-message-form-wrap">
@@ -525,7 +525,3 @@ if (!is_logged_in()) {
 </body>
 
 </html>
-
-
-
-

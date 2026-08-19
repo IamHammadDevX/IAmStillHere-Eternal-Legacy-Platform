@@ -4131,3 +4131,8 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   #timeline-container .timeline-children { margin-left:.15rem; padding-left:.95rem; }
   #timeline-container .timeline-children .timeline-child-item { padding:.85rem .8rem; }
 }
+/* Logo keeps hover help without a visible navbar info icon */
+.home-brand[data-tooltip] { position:relative; }
+.home-brand[data-tooltip]::after { content:attr(data-tooltip); position:absolute; z-index:10000; left:0; top:calc(100% + .7rem); width:min(330px,78vw); padding:.8rem .9rem; border-radius:11px; background:#241238; color:#fff; font:500 .78rem/1.5 Inter,Arial,sans-serif; text-align:left; box-shadow:0 12px 28px rgba(36,18,56,.28); opacity:0; visibility:hidden; transform:translateY(-.35rem); transition:.15s ease; pointer-events:none; }
+.home-brand[data-tooltip]:hover::after, .home-brand[data-tooltip]:focus-within::after { opacity:1; visibility:visible; transform:translateY(0); }
+@media(max-width:575.98px){.home-brand[data-tooltip]::after{position:fixed;left:8px;right:auto;top:4.25rem;width:calc(100vw - 16px);max-width:calc(100vw - 16px);box-sizing:border-box;}}
