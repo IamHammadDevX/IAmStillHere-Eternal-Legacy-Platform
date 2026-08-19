@@ -4177,3 +4177,16 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .dashboard-page .dashboard-shell .nav-tabs .nav-item { display:block !important; flex:0 0 auto !important; }
   .dashboard-page .dashboard-shell .nav-tabs .nav-link { width:auto !important; white-space:nowrap !important; }
 }
+/* iOS-safe post composer layout */
+#post-composer #post-form { min-width:0; }
+#post-composer #post-form .btn-group { max-width:100%; }
+@media (max-width:575.98px) {
+  #post-composer #post-form > .d-flex { display:grid !important; grid-template-columns:minmax(0,1fr) auto; gap:.5rem; align-items:center !important; }
+  #post-composer #post-form #post-privacy { min-width:0; width:100%; }
+  #post-composer #post-form #post-media { min-width:0; width:100%; font-size:.75rem; }
+  #post-composer #post-form button[type="submit"] { min-width:4.4rem; margin-left:0 !important; }
+  #post-composer .btn-group { display:flex; width:100%; }
+  #post-composer .btn-group label[for="post-mode-now"],
+  #post-composer .btn-group label[for="post-mode-schedule"] { flex:1 1 0; min-width:0 !important; padding:.65rem .35rem; text-align:center; font-size:.78rem; }
+  #post-composer #post-schedule-fields { margin-inline:0; }
+}

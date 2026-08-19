@@ -1,4 +1,4 @@
-const POSTS_API = '/backend/posts';
+﻿const POSTS_API = '/backend/posts';
 let postPage = 1;
 let postTotalPages = 1;
 let postPrivacyWidget = null;
@@ -38,7 +38,7 @@ function initInlineEmojiPicker(button, target) {
         let picker = button.parentElement.querySelector('.post-emoji-picker');
         if (picker) { picker.remove(); return; }
         picker = document.createElement('div'); picker.className = 'post-emoji-picker post-comment-emoji-picker';
-        ['❤️','😊','😂','😢','🙏','🎉','✨','🌸','🕊️','💜'].forEach(emoji => {
+        ['â¤ï¸','ðŸ˜Š','ðŸ˜‚','ðŸ˜¢','ðŸ™','ðŸŽ‰','âœ¨','ðŸŒ¸','ðŸ•Šï¸','ðŸ’œ'].forEach(emoji => {
             const item = document.createElement('button'); item.type = 'button'; item.className = 'post-emoji-option'; item.textContent = emoji; item.title = `Add ${emoji}`;
             item.addEventListener('click', () => { target.value += emoji; picker.remove(); target.focus(); }); picker.appendChild(item);
         });
@@ -52,7 +52,7 @@ function initPostEditor(){
         let picker=document.querySelector('.post-emoji-picker');
         if(picker){picker.remove();return;}
         picker=document.createElement('div'); picker.className='post-emoji-picker';
-        ['❤️','😊','😂','😢','🙏','🎉','✨','🌸','🕊️','💜'].forEach(emoji=>{
+        ['â¤ï¸','ðŸ˜Š','ðŸ˜‚','ðŸ˜¢','ðŸ™','ðŸŽ‰','âœ¨','ðŸŒ¸','ðŸ•Šï¸','ðŸ’œ'].forEach(emoji=>{
             const item=document.createElement('button'); item.type='button'; item.className='post-emoji-option'; item.textContent=emoji; item.title=`Add ${emoji}`;
             item.addEventListener('click',()=>{document.execCommand('insertText',false,emoji);picker.remove();document.getElementById('post-body')?.focus();}); picker.appendChild(item);
         });
@@ -89,7 +89,7 @@ function enhancePostComposerForScheduling(){
     const form=document.getElementById('post-form'); if(!form||form.dataset.scheduleReady==='1')return; form.dataset.scheduleReady='1';
     const toolbar=form.querySelector('.d-flex'); if(!toolbar)return;
     const wrap=document.createElement('div'); wrap.className='border rounded p-2 my-2 bg-light';
-    wrap.innerHTML='<div class="d-flex flex-wrap gap-2 align-items-center mb-2"><div class="btn-group btn-group-sm" role="group"><input type="radio" class="btn-check" name="post-mode" id="post-mode-now" value="now" checked><label class="btn btn-outline-primary" for="post-mode-now">Post Now</label><input type="radio" class="btn-check" name="post-mode" id="post-mode-schedule" value="schedule"><label class="btn btn-outline-primary" for="post-mode-schedule">Schedule</label></div></div><div id="post-schedule-fields" class="row g-2 d-none"><div class="col-md-4"><label class="form-label small">Trigger</label><select id="post-schedule-trigger" class="form-select form-select-sm"><option value="specific_datetime">Specific date/time</option><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="custom_recurring">Recurring date</option><option value="linked_milestone_event">Milestone/Event</option></select></div><div class="col-md-4"><label class="form-label small">Date/time</label><input id="post-schedule-at" type="datetime-local" class="form-control form-control-sm"></div><div class="col-md-4"><label class="form-label small" id="post-linked-id-label">Linked ID optional</label><select id="post-linked-type" class="form-select form-select-sm mb-1"><option value="event">Event ID</option><option value="milestone">Milestone ID</option></select><select id="post-linked-id" class="form-select form-select-sm"><option value="">Choose an event or milestone</option></select></div></div>';
+    wrap.innerHTML='<div class="d-flex flex-wrap gap-2 align-items-center mb-2"><div class="btn-group btn-group-sm" role="group"><input type="radio" class="btn-check" name="post-mode" id="post-mode-now" value="now" checked><label class="btn btn-outline-primary" for="post-mode-now">Publish</label><input type="radio" class="btn-check" name="post-mode" id="post-mode-schedule" value="schedule"><label class="btn btn-outline-primary" for="post-mode-schedule">Schedule</label></div></div><div id="post-schedule-fields" class="row g-2 d-none"><div class="col-md-4"><label class="form-label small">Trigger</label><select id="post-schedule-trigger" class="form-select form-select-sm"><option value="specific_datetime">Specific date/time</option><option value="birthday">Birthday</option><option value="anniversary">Anniversary</option><option value="custom_recurring">Recurring date</option><option value="linked_milestone_event">Milestone/Event</option></select></div><div class="col-md-4"><label class="form-label small">Date/time</label><input id="post-schedule-at" type="datetime-local" class="form-control form-control-sm"></div><div class="col-md-4"><label class="form-label small" id="post-linked-id-label">Linked ID optional</label><select id="post-linked-type" class="form-select form-select-sm mb-1"><option value="event">Event ID</option><option value="milestone">Milestone ID</option></select><select id="post-linked-id" class="form-select form-select-sm"><option value="">Choose an event or milestone</option></select></div></div>';
     toolbar.parentNode.insertBefore(wrap,toolbar);
     document.querySelectorAll('[name="post-mode"]').forEach(r=>r.addEventListener('change',()=>document.getElementById('post-schedule-fields').classList.toggle('d-none',document.querySelector('[name="post-mode"]:checked').value!=='schedule')));
     const trigger=document.getElementById('post-schedule-trigger');
@@ -117,7 +117,7 @@ async function loadScheduledPosts(){
     try{const data=await fetch(POSTS_API+'/scheduled_list.php',{cache:'no-store'}).then(r=>r.json());const list=document.getElementById('scheduled-posts-list');const rows=data.data?.scheduled_posts||[];scheduledPostsCache=rows;list.innerHTML=rows.length?rows.map(renderScheduledPostRow).join(''):'No scheduled posts.';}catch(e){document.getElementById('scheduled-posts-list').textContent='Unable to load scheduled posts.';}
 }
 function renderScheduledPostRow(p){
-    const actions=p.status==='scheduled'?`<button class="btn btn-link btn-sm p-0 me-2" onclick="editScheduledPost(${p.id})">Edit</button><button class="btn btn-link btn-sm p-0 me-2" onclick="publishScheduledPostNow(${p.id})">Publish now</button><button class="btn btn-link btn-sm p-0 text-danger" onclick="cancelScheduledPost(${p.id})">Cancel</button>`:'';
+    const actions=p.status==='scheduled'?`<button class="btn btn-link btn-sm p-0 me-2" onclick="editScheduledPost(${p.id})">Edit</button><button class="btn btn-link btn-sm p-0 me-2" onclick="publishScheduledPostNow(${p.id})">Publish</button><button class="btn btn-link btn-sm p-0 text-danger" onclick="cancelScheduledPost(${p.id})">Cancel</button>`:'';
     return `<div class="border rounded p-2 mb-2"><div class="d-flex justify-content-between gap-2"><strong>${escapeHtml(p.body).slice(0,80)}</strong><span class="badge bg-secondary">${escapeHtml(p.status)}</span></div><div>${escapeHtml(postUtcToLocal(p.trigger_at))}  -  ${escapeHtml(p.privacy_level)}</div>${actions}</div>`;
 }
 function editScheduledPost(id){
@@ -332,7 +332,7 @@ async function renderPostComments(container, postId, comments, total) {
         const group = el('div', 'post-comment-composer');
         const input = document.createElement('input');
         input.className = 'form-control'; input.placeholder = 'Write a comment...'; input.maxLength = 2000; input.required = true;
-        const emojiButton = el('button', 'btn btn-light post-comment-emoji', '😊'); emojiButton.type = 'button'; emojiButton.title = 'Add emoji';
+        const emojiButton = el('button', 'btn btn-light post-comment-emoji', 'ðŸ˜Š'); emojiButton.type = 'button'; emojiButton.title = 'Add emoji';
         const button = el('button', 'btn btn-primary', 'Post'); button.type = 'submit';
         group.appendChild(input); group.appendChild(emojiButton); group.appendChild(button); form.appendChild(group);
         initInlineEmojiPicker(emojiButton, input);
@@ -422,3 +422,4 @@ function initPostsFeatureWhenReady(attempt = 0) {
 document.addEventListener('DOMContentLoaded', () => {
     initPostsFeatureWhenReady();
 });
+
