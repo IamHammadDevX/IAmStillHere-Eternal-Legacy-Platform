@@ -1,287 +1,122 @@
-# IAmStillHere - Memorial Social Networking Platform
-
-A digital memorial platform built with PHP and PostgreSQL that allows users to honor loved ones by preserving memories, creating timelines, and sharing tributes.
-
-## 🎯 Features
-
-### User Authentication & Roles
-- **Registration & Login** with secure password hashing (bcrypt)
-- **Three User Roles:**
-  - **Admin**: Full access to manage users, content, and view activity reports
-  - **Registered Client**: Create memorials, upload content, manage privacy
-  - **Public Visitor**: View public memorials and leave tributes
-
-### Core Functionality
-
-#### 1. Memory Management
-- Upload photos, videos, and documents
-- Add titles, descriptions, and dates
-- Privacy controls (Public, Family Only, Private)
-- File type validation and size limits
-- Organized storage in `/data/uploads/`
-
-#### 2. Timeline & Milestones
-- Create life event milestones
-- Categorize events (Birth, Education, Career, etc.)
-- Visual timeline display
-- Privacy-controlled visibility
-
-#### 3. Scheduled Events
-- Schedule future messages and posts
-- Set specific dates and times
-- Automatic publishing system
-- Privacy level settings
-
-#### 4. Tributes & Memorial Wall
-- Public visitors can leave tributes
-- Comment moderation system
-- Memorial page with all content
-- Family and friends can share memories
-
-#### 5. Privacy Control System
-- **Public**: Visible to everyone
-- **Family**: Only visible to designated family members
-- **Private**: Only visible to content owner
-
-#### 6. Admin Dashboard
-- User management (suspend/activate accounts)
-- Content moderation
-- Activity log tracking
-- System statistics
-
-## 🛠️ Tech Stack
-
-- **Backend**: PHP 8.4
-- **Database**: PostgreSQL (compatible with MySQL)
-- **Frontend**: Bootstrap 5, Vanilla JavaScript
-- **Security**: PDO prepared statements, password hashing, input sanitization
-
-## 📁 Project Structure
-
-```
-IAmStillHere/
-├── backend/
-│   ├── auth/              # Authentication (login, register, logout, session)
-│   ├── memories/          # Memory upload and listing
-│   ├── milestones/        # Timeline and milestone management
-│   ├── events/            # Scheduled events
-│   ├── tributes/          # Public tributes
-│   └── admin/             # Admin functions
-├── frontend/
-│   ├── css/
-│   │   └── style.css      # Custom memorial theme
-│   ├── js/
-│   │   ├── auth.js        # Authentication helpers
-│   │   └── dashboard.js   # Dashboard functionality
-│   ├── login.php          # Login page
-│   ├── register.php       # Registration page
-│   ├── dashboard.php      # User dashboard
-│   └── admin.php          # Admin panel
-├── config/
-│   ├── database.php       # Database connection
-│   └── config.php         # App configuration
-├── data/
-│   └── uploads/           # File uploads (photos/videos/documents)
-├── index.php              # Homepage
-├── schema.sql             # Database schema
-└── README.md
-
-```
-
-## 🚀 Installation & Setup
-
-### Prerequisites
-- PHP 8.x
-- PostgreSQL 5.7+ (or MySQL 5.7+)
-- Web server (Apache/Nginx) or PHP built-in server
-
-### Step 1: Clone Repository
-```bash
-git clone <repository-url>
-cd IAmStillHere
-```
+# IamAlwaysHere
 
-### Step 2: Database Setup
+IamAlwaysHere is a privacy-first social networking and digital legacy platform for preserving life stories, connecting families, sharing memories, and preparing meaningful communications for the future.
 
-The database schema is already created and configured. The application uses PostgreSQL with environment variables:
-- `PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `PGPORT`
+Platform combines memorial profiles, media-rich memories, personal timelines, family relationships, tributes, encrypted document storage, scheduled messages, and approved-source AI experiences in one responsive product.
 
-If you need to recreate the database:
-```bash
-# Execute schema (if needed)
-psql -h $PGHOST -p $PGPORT -U $PGUSER -d $PGDATABASE -f schema.sql
-```
-
-### Step 3: Configure Environment
-
-Database credentials are automatically loaded from environment variables. No additional configuration needed.
-
-### Step 4: Set Permissions
-```bash
-chmod 755 -R data/uploads/
-```
-
-### Step 5: Start Server
+## Product capabilities
 
-**Development (PHP Built-in Server):**
-```bash
-php -S 0.0.0.0:5000
-```
-
-**Production (Apache/Nginx):**
-Configure your virtual host to point to the project root directory.
+- Personal and memorial profiles with granular visibility controls
+- Photo, video, document, and formatted-post memories
+- Folders, albums, comments, reactions, and family connections
+- Expandable life timelines with milestones and child updates
+- Tributes and remembrance messages
+- Scheduled events, posts, and personalized future messages
+- Shared journeys and collaborative family storytelling
+- AI Avatar grounded only in user-approved knowledge sources
+- AI-assisted autobiography drafting and chapter regeneration
+- Secure Vault with encrypted documents and email-verified downloads
+- Role-based administration, moderation, audit logs, and AI-usage tracking
+- Responsive interfaces for desktop, Android, iOS, and tablets
 
-### Step 6: Access Application
-- Homepage: `http://localhost:5000/`
-- Login: `http://localhost:5000/frontend/login.php`
+## Privacy and trust model
 
-**⚠️ IMPORTANT: Change the default admin password after first login!**
-
-## 📊 Database Schema
-
-### Main Tables
-- **users** - User accounts and profiles
-- **memories** - Photos, videos, documents
-- **milestones** - Timeline events
-- **scheduled_events** - Future messages/posts
-- **tributes** - Public comments and tributes
-- **family_members** - Family access control
-- **activity_log** - System activity tracking
-- **sessions** - Session management
-
-## 🔒 Security Features
+Content can be public, family-only, shared with selected users, or private. Server-side authorization remains authoritative; client-side visibility is never an access-control boundary.
 
-1. **Password Security**
-   - bcrypt password hashing
-   - Minimum 8 character requirement
-   - Secure session management
-
-2. **Input Validation**
-   - Sanitized inputs (htmlspecialchars, strip_tags)
-   - Email validation
-   - File type and size validation
-
-3. **SQL Injection Prevention**
-   - PDO prepared statements throughout
-   - Parameterized queries only
-
-4. **Access Control**
-   - Role-based permissions
-   - Privacy level enforcement
-   - Session timeout (1 hour)
+Sensitive workflows use CSRF validation, PDO prepared statements, password hashing, session checks, file validation, audit logging, and verification-code gates. Vault documents use authenticated encryption before storage.
 
-## 🌐 API Endpoints
-
-### Authentication
-- `POST /backend/auth/login.php` - User login
-- `POST /backend/auth/register.php` - User registration
-- `GET /backend/auth/logout.php` - User logout
-- `GET /backend/auth/check_session.php` - Check login status
+AI features use approved platform knowledge sources. Generated content remains reviewable by account owners and is not legal, medical, or financial advice.
 
-### Memories
-- `POST /backend/memories/upload.php` - Upload memory
-- `GET /backend/memories/list.php?user_id={id}` - List memories
-
-### Milestones
-- `POST /backend/milestones/create.php` - Create milestone
-- `GET /backend/milestones/list.php?user_id={id}` - List milestones
+## Technology
 
-### Events
-- `POST /backend/events/create.php` - Schedule event
+- PHP 8+
+- MySQL with PDO
+- Bootstrap 5 and Bootstrap Icons
+- Vanilla JavaScript and Fetch API
+- PHPMailer
+- OpenAI-compatible chat and embedding providers
+- Apache/cPanel-compatible deployment
 
-### Tributes
-- `POST /backend/tributes/create.php` - Add tribute
-- `GET /backend/tributes/list.php?memorial_user_id={id}` - List tributes
+## Repository structure
 
-### Admin
-- `GET /backend/admin/users.php` - List all users
-- `PUT /backend/admin/users.php` - Update user status
+- backend: JSON endpoints, domain services, email, AI, and Vault logic
+- config: application and database configuration
+- data: runtime uploads and protected application data
+- docs: project documentation
+- frontend: PHP views, JavaScript, CSS, and image assets
+- scripts: maintenance and operational scripts
+- schema.sql: database schema
+- TESTING.md: test and QA guidance
+- LOCAL_SETUP.md: local environment instructions
 
-## 🎨 Customization
+## Local setup
 
-### Theme Colors
-Edit `/frontend/css/style.css`:
-```css
-:root {
-    --memorial-purple: #9b59b6;
-    --memorial-blue: #3498db;
-}
-```
+Requirements:
 
-### Upload Limits
-Edit `/config/config.php`:
-```php
-define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB
-```
+- PHP 8+ with PDO MySQL, OpenSSL, cURL, mbstring, and fileinfo
+- MySQL 5.7+ or MySQL 8+
+- Apache, Nginx, or PHP development server
+- SMTP credentials for email verification
+- AI provider key when AI features are enabled
 
-## 📱 Responsive Design
+Installation:
 
-The application is fully responsive using Bootstrap 5:
-- Mobile-friendly navigation
-- Adaptive card layouts
-- Touch-optimized controls
-- Responsive tables and forms
+1. Clone repository.
+2. Create MySQL database and import schema.sql.
+3. Configure database, mail, application URL, session, and AI settings.
+4. Make runtime upload directories writable by web-server user.
+5. Serve project through HTTPS in production.
 
-## 🔧 Troubleshooting
+Read LOCAL_SETUP.md for environment-specific details.
 
-### File Upload Issues
-1. Check folder permissions: `chmod 755 -R data/uploads/`
-2. Verify `upload_max_filesize` in php.ini
-3. Check `post_max_size` in php.ini
+Never commit .env, credentials, API keys, production logs, user uploads, or encryption secrets.
 
-### Database Connection Issues
-1. Verify environment variables are set
-2. Check PostgreSQL service is running
-3. Verify credentials in config
+## Development
 
-### Session Issues
-1. Ensure sessions are enabled in php.ini
-2. Check session save path permissions
-3. Verify SESSION_SECRET environment variable
+Start local server with: php -S 127.0.0.1:5000
 
-## 🚀 Deployment (cPanel Shared Hosting)
+PHP development server is not for production. Production requires HTTPS, secure cookies, restricted file permissions, protected runtime directories, disabled error display, backups, and tested scheduled jobs.
 
-1. **Upload Files**
-   - Upload all files to public_html or subdirectory
+## Testing
 
-2. **Database Setup**
-   - Create PostgreSQL/MySQL database via cPanel
-   - Update config/database.php with credentials
-   - Import schema.sql via phpMyAdmin
+Run php -l on changed PHP files and node --check on changed JavaScript files. Read TESTING.md for feature-level QA.
 
-3. **Set Permissions**
-   ```bash
-   chmod 755 data/uploads
-   chmod 644 config/config.php
-   ```
+Security-sensitive changes must test successful requests plus unauthorized, invalid-CSRF, expired-code, invalid-file, and cross-user access cases.
 
-4. **Configure .htaccess** (Apache)
-   ```apache
-   RewriteEngine On
-   RewriteCond %{REQUEST_FILENAME} !-f
-   RewriteCond %{REQUEST_FILENAME} !-d
-   ```
+## API conventions
 
-## 📄 License
+Backend endpoints live under backend and generally return JSON. Authenticated mutations must validate session state, authorization, request method, CSRF token, input shape, and resource ownership on server.
 
-This project is developed for memorial and tribute purposes. Please use respectfully.
+Undocumented endpoints are not a stable public API.
 
-## 🤝 Support
+## Deployment checklist
 
-For issues or questions:
-1. Check the troubleshooting section
-2. Review error logs in your server
-3. Ensure all dependencies are installed
+- Enforce HTTPS and secure session cookies
+- Keep secrets outside web root and source control
+- Disable PHP error display
+- Block script execution in upload paths
+- Configure SMTP and scheduled jobs
+- Back up database, Vault data, and encryption material
+- Review upload and request-size limits
+- Verify robots.txt, privacy policy, and Terms links
+- Smoke-test registration, login, uploads, privacy, AI, email, and Vault
 
-## 🎯 Future Enhancements
+## Responsible use
 
-- Email notifications for tributes
-- Advanced search and filtering
-- Photo gallery with lightbox
-- User profile customization
-- Data export functionality
-- Email integration for scheduled posts
+Platform may contain sensitive personal, memorial, and family information. Deployers remain responsible for consent, retention, privacy compliance, moderation, backups, recovery, and applicable law.
 
----
+Report security issues privately to project owner. Do not publish exploit details.
 
-**IAmStillHere** - Honoring Lives, Preserving Memories Forever 💜
+## Contributing
+
+1. Create focused branch.
+2. Preserve privacy and authorization behavior.
+3. Avoid unrelated formatting changes.
+4. Add tests for behavior changes.
+5. Document database and deployment requirements.
+
+## License
+
+Licensed under MIT License. See LICENSE.
+
+Copyright (c) 2026 SV mobile teleshoppe pvt. ltd.
