@@ -281,9 +281,9 @@ if (!is_logged_in()) {
               <div class="card-body">
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
                   <div><h5 class="mb-1 feature-heading">Personalized AI Messages <button type="button" class="feature-info" aria-label="About Personalized AI Messages" data-tooltip="Draft a message yourself or have AI write it for you, choose an email or post, then set the date it should go out. AI Messages holds it securely and delivers it automatically on that date - you can edit or cancel any message anytime before it sends.">i</button></h5><div class="small text-muted">Generate owner-approved future messages for birthdays, weddings, graduations, and milestones.</div></div>
-                  <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-message-form-wrap">New message</button>
+                  <button class="btn btn-primary btn-sm pm-owner-only" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-message-form-wrap">New message</button>
                 </div>
-                <div class="collapse show" id="personalized-message-form-wrap">
+                <div class="collapse show pm-owner-only" id="personalized-message-form-wrap">
                   <form id="personalized-message-form" class="row g-2 mb-3">
                     <input type="hidden" id="pm-id">
                     <div class="col-md-4"><label class="form-label small">Recipient</label><select id="pm-recipient-user" class="form-select"><option value="">External email / wall post</option></select></div>
@@ -517,7 +517,7 @@ if (!is_logged_in()) {
   <script src="js/posts.js?v=2026081910"></script>
   <script src="js/ai_avatar.js?v=2026082002"></script>
   <script src="js/ai_autobiography.js?v=2026082002"></script>
-  <script src="js/personalized_messages.js?v=2026081801"></script>
+  <script src="js/personalized_messages.js?v=2026082001"></script>
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>
   <script src="js/journeys.js?v=2026081601"></script>

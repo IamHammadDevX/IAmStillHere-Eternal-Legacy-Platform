@@ -2,6 +2,14 @@
 require_once __DIR__ . '/../_ai_helpers.php';
 require_once __DIR__ . '/../../services/AIPersonalizedMessageService.php';
 function ai_pm_service(PDO $db): AIPersonalizedMessageService { return new AIPersonalizedMessageService($db); }
+function ai_pm_require_owner(array $data, int $viewer): bool {
+    $profileOwner = (int)($data['owner_id'] ?? 0);
+    if ($profileOwner <= 0 || $profileOwner !== $viewer) {
+        ApiResponse::forbidden('Only the profile owner can manage AI messages.');
+        return false;
+    }
+    return true;
+}
 function ai_pm_error(Throwable $e,string $op): void {
     $c=$e->getMessage();
     if($c==='ai_message_forbidden'){ApiResponse::forbidden();return;}

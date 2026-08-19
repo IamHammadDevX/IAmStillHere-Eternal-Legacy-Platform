@@ -77,6 +77,13 @@ class AIPersonalizedMessageService
         $s->execute(['owner'=>$owner]); return array_map([$this,'format'],$s->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function listScheduledForViewer(int $owner): array
+    {
+        $s=$this->db->prepare("SELECT pm.id,pm.owner_id,pm.recipient_user_id,pm.recipient_name,pm.event_type,pm.trigger_at,pm.delivery_method,pm.edited_message,pm.generated_message,pm.status,pm.created_at,pm.updated_at,u.full_name AS recipient_user_name FROM ai_personalized_messages pm LEFT JOIN users u ON u.id=pm.recipient_user_id WHERE pm.owner_id=:owner AND pm.deleted_at IS NULL AND pm.status IN ('scheduled','sent') ORDER BY pm.trigger_at ASC,pm.id DESC LIMIT 50" );
+        $s->execute(['owner'=>$owner]);
+        return array_map([$this,'format'],$s->fetchAll(PDO::FETCH_ASSOC));
+    }
+
     public function recipients(int $owner): array
     {
         $this->requireOwner($owner);
