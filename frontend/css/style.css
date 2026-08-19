@@ -4353,3 +4353,5 @@ body .navbar .dropdown-item {
   body .navbar .nav-link,
   body .navbar .dropdown-item { font-size:.95rem!important; }
 }
+/* Admin per-user AI token usage. */
+.admin-page .admin-token-usage { display:inline-flex; align-items:center; justify-content:center; min-width:5.5rem; padding:.38rem .65rem; border:1px solid #e2d3ef; border-radius:999px; color:#6b2fa0; background:#f8f3fb; font-weight:800; font-variant-numeric:tabular-nums; cursor:help; }

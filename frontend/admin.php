@@ -8,7 +8,7 @@
     <title>Admin Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081918">
+    <link rel="stylesheet" href="css/style.css?v=2026081919">
 </head>
 
 <body class="admin-page">
@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="admin-panel" id="users-tab" hidden>
-                <div class="card"><div class="card-header d-flex flex-column flex-md-row gap-2 justify-content-between"><h5 class="mb-0">Users</h5><div class="d-flex gap-2"><input id="admin-user-search" class="form-control form-control-sm" placeholder="Search users"><select id="admin-user-status" class="form-select form-select-sm"><option value="">All</option><option value="active">Active</option><option value="suspended">Suspended</option></select><button class="btn btn-sm btn-outline-secondary" id="admin-user-refresh">Refresh</button></div></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Memory Used</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-table-body"><tr><td colspan="9">Loading...</td></tr></tbody></table></div><div id="users-pagination" class="admin-pagination mt-3"></div></div></div></div>
+                <div class="card"><div class="card-header d-flex flex-column flex-md-row gap-2 justify-content-between"><h5 class="mb-0">Users</h5><div class="d-flex gap-2"><input id="admin-user-search" class="form-control form-control-sm" placeholder="Search users"><select id="admin-user-status" class="form-select form-select-sm"><option value="">All</option><option value="active">Active</option><option value="suspended">Suspended</option></select><button class="btn btn-sm btn-outline-secondary" id="admin-user-refresh">Refresh</button></div></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Memory Used</th><th>AI Tokens Used</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-table-body"><tr><td colspan="10">Loading...</td></tr></tbody></table></div><div id="users-pagination" class="admin-pagination mt-3"></div></div></div></div>
             </div>
             <div class="admin-panel" id="content-tab" hidden><div class="card"><div class="card-header">Content / Moderation</div><div class="card-body" id="admin-content-status">Loading...</div></div></div>
             <div class="admin-panel" id="journeys-tab" hidden><div class="card"><div class="card-header">Journeys</div><div class="card-body" id="admin-journey-status">Loading...</div></div></div>
@@ -144,7 +144,7 @@
     <script src="js/auth.js"></script>
     <script src="js/search.js"></script>
 
-        <script src="js/admin_dashboard.js?v=2026081914"></script>
+        <script src="js/admin_dashboard.js?v=2026081919"></script>
 </body>
 
 </html>
