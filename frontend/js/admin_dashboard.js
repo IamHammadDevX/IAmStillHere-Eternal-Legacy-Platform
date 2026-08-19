@@ -1,6 +1,29 @@
 const ADMIN_API='/backend/admin';
 let adminCsrf=null;
 let adminOverview=null;
+
+function activateAdminPanel(selector, updateHash = false) {
+    const target = document.querySelector(selector);
+    if (!target) return;
+    document.querySelectorAll('.admin-page .admin-panel').forEach((panel) => {
+        panel.hidden = panel !== target;
+    });
+    document.querySelectorAll('.admin-page .admin-tab-button').forEach((button) => {
+        const selected = button.dataset.adminTarget === selector;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-selected', selected ? 'true' : 'false');
+    });
+    if (updateHash) history.replaceState(null, '', selector);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const requested = location.hash || '#overview-tab';
+    const initial = document.querySelector(requested + '.admin-panel') ? requested : '#overview-tab';
+    activateAdminPanel(initial);
+    document.querySelectorAll('.admin-page .admin-tab-button').forEach((button) => {
+        button.addEventListener('click', () => activateAdminPanel(button.dataset.adminTarget, true));
+    });
+});
 function ael(id){return document.getElementById(id);}
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function bytes(n){n=Number(n||0);if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(1)+' KB';if(n<1073741824)return (n/1048576).toFixed(1)+' MB';return (n/1073741824).toFixed(1)+' GB';}

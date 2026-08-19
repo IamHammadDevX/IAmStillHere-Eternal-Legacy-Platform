@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,7 +8,7 @@
     <title>Admin Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081701">
+    <link rel="stylesheet" href="css/style.css?v=2026081914">
 </head>
 
 <body class="admin-page">
@@ -65,35 +65,35 @@
             <div class="admin-hero-icon"><i class="bi bi-shield-check"></i></div>
         </div>
 
-        <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
-            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#overview-tab">Overview</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#users-tab">Users</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#content-tab">Content</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#automations-tab">Automations</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#ai-tab">AI</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#system-tab">System</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#activity-tab">Activity</a></li>
+        <ul class="nav admin-tabs" role="tablist" aria-label="Admin sections">
+            <li class="nav-item"><button class="admin-tab-button active" type="button" data-admin-target="#overview-tab" aria-selected="true">Overview</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#users-tab" aria-selected="false">Users</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#content-tab" aria-selected="false">Content</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#journeys-tab" aria-selected="false">Journeys</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#automations-tab" aria-selected="false">Automations</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#ai-tab" aria-selected="false">AI</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#system-tab" aria-selected="false">System</button></li>
+            <li class="nav-item"><button class="admin-tab-button" type="button" data-admin-target="#activity-tab" aria-selected="false">Activity</button></li>
         </ul>
 
         <div id="admin-alert"></div>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="overview-tab">
+        <div class="admin-content">
+            <div class="admin-panel" id="overview-tab">
                 <div id="admin-overview-cards" class="row g-3 mb-4"></div>
                 <div class="row g-3">
                     <div class="col-lg-6"><div class="card h-100"><div class="card-header">Failed Jobs</div><div class="card-body" id="admin-failed-jobs">Loading...</div></div></div>
                     <div class="col-lg-6"><div class="card h-100"><div class="card-header">Recent System Activity</div><div class="card-body" id="admin-recent-activity">Loading...</div></div></div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="users-tab">
+            <div class="admin-panel" id="users-tab" hidden>
                 <div class="card"><div class="card-header d-flex flex-column flex-md-row gap-2 justify-content-between"><h5 class="mb-0">Users</h5><div class="d-flex gap-2"><input id="admin-user-search" class="form-control form-control-sm" placeholder="Search users"><select id="admin-user-status" class="form-select form-select-sm"><option value="">All</option><option value="active">Active</option><option value="suspended">Suspended</option></select><button class="btn btn-sm btn-outline-secondary" id="admin-user-refresh">Refresh</button></div></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Memory Used</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-table-body"><tr><td colspan="9">Loading...</td></tr></tbody></table></div><div id="users-pagination" class="admin-pagination mt-3"></div></div></div></div>
             </div>
-            <div class="tab-pane fade" id="content-tab"><div class="card"><div class="card-header">Content / Moderation</div><div class="card-body" id="admin-content-status">Loading...</div></div></div>
-            <div class="tab-pane fade" id="journeys-tab"><div class="card"><div class="card-header">Journeys</div><div class="card-body" id="admin-journey-status">Loading...</div></div></div>
-            <div class="tab-pane fade" id="automations-tab"><div class="card"><div class="card-header">Automations</div><div class="card-body" id="admin-automation-status">Loading...</div></div></div>
-            <div class="tab-pane fade" id="ai-tab"><div class="card"><div class="card-header">AI Usage / Status</div><div class="card-body" id="admin-ai-status">Loading...</div></div></div>
-            <div class="tab-pane fade" id="system-tab"><div class="card"><div class="card-header">System / Integration Health</div><div class="card-body" id="admin-system-status">Loading...</div></div></div>
-            <div class="tab-pane fade" id="activity-tab"><div class="card"><div class="card-header d-flex justify-content-between"><h5 class="mb-0">Activity / Audit Logs</h5><button class="btn btn-sm btn-outline-secondary" onclick="loadAdminActivity()">Refresh</button></div><div class="card-body"><div class="table-responsive"><table class="table table-striped"><tbody id="activity-log-body"><tr><td>Loading...</td></tr></tbody></table></div><div id="activity-pagination" class="admin-pagination mt-3"></div></div></div></div></div>
+            <div class="admin-panel" id="content-tab" hidden><div class="card"><div class="card-header">Content / Moderation</div><div class="card-body" id="admin-content-status">Loading...</div></div></div>
+            <div class="admin-panel" id="journeys-tab" hidden><div class="card"><div class="card-header">Journeys</div><div class="card-body" id="admin-journey-status">Loading...</div></div></div>
+            <div class="admin-panel" id="automations-tab" hidden><div class="card"><div class="card-header">Automations</div><div class="card-body" id="admin-automation-status">Loading...</div></div></div>
+            <div class="admin-panel" id="ai-tab" hidden><div class="card"><div class="card-header">AI Usage / Status</div><div class="card-body" id="admin-ai-status">Loading...</div></div></div>
+            <div class="admin-panel" id="system-tab" hidden><div class="card"><div class="card-header">System / Integration Health</div><div class="card-body" id="admin-system-status">Loading...</div></div></div>
+            <div class="admin-panel" id="activity-tab" hidden><div class="card"><div class="card-header d-flex justify-content-between"><h5 class="mb-0">Activity / Audit Logs</h5><button class="btn btn-sm btn-outline-secondary" onclick="loadAdminActivity()">Refresh</button></div><div class="card-body"><div class="table-responsive"><table class="table table-striped"><tbody id="activity-log-body"><tr><td>Loading...</td></tr></tbody></table></div><div id="activity-pagination" class="admin-pagination mt-3"></div></div></div></div></div>
         </div></main>
     <!-- Search Users Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1">
@@ -144,7 +144,7 @@
     <script src="js/auth.js"></script>
     <script src="js/search.js"></script>
 
-        <script src="js/admin_dashboard.js?v=2026081801"></script>
+        <script src="js/admin_dashboard.js?v=2026081914"></script>
 </body>
 
 </html>
