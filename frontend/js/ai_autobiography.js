@@ -1,4 +1,4 @@
-const AI_AUTOBIO_API = '/backend/ai/autobiography';
+﻿const AI_AUTOBIO_API = '/backend/ai/autobiography';
 let aiAutobioState = {autobiography: null, sections: [], timeline: []};
 let aiAutobioBusy = false; let aiAutobioSessionReady = false;
 let aiAutobioTimelinePage = 1;
@@ -221,7 +221,8 @@ function autobioSectionTheme(sectionKey) {
     if (key.includes('wisdom') || key.includes('lesson')) return 'autobio-theme-wisdom';
     if (key.includes('legacy')) return 'autobio-theme-legacy';
     if (key.includes('family') || key.includes('relationship') || key.includes('journey') || key.includes('experience')) return 'autobio-theme-family';
-    if (key.includes('early') || key.includes('childhood')) return 'autobio-theme-early';
+    if (key.includes('childhood')) return 'autobio-theme-childhood';
+    if (key.includes('early')) return 'autobio-theme-early';
     return 'autobio-theme-early';
 }
 
@@ -285,3 +286,4 @@ function setAutobioButtons(disabled) {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAiAutobiography);
 else initAiAutobiography();
 window.initAiAutobiography = initAiAutobiography;
+

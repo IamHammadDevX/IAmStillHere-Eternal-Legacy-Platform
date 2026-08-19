@@ -4191,3 +4191,6 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   #post-composer #post-schedule-fields { margin-inline:0; }
 }
 .profile-page #events-container .past-events-section{padding:.2rem 1rem 1rem;overflow:visible}.profile-page #events-container .past-events-heading{display:flex;align-items:center;gap:.45rem;margin:0 0 1rem!important;line-height:1.25}.profile-page #events-container .past-events-heading i{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;line-height:1}@media(max-width:575.98px){.profile-page #events-container .past-events-section{padding-inline:.65rem}}
+/* Autobiography reference colors: Early Life and Childhood are distinct */
+#autobio-sections > .autobio-theme-early h6, #autobio-sections > .autobio-theme-early .card-body > .d-flex { background:linear-gradient(100deg,#ff91a5,#ffb6b8) !important; }
+#autobio-sections > .autobio-theme-childhood h6, #autobio-sections > .autobio-theme-childhood .card-body > .d-flex { background:linear-gradient(100deg,#ff9aa8,#ff79d8) !important; }
