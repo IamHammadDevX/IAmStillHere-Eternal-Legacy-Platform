@@ -326,13 +326,27 @@ body {
 }
 
 .family-grid-remove-btn {
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    top: -5px;
-    right: -5px;
-    font-size: 14px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 32px !important;
+    min-width: 32px;
+    height: 32px !important;
+    min-height: 32px;
+    padding: 0 !important;
+    top: -7px;
+    right: -7px;
+    border-radius: 50% !important;
+    font-size: 18px;
     line-height: 1;
+    z-index: 2;
+}
+
+.family-grid-remove-btn .bi,
+.family-list-remove-btn .bi {
+    display: block;
+    line-height: 1;
+    pointer-events: none;
 }
 
 .family-recent-badge {
@@ -351,6 +365,13 @@ body {
 }
 
 .family-list-remove-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0 !important;
+    border-radius: 50% !important;
     flex-shrink: 0;
 }
 
@@ -376,8 +397,13 @@ body {
         height: 44px;
     }
 
-    .family-list-remove-btn {
-        padding: 0.2rem 0.45rem;
+    .family-grid-remove-btn {
+        width: 34px !important;
+        min-width: 34px;
+        height: 34px !important;
+        min-height: 34px;
+        top: -8px;
+        right: -8px;
     }
 }
 /* Expandable family tree */
@@ -4098,7 +4124,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
   .landing-page .home-hero .home-info.is-open::before,
   .landing-page .home-brand .home-info.is-open::before { display: none !important; }
 }
-/* Timeline reference UI — presentation only; JS/API structure unchanged */
+/* Timeline reference UI ï¿½ presentation only; JS/API structure unchanged */
 #timeline-container { position:relative; padding: .25rem 0 .5rem; color:#26163a; }
 #timeline-container > .timeline-item { position:relative; padding-left:2rem; margin:0 0 2.25rem; }
 #timeline-container > .timeline-item::before { content:''; position:absolute; left:.18rem; top:.35rem; width:.72rem; height:.72rem; border:0; border-radius:50%; background:#ad56c4; box-shadow:0 0 0 4px #f3e9fb; z-index:2; }
