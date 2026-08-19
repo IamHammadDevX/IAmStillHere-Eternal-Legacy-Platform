@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026082005" />
+  <link rel="stylesheet" href="css/style.css?v=2026082006" />
 </head>
 
 <body class="profile-page app-page">
@@ -170,7 +170,10 @@ if (!is_logged_in()) {
                       <strong>Knowledge sources</strong>
                       <div class="small text-muted">Pick what AI Avatar can learn. You stay in control.</div>
                     </div>
-                    <button type="button" id="ai-avatar-build" class="btn btn-outline-primary btn-sm">Build selected</button>
+                    <div class="ai-source-header-actions">
+                      <button type="button" class="btn btn-outline-secondary btn-sm ai-source-collapse-toggle" data-bs-toggle="collapse" data-bs-target="#ai-avatar-source-results" aria-expanded="true" aria-controls="ai-avatar-source-results"><span>Sources</span><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+                      <button type="button" id="ai-avatar-build" class="btn btn-outline-primary btn-sm">Build selected</button>
+                    </div>
                   </div>
                   <div class="d-flex flex-column flex-lg-row gap-2 mb-2">
                     <input id="ai-avatar-source-search" class="form-control form-control-sm" placeholder="Search sources">
@@ -184,8 +187,10 @@ if (!is_logged_in()) {
                     </div>
                     <button type="button" id="ai-avatar-select-visible" class="btn btn-outline-secondary btn-sm text-nowrap">Select visible</button>
                   </div>
-                  <div id="ai-avatar-source-summary" class="small text-muted mb-2"></div>
-                  <div id="ai-avatar-sources" class="small text-muted ai-source-list">Loading sources...</div>
+                  <div id="ai-avatar-source-results" class="collapse show">
+                    <div id="ai-avatar-source-summary" class="small text-muted mb-2"></div>
+                    <div id="ai-avatar-sources" class="small text-muted ai-source-list">Loading sources...</div>
+                  </div>
                 </div>
                 <div id="ai-avatar-messages" class="border rounded p-3 mb-3 bg-light" style="min-height:260px;max-height:460px;overflow:auto;"></div>
                 <form id="ai-avatar-form" class="d-flex flex-column flex-md-row gap-2">

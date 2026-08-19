@@ -4435,3 +4435,14 @@ body .navbar .dropdown-item {
   .profile-page .ai-avatar-message-user .ai-avatar-bubble,
   .profile-page .ai-avatar-message-assistant .ai-avatar-bubble{max-width:calc(100% - 38px)!important;padding:.5rem .7rem!important}
 }
+/* AI knowledge source collapse control */
+.ai-source-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap}
+.ai-source-collapse-toggle{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;white-space:nowrap}
+.ai-source-collapse-toggle i{transition:transform .2s ease}
+.ai-source-collapse-toggle[aria-expanded="false"] i{transform:rotate(180deg)}
+#ai-avatar-source-results{width:100%;overflow:hidden}
+@media(max-width:575.98px){
+  .ai-source-header-actions{width:100%;justify-content:stretch}
+  .ai-source-header-actions .btn{flex:1 1 auto;min-height:40px}
+  .ai-source-collapse-toggle span{font-size:.78rem}
+}
