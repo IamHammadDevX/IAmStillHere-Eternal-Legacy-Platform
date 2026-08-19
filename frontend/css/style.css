@@ -4241,11 +4241,31 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .profile-page #world-events-status { display:none !important; }
 .timeline-delete-menu.d-none { display:none !important; }
 .tributes-heading { padding: .25rem .25rem .75rem; }
-.tribute-action-wrap { position:relative; margin-left:.5rem; }
-.tribute-actions-toggle { display:grid; place-items:center; width:2.1rem; height:2.1rem; padding:0; }
-.tribute-delete-menu { position:absolute; right:0; top:calc(100% + .35rem); z-index:30; padding:.3rem; border:1px solid #eadcf0; border-radius:10px; background:#fff; box-shadow:0 10px 24px rgba(36,18,56,.16); }
+.tribute-card-layout { display:flex; align-items:flex-start; gap:1rem; min-width:0; }
+.tribute-avatar { flex:0 0 64px; width:64px !important; height:64px !important; max-width:none !important; object-fit:cover; border:3px solid #fff; box-shadow:0 4px 12px rgba(36,18,56,.16); }
+.tribute-card-main { flex:1 1 auto; min-width:0; }
+.tribute-card-header { display:flex; align-items:center; gap:.75rem; min-width:0; }
+.tribute-identity { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem; min-width:0; }
+.tribute-identity .badge { margin-left:0 !important; }
+.tribute-date-actions { display:flex; align-items:center; gap:.65rem; margin-left:auto; flex:0 0 auto; }
+.tribute-date { max-width:11rem; text-align:right; line-height:1.35; }
+.tribute-action-wrap { position:relative; flex:0 0 auto; margin-left:0; }
+.tribute-actions-toggle { display:grid !important; place-items:center; width:2.65rem; min-width:2.65rem; height:2.65rem; padding:0 !important; border-radius:50% !important; color:#6b2fa0; border-color:#eadcf0; background:#fff; }
+.tribute-actions-toggle .bi { line-height:1; pointer-events:none; }
+.tribute-delete-menu { position:absolute; right:0; top:calc(100% + .35rem); z-index:30; padding:.3rem; border:1px solid #eadcf0; border-radius:12px; background:#fff; box-shadow:0 10px 24px rgba(36,18,56,.16); }
 .tribute-delete-menu.d-none { display:none !important; }
-.tribute-delete-menu .btn { display:grid; place-items:center; width:2rem; height:2rem; padding:0; }
+.tribute-delete-menu .btn { display:grid; place-items:center; width:2.65rem; min-width:2.65rem; height:2.65rem; padding:0; border-radius:50%; }
+@media (max-width:575.98px) {
+  .tribute-card .card-body { padding:1rem !important; }
+  .tribute-card-layout { gap:.8rem; }
+  .tribute-avatar { flex-basis:58px; width:58px !important; height:58px !important; }
+  .tribute-card-header { align-items:flex-start; flex-wrap:wrap; gap:.45rem; }
+  .tribute-identity { flex:1 1 8rem; }
+  .tribute-date-actions { width:100%; margin-left:0; justify-content:space-between; }
+  .tribute-date { max-width:none; text-align:left; }
+  .tribute-actions-toggle,
+  .tribute-delete-menu .btn { width:2.75rem; min-width:2.75rem; height:2.75rem; }
+}
 /* Upload Memory modal: clean privacy widget container */
 #uploadMemoryModal #memoryForm .privacy-component { margin-top:0; }
 #uploadMemoryModal #memoryForm .privacy-component > .form-label { margin-bottom:.35rem; }

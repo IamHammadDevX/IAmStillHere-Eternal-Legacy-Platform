@@ -1,4 +1,4 @@
-﻿const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search);
 const profileUserId = urlParams.get('user_id');
 let profileMemoriesCache = [];
 let profileMemoryFoldersCache = [];
@@ -921,26 +921,32 @@ async function loadTributes() {
 
                 div.innerHTML = `
                     <div class="card-body">
-                        <div class="d-flex align-items-start">
-                            <img src="${avatarUrl}" 
-                                 alt="${displayName}" 
-                                 class="rounded-circle me-3" 
-                                 style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #dee2e6;">
-                            <div class="flex-grow-1">
-                                <div class="d-flex align-items-center mb-2">
-                                    <strong class="text-dark">${displayName}</strong>
-                                    ${userBadge}
-                                    <small class="text-muted ms-auto">${new Date(tribute.created_at).toLocaleDateString('en-US', {
+                        <div class="tribute-card-layout">
+                            <img src="${avatarUrl}"
+                                 alt="${displayName}"
+                                 class="tribute-avatar rounded-circle">
+                            <div class="tribute-card-main">
+                                <div class="tribute-card-header mb-2">
+                                    <div class="tribute-identity">
+                                        <strong class="text-dark">${displayName}</strong>
+                                        ${userBadge}
+                                    </div>
+                                    <div class="tribute-date-actions">
+                                        <small class="text-muted tribute-date">${new Date(tribute.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit'
                 })}</small>
-                                    ${canDelete ? `
-                                        <button class="btn btn-sm btn-outline-danger ms-2" data-tribute-id="${tribute.id}">\n                                            <i class="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                    ` : ''}
+                                        ${canDelete ? `
+                                            <div class="tribute-action-wrap">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary tribute-actions-toggle" data-tribute-id="${tribute.id}" aria-label="Tribute actions" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    </div>
                                 </div>
                                 <p class="mb-0 text-secondary">${tribute.message}</p>
                             </div>
@@ -1285,5 +1291,5 @@ document.addEventListener('click', (event) => {
 
 
 
-document.addEventListener('click',event=>{const button=event.target.closest('[data-tribute-id]');if(!button)return;event.preventDefault();event.stopPropagation();let menu=button.parentElement.querySelector('.tribute-delete-menu');if(!menu){menu=document.createElement('div');menu.className='tribute-delete-menu d-none';const trash=document.createElement('button');trash.type='button';trash.className='btn btn-sm btn-outline-danger';trash.innerHTML='<i class="bi bi-trash"></i>';trash.setAttribute('aria-label','Delete tribute');trash.addEventListener('click',()=>{menu.classList.add('d-none');deleteTribute(Number(button.dataset.tributeId));});menu.appendChild(trash);button.parentElement.classList.add('tribute-action-wrap');button.parentElement.appendChild(menu);}const open=menu.classList.contains('d-none');document.querySelectorAll('.tribute-delete-menu').forEach(x=>x.classList.add('d-none'));menu.classList.toggle('d-none',!open);});
+document.addEventListener('click',event=>{const button=event.target.closest('[data-tribute-id]');if(!button)return;event.preventDefault();event.stopPropagation();const wrap=button.closest('.tribute-action-wrap');let menu=wrap.querySelector('.tribute-delete-menu');if(!menu){menu=document.createElement('div');menu.className='tribute-delete-menu d-none';const trash=document.createElement('button');trash.type='button';trash.className='btn btn-sm btn-outline-danger';trash.innerHTML='<i class="bi bi-trash"></i>';trash.setAttribute('aria-label','Delete tribute');trash.addEventListener('click',()=>{menu.classList.add('d-none');button.setAttribute('aria-expanded','false');deleteTribute(Number(button.dataset.tributeId));});menu.appendChild(trash);wrap.appendChild(menu);}const open=menu.classList.contains('d-none');document.querySelectorAll('.tribute-delete-menu').forEach(x=>x.classList.add('d-none'));document.querySelectorAll('.tribute-actions-toggle').forEach(x=>x.setAttribute('aria-expanded','false'));menu.classList.toggle('d-none',!open);button.setAttribute('aria-expanded',open?'true':'false');});
 
