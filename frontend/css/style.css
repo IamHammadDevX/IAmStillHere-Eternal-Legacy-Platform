@@ -4446,3 +4446,21 @@ body .navbar .dropdown-item {
   .ai-source-header-actions .btn{flex:1 1 auto;min-height:40px}
   .ai-source-collapse-toggle span{font-size:.78rem}
 }
+/* Cover-safe friend action contrast */
+.profile-page #cover-section #friend-action-area .btn-outline-danger{
+  color:#a71936!important;
+  background:rgba(255,255,255,.96)!important;
+  border:2px solid #dc3545!important;
+  text-shadow:none!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.7)!important;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.profile-page #cover-section #friend-action-area .btn-outline-danger:hover,
+.profile-page #cover-section #friend-action-area .btn-outline-danger:focus-visible{
+  color:#fff!important;
+  background:#c92b49!important;
+  border-color:#fff!important;
+  outline:3px solid rgba(255,255,255,.75);
+  outline-offset:2px;
+}
