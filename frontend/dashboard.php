@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081822">
+    <link rel="stylesheet" href="css/style.css?v=2026081904">
 </head>
 
 <body class="dashboard-page app-page">
@@ -154,7 +154,11 @@
                 <div class="row" id="memories-grid"></div>
             </div>
             <div class="tab-pane fade" id="timeline-tab">
-                <div id="timeline-container"></div>
+                <div class="card shadow-sm mb-3 dashboard-timeline-card">
+                    <div class="card-body">
+                        <div id="timeline-container"></div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="events-tab">
                 <div id="events-container"></div>
