@@ -938,8 +938,7 @@ async function loadTributes() {
                     minute: '2-digit'
                 })}</small>
                                     ${canDelete ? `
-                                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteTribute(${tribute.id})">
-                                            <i class="bi bi-trash"></i>
+                                        <button class="btn btn-sm btn-outline-danger ms-2" data-tribute-id="${tribute.id}">\n                                            <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                     ` : ''}
                                 </div>
@@ -1284,4 +1283,7 @@ document.addEventListener('click', (event) => {
 
 
 
+
+
+document.addEventListener('click',event=>{const button=event.target.closest('[data-tribute-id]');if(!button)return;event.preventDefault();event.stopPropagation();let menu=button.parentElement.querySelector('.tribute-delete-menu');if(!menu){menu=document.createElement('div');menu.className='tribute-delete-menu d-none';const trash=document.createElement('button');trash.type='button';trash.className='btn btn-sm btn-outline-danger';trash.innerHTML='<i class="bi bi-trash"></i>';trash.setAttribute('aria-label','Delete tribute');trash.addEventListener('click',()=>{menu.classList.add('d-none');deleteTribute(Number(button.dataset.tributeId));});menu.appendChild(trash);button.parentElement.classList.add('tribute-action-wrap');button.parentElement.appendChild(menu);}const open=menu.classList.contains('d-none');document.querySelectorAll('.tribute-delete-menu').forEach(x=>x.classList.add('d-none'));menu.classList.toggle('d-none',!open);});
 

@@ -248,6 +248,7 @@ if (!is_logged_in()) {
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
+            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Friends and family can leave tributes, condolences, stories, and memories on memorial pages. Open a memorial, choose Leave a Tribute, write your message, and submit it.">i</button></h5><p class="small text-muted mb-0">Messages, memories, and condolences shared by family and friends.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
                 <div class="card-body">
@@ -316,6 +317,7 @@ if (!is_logged_in()) {
             <div id="events-container"></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
+            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Friends and family can leave tributes, condolences, stories, and memories on memorial pages. Open a memorial, choose Leave a Tribute, write your message, and submit it.">i</button></h5><p class="small text-muted mb-0">Messages, memories, and condolences shared by family and friends.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
                 <div class="card-body">
@@ -525,6 +527,7 @@ if (!is_logged_in()) {
 </body>
 
 </html>
+
 
 
 
