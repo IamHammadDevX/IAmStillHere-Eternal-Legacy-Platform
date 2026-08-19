@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081904">
+    <link rel="stylesheet" href="css/style.css?v=2026081906">
 </head>
 
 <body class="dashboard-page app-page">
@@ -156,12 +156,24 @@
             <div class="tab-pane fade" id="timeline-tab">
                 <div class="card shadow-sm mb-3 dashboard-timeline-card">
                     <div class="card-body">
+                        <div class="dashboard-section-heading mb-4">
+                            <h5 class="mb-1">Timeline</h5>
+                            <div class="small text-muted">See your milestones and the updates within each life journey.</div>
+                        </div>
                         <div id="timeline-container"></div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="events-tab">
-                <div id="events-container"></div>
+                <div class="card shadow-sm mb-3 dashboard-events-card">
+                    <div class="card-body">
+                        <div class="dashboard-section-heading mb-4">
+                            <h5 class="mb-1">Events</h5>
+                            <div class="small text-muted">View your upcoming and past scheduled events.</div>
+                        </div>
+                        <div id="events-container"></div>
+                    </div>
+                </div>
             </div>            <div class="tab-pane fade" id="automations-tab">
                 <div class="card shadow-sm"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Event Automations</h5><button class="btn btn-primary btn-sm" type="button" onclick="openAutomationModal()">New automation</button></div><div id="automations-container"></div></div></div>
             </div>

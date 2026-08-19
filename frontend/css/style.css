@@ -4126,11 +4126,17 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 }
 /* Timeline reference UI � presentation only; JS/API structure unchanged */
 #timeline-container { position:relative; padding: .25rem 0 .5rem; color:#26163a; }
-.dashboard-page .dashboard-timeline-card { border:1px solid #ede3f3; border-radius:18px; background:#fff; overflow:visible; }
-.dashboard-page .dashboard-timeline-card > .card-body { padding:1.5rem; }
+.dashboard-page .dashboard-timeline-card,
+.dashboard-page .dashboard-events-card { border:1px solid #ede3f3; border-radius:18px; background:#fff; overflow:visible; }
+.dashboard-page .dashboard-timeline-card > .card-body,
+.dashboard-page .dashboard-events-card > .card-body { padding:1.5rem; }
+.dashboard-page .dashboard-section-heading h5 { color:#200f35; font-family:Georgia,'Times New Roman',serif; font-size:1.25rem; font-weight:600; }
 @media (max-width:575.98px) {
-  .dashboard-page .dashboard-timeline-card { border-radius:16px; }
-  .dashboard-page .dashboard-timeline-card > .card-body { padding:1rem .9rem; }
+  .dashboard-page .dashboard-timeline-card,
+  .dashboard-page .dashboard-events-card { border-radius:16px; }
+  .dashboard-page .dashboard-timeline-card > .card-body,
+  .dashboard-page .dashboard-events-card > .card-body { padding:1rem .9rem; }
+  .dashboard-page .dashboard-section-heading { margin-bottom:1.25rem !important; }
 }
 #timeline-container > .timeline-item { position:relative; padding-left:2rem; margin:0 0 2.25rem; }
 #timeline-container > .timeline-item::before { content:''; position:absolute; left:.18rem; top:.35rem; width:.72rem; height:.72rem; border:0; border-radius:50%; background:#ad56c4; box-shadow:0 0 0 4px #f3e9fb; z-index:2; }
