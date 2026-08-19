@@ -4386,3 +4386,52 @@ body .navbar .dropdown-item {
 .dashboard-page #events-container .dashboard-events-heading{display:flex;align-items:center;gap:.5rem;margin:0 0 1rem;line-height:1.3;font-size:1.05rem;font-weight:700}
 .dashboard-page #events-container .dashboard-events-heading i{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
 @media(max-width:575.98px){.dashboard-page #events-container > .dashboard-events-section{padding:.9rem .8rem}.dashboard-page #events-container .dashboard-events-heading{margin-bottom:.8rem;font-size:1rem}}
+
+/* Authoritative compact AI Avatar chat reset */
+.profile-page #ai-avatar-messages{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:min(52vh,360px)!important;
+  padding:.65rem!important;
+  gap:.55rem!important;
+  overflow-y:auto!important;
+}
+.profile-page #ai-avatar-messages > .ai-avatar-message{
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:flex-end!important;
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+}
+.profile-page .ai-avatar-message-user{justify-content:flex-end!important;align-items:flex-end!important}
+.profile-page .ai-avatar-bubble,
+.profile-page .ai-avatar-message-user .ai-avatar-bubble,
+.profile-page .ai-avatar-message-assistant .ai-avatar-bubble{
+  display:block!important;
+  flex:0 1 auto!important;
+  align-self:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:min(72%,560px)!important;
+  min-height:0!important;
+  height:auto!important;
+  block-size:auto!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  padding:.55rem .8rem!important;
+  line-height:1.4!important;
+}
+.profile-page .ai-avatar-bubble > div{min-height:0!important;height:auto!important;margin:0!important}
+@media(max-width:575.98px){
+  .profile-page #ai-avatar-messages{max-height:300px!important;padding:.55rem!important}
+  .profile-page .ai-avatar-bubble,
+  .profile-page .ai-avatar-message-user .ai-avatar-bubble,
+  .profile-page .ai-avatar-message-assistant .ai-avatar-bubble{max-width:calc(100% - 38px)!important;padding:.5rem .7rem!important}
+}
