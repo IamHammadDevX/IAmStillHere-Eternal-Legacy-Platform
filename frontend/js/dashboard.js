@@ -1228,13 +1228,3 @@ function collectAutomationPayload(){const actions=[...document.querySelectorAll(
 async function submitAutomation(e){e.preventDefault(); const err=document.getElementById('automation-error'); const save=document.getElementById('automation-save'); err.textContent=''; save.disabled=true; try{const payload=collectAutomationPayload(); const endpoint=payload.automation_id?'update':'create'; const data=await automationJson(endpoint,payload); if(!data.success)throw new Error(data.message||'Unable to save automation'); bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide(); showAlert(data.message||'Automation saved','success'); loadAutomations();}catch(ex){err.textContent=ex.message;}finally{save.disabled=false;}}
 async function setAutomationStatus(id,action){const data=await automationJson('cancel',{automation_id:id,action}); showAlert(data.message||'Done',data.success?'success':'danger'); if(data.success)loadAutomations();}
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);});
-
-
-(function initDashboardMobileTabs(){
-  const tabs=document.querySelector('.dashboard-page .dashboard-shell .nav-tabs');
-  const more=document.querySelector('.dashboard-tabs-more'); if(!tabs||!more)return;
-  const sync=()=>{const active=tabs.querySelector('.nav-link.active'); tabs.querySelectorAll('.nav-item').forEach(li=>li.classList.toggle('dashboard-tab-visible',li.contains(active))); more.querySelectorAll('.dropdown-item').forEach(a=>a.classList.toggle('active',a.getAttribute('href')===active?.getAttribute('href')));};
-  tabs.addEventListener('shown.bs.tab',sync); more.querySelectorAll('.dropdown-item').forEach(item=>item.addEventListener('click',e=>{e.preventDefault();const href=item.getAttribute('href');const target=[...tabs.querySelectorAll('.nav-link')].find(link=>link.getAttribute('href')===href);if(target) bootstrap.Tab.getOrCreateInstance(target).show();})); sync();
-})();
-
-

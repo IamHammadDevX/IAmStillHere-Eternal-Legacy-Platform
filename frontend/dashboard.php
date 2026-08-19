@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081809">
+    <link rel="stylesheet" href="css/style.css?v=2026081811">
 </head>
 
 <body class="dashboard-page app-page">
@@ -148,17 +148,6 @@
                 <a class="nav-link" data-bs-toggle="tab" href="#vault-tab">Vault</a>
             </li>
         </ul>
-        <div class="dashboard-tabs-more dropdown">
-            <button class="btn nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More dashboard sections"><i class="bi bi-three-dots-vertical"></i></button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#memories-tab">Memories</a></li>
-                <li><a class="dropdown-item" href="#timeline-tab">Timeline</a></li>
-                <li><a class="dropdown-item" href="#events-tab">Events</a></li>
-                <li><a class="dropdown-item" href="#automations-tab">Automations</a></li>
-                <li><a class="dropdown-item" href="#vault-tab">Vault</a></li>
-            </ul>
-        </div>
-
         <div class="tab-content">
             <div class="tab-pane fade show active" id="memories-tab">
                 <div class="card mb-3"><div class="card-body"><div class="d-flex flex-wrap gap-2 justify-content-between align-items-center"><strong>Memory folders</strong><div class="d-flex gap-2"><input id="folder-search" class="form-control form-control-sm" placeholder="Search folders"><button class="btn btn-outline-primary memory-folder-add" id="new-folder-button" type="button"><i class="bi bi-folder-plus" aria-hidden="true"></i><span>New folder</span></button></div></div><div id="memory-folder-breadcrumb" class="small text-muted mt-2">All memories</div><div id="memory-folders" class="d-flex flex-wrap gap-2 mt-2"></div></div></div>
@@ -390,17 +379,9 @@
 <div class="modal fade" id="editMemoryModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit memory</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editMemoryForm"><input type="hidden" id="edit-memory-id"><label class="form-label">Title</label><input id="edit-memory-title" class="form-control mb-2" maxlength="255" required><label class="form-label">Description</label><textarea id="edit-memory-description" class="form-control mb-2" maxlength="10000"></textarea><label class="form-label">Memory date</label><input id="edit-memory-date" type="date" class="form-control mb-2"><label class="form-label">Folder</label><select id="edit-memory-folder" class="form-select mb-3"><option value="0">No folder</option></select><div id="edit-memory-privacy"></div><div id="edit-memory-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="editMemoryForm" id="edit-memory-save" class="btn btn-primary">Save changes</button></div></div></div></div>
 <div class="modal fade" id="editMilestoneModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit milestone</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editMilestoneForm"><input type="hidden" id="edit-milestone-id"><label class="form-label">Title</label><input id="edit-milestone-title" class="form-control mb-2" maxlength="255" required><label class="form-label">Description</label><textarea id="edit-milestone-description" class="form-control mb-2" maxlength="10000"></textarea><label class="form-label">Date</label><input id="edit-milestone-date" type="date" class="form-control mb-2" required><label class="form-label">Category</label><input id="edit-milestone-category" class="form-control mb-3" maxlength="100"><div id="edit-milestone-privacy"></div><div id="edit-milestone-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="editMilestoneForm" id="edit-milestone-save" class="btn btn-primary">Save changes</button></div></div></div></div>
 <div class="modal fade" id="editFolderModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit folder</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editFolderForm"><input type="hidden" id="edit-folder-id"><label class="form-label">Name</label><input id="edit-folder-name" class="form-control mb-2" maxlength="150" required><label class="form-label">Description</label><textarea id="edit-folder-description" class="form-control mb-2"></textarea><label class="form-label">Parent folder</label><select id="edit-folder-parent" class="form-select mb-3"><option value="0">No parent</option></select><div id="edit-folder-privacy"></div><div id="edit-folder-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="editFolderForm" id="edit-folder-save" class="btn btn-primary">Save changes</button></div></div></div></div>
-    <script src="js/privacy.js"></script><script src="js/dashboard.js?v=2026081802"></script>
+    <script src="js/privacy.js"></script><script src="js/dashboard.js?v=2026081807"></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
 
 
