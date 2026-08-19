@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026081921" />
+  <link rel="stylesheet" href="css/style.css?v=2026081922" />
 </head>
 
 <body class="profile-page app-page">
@@ -192,7 +192,7 @@ if (!is_logged_in()) {
                   <input id="ai-avatar-question" class="form-control" maxlength="1200" placeholder="Ask about career, marriage, school life, memories...">
                   <button id="ai-avatar-send" class="btn btn-primary" type="submit">Send</button>
                 </form>
-                <div id="ai-avatar-status" class="small text-muted mt-2"></div>
+                <div id="ai-avatar-status" class="ai-disclaimer mt-2"></div>
               </div>
             </div>
           </div>
@@ -215,6 +215,7 @@ if (!is_logged_in()) {
                 <div id="autobio-sections" class="autobio-sections mb-4">
                   <div class="text-muted text-center py-4">Generate your autobiography after building AI knowledge.</div>
                 </div>
+                <p class="ai-disclaimer mb-4"><i class="bi bi-info-circle" aria-hidden="true"></i> This AI-generated response is based on stored memories and profile information, but it may not always be accurate. AI can make mistakes or misrepresent details — please verify important information independently.</p>
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-1 align-items-md-center mb-2">
                   <h6 class="mb-0 feature-heading">Life Timeline / Pictograph <button type="button" class="feature-info" aria-label="About Life Timeline" data-tooltip="Organizes important life milestones by date and expandable progress updates.">i</button></h6>
                   <span class="small text-muted">Existing dated memories, milestones, posts, and journeys</span>
@@ -289,7 +290,7 @@ if (!is_logged_in()) {
                     <div class="col-md-3"><label class="form-label small">Delivery</label><select id="pm-delivery" class="form-select"><option value="notification">Platform notification</option><option value="email">Email</option><option value="wall_post">Wall post</option></select></div>
                     <div class="col-md-4"><label class="form-label small">Tone/style</label><input id="pm-tone" class="form-control" value="Warm and sincere"></div>
                     <div class="col-md-8"><label class="form-label small">Optional instructions</label><input id="pm-instructions" class="form-control" placeholder="Mention pride, keep it short..."></div>
-                    <div class="col-12"><label class="form-label small">Draft message</label><textarea id="pm-message" class="form-control" rows="6" placeholder="Generate a draft first, then edit before scheduling."></textarea></div>
+                    <div class="col-12"><label class="form-label small">Draft message</label><textarea id="pm-message" class="form-control" rows="6" placeholder="Generate a draft first, then edit before scheduling."></textarea><p class="ai-disclaimer mt-2 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> This AI-generated response is based on stored memories and profile information, but it may not always be accurate. AI can make mistakes or misrepresent details — please verify important information independently.</p></div>
                     <div class="col-12 d-flex flex-wrap gap-2 align-items-center"><button id="pm-generate" class="btn btn-primary" type="button">Generate</button><button id="pm-save" class="btn btn-outline-primary" type="button">Save</button><button id="pm-schedule" class="btn btn-outline-success" type="button">Schedule</button><div class="dropdown"><button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More message actions"><i class="bi bi-three-dots"></i></button><ul class="dropdown-menu"><li><button id="pm-cancel" class="dropdown-item text-danger" type="button">Cancel</button></li></ul></div></div>
                   </form>
                 </div>
@@ -509,8 +510,8 @@ if (!is_logged_in()) {
   <script src="js/auth.js?v=2026081123"></script>
   <script src="js/privacy.js"></script><script src="js/profile.js?v=2026081902"></script>
   <script src="js/posts.js?v=2026081910"></script>
-  <script src="js/ai_avatar.js?v=2026081601"></script>
-  <script src="js/ai_autobiography.js?v=2026081902"></script>
+  <script src="js/ai_avatar.js?v=2026082001"></script>
+  <script src="js/ai_autobiography.js?v=2026082001"></script>
   <script src="js/personalized_messages.js?v=2026081801"></script>
   <script src="js/gifts.js?v=2026081121"></script>
   <script id="ai-avatar-fallback-init">window.addEventListener("load",function(){setTimeout(function(){if(window.loadAiAvatarSources){window.loadAiAvatarSources();}},500);});</script>

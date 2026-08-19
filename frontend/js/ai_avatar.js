@@ -217,7 +217,7 @@ function appendAiAvatarMessage(role, text, sources = []) {
 function renderAiAvatarReferences(sources) {
     sources = Array.isArray(sources) ? sources : [];
     if (!sources.length) return '';
-    return `<div class="small text-muted mt-2">Sources: ${sources.map(source => aiAvatarEscape(`${source.type}: ${source.title}`)).join(', ')}</div>`;
+    return `<div class="small text-muted mt-2">Sources: ${sources.map(source => aiAvatarEscape(`${source.type}: ${source.title}`)).join(', ')} <span class="ai-inline-disclaimer">AI-generated · may be inaccurate</span></div>`;
 }
 
 async function sendAiAvatarMessage(event) {

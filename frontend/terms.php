@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" href="images/favicon.png">
 <title>Terms and Conditions - IamAlwaysHere</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2026081921">
+<link rel="stylesheet" href="css/style.css?v=2026081922">
 </head>
 <body class="terms-page">
 <nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand" href="../index.php">♥ IamAlwaysHere</a></div></nav>
@@ -98,7 +98,6 @@
 <p>The determination of whether content violates these Community Standards shall be made by IamAlwaysHere.com in its sole discretion.</p>
 <h3>Freedom of Expression</h3>
 <p>IamAlwaysHere.com supports respectful discussion and the sharing of diverse viewpoints. However, freedom of expression on the Platform does not include the right to engage in harassment, hate speech, personal attacks, discriminatory conduct, or content that threatens the safety, dignity, or rights of others.</p>
-<div class="terms-source-note"><p>Recommendation: Use this broader &quot;respect and anti-harassment&quot; language rather than stating that users cannot &quot;hurt political, religious, or LGBTQ sentiments.&quot; Courts generally view rules based on harassment, hate speech, threats, discrimination, and targeted abuse as clearer and easier to enforce than rules based solely on whether someone&#39;s sentiments were hurt.</p></div>
 <p>We reserve the right to remove content at our sole discretion.</p>
 <h2>7. Memorial and Legacy Disclaimer</h2>
 <p>IamAlwaysHere.com provides digital preservation services for personal memories and legacy content.</p>
@@ -219,8 +218,7 @@
 <h2>IMPORTANT LEGAL DISCLAIMER</h2>
 <p>IamAlwaysHere.com provides a digital platform for preserving memories, sharing legacy information, storing personal content, and connecting individuals and families. The Platform does not guarantee the permanent storage, preservation, accessibility, authenticity, or future delivery of any content, message, document, photograph, video, or digital asset. Users remain solely responsible for maintaining backup copies of all important materials. Content posted by users represents the views and opinions of those users alone and does not reflect the views of IamAlwaysHere.com. Use of the Platform is entirely at your own risk.Users acknowledge that digital information storage and transmission inherently involve risks. IamAlwaysHere.com does not warrant that user content, personal information, legacy records, or communications will remain secure, private, uninterrupted, or permanently available, and users assume all risks associated with storing information on the Platform.</p>
 <h2>Contact Information</h2>
-<p>IamAlwaysHere.comEmail: [support@iamalwayshere.com]Website: https://iamalwayshere.com</p>
-<div class="terms-source-note"><p>Legal Notice: This document is a general terms and conditions template and should be reviewed by a licensed attorney familiar with India privacy, consumer protection, digital asset, estate planning, and online platform laws before publication.</p></div>
+<p>IamAlwaysHere.comEmail: support@iamalwayshere.com | Website: https://iamalwayshere.com</p>
 </article>
 </main>
 <footer class="bg-dark text-light py-4 auth-footer"><div class="container text-center"><p class="mb-0 small">&copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.</p></div></footer>

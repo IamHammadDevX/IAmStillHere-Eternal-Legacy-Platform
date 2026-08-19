@@ -4374,3 +4374,9 @@ body .navbar .dropdown-item {
 .terms-document h2 + p{margin-top:.7rem}
 .terms-source-note{margin:1.25rem 0;padding:1rem 1.15rem;border:1px solid #e4c8eb;border-left:4px solid #9b3db5;border-radius:12px;background:#fcf6fd}
 .terms-source-note p{margin:0;color:#563e60;font-style:italic}
+/* AI output accuracy disclosures */
+.ai-disclaimer{display:flex;align-items:flex-start;gap:.4rem;color:#75677d;font-size:.78rem;line-height:1.45}
+.ai-disclaimer .bi{flex:0 0 auto;margin-top:.08rem;color:#8f3caf}
+#ai-avatar-status:empty::after{content:"AI can make mistakes or misrepresent details — please verify information independently.";color:#75677d}
+.ai-inline-disclaimer{display:inline-flex;margin-left:.35rem;padding:.12rem .42rem;border:1px solid #e5d6eb;border-radius:999px;background:#faf5fc;color:#75507f;font-size:.72rem;font-weight:650;white-space:nowrap}
+@media(max-width:575.98px){.ai-disclaimer{font-size:.74rem}.ai-inline-disclaimer{display:flex;width:max-content;max-width:100%;margin:.35rem 0 0;white-space:normal}}

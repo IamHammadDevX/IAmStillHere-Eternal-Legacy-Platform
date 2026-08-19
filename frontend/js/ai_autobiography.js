@@ -1,4 +1,4 @@
-﻿const AI_AUTOBIO_API = '/backend/ai/autobiography';
+const AI_AUTOBIO_API = '/backend/ai/autobiography';
 let aiAutobioState = {autobiography: null, sections: [], timeline: []};
 let aiAutobioBusy = false; let aiAutobioSessionReady = false;
 let aiAutobioTimelinePage = 1;
@@ -199,14 +199,14 @@ function renderAutobiographySections(owner) {
                         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="regenerateAutobiographySection('${autobioEscape(section.section_key)}')">Regenerate</button>
                     </div>
                     <textarea class="form-control autobio-section-text" rows="6" data-section-key="${autobioEscape(section.section_key)}" data-manual="${section.manually_edited ? '1' : '0'}">${autobioEscape(section.content)}</textarea>
-                    ${sourceText ? `<div class="small text-muted mt-2">Sources: ${autobioEscape(sourceText)}</div>` : ''}
+                    ${sourceText ? `<div class="small text-muted mt-2">Sources: ${autobioEscape(sourceText)} <span class="ai-inline-disclaimer">AI-generated · may be inaccurate</span></div>` : ''}
                 </div>
             </div>`;
         }
         return `<div class="card mb-3 autobio-section-card ${theme}"><div class="card-body">
             <h6>${autobioEscape(section.section_title)}</h6>
             <p class="mb-0">${autobioEscape(section.content).replace(/\n/g, '<br>')}</p>
-            ${sourceText ? `<div class="small text-muted mt-2">Sources: ${autobioEscape(sourceText)}</div>` : ''}
+            ${sourceText ? `<div class="small text-muted mt-2">Sources: ${autobioEscape(sourceText)} <span class="ai-inline-disclaimer">AI-generated · may be inaccurate</span></div>` : ''}
         </div></div>`;
     }).join('');
     box.querySelectorAll('.autobio-section-text').forEach(textarea => {
