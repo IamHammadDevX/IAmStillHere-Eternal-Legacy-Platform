@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081906">
+    <link rel="stylesheet" href="css/style.css?v=2026081907">
 </head>
 
 <body class="dashboard-page app-page">
@@ -76,18 +76,6 @@
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="bi bi-person-plus display-4 text-purple mb-3"></i>
-                        <h5 class="mt-2">Requests</h5>
-                        <a href="family_requests.php" class="btn btn-sm btn-secondary mt-2">
-                            Manage
-                            <span class="badge bg-danger ms-1" id="request-count-badge" style="display:none;">0</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card text-center">
@@ -107,6 +95,18 @@
                         <h5 class="mt-2">Events</h5>
                         <button class="btn btn-sm btn-warning mt-2" data-bs-toggle="modal"
                             data-bs-target="#scheduleEventModal">Schedule</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-person-plus display-4 text-purple mb-3"></i>
+                        <h5 class="mt-2">Requests</h5>
+                        <a href="family_requests.php" class="btn btn-sm btn-secondary mt-2">
+                            Manage
+                            <span class="badge bg-danger ms-1" id="request-count-badge" style="display:none;">0</span>
+                        </a>
                     </div>
                 </div>
             </div>

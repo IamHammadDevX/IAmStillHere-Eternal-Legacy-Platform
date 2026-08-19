@@ -3944,15 +3944,15 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .dashboard-page .dashboard-feature-grid h5 { color:#200f35; font-family:Georgia,'Times New Roman',serif; font-size:1.15rem; font-weight:500; }
 .dashboard-page .dashboard-feature-grid i.display-4 { display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; font-size:1.9rem; }
 .dashboard-page .dashboard-feature-grid > :nth-child(1) i { color:#6b2fa0 !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(2) i { color:#ff6f8e !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(3) i { color:#c43fa8 !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(4) i { color:#e4744f !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(2) i { color:#c43fa8 !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(3) i { color:#e4744f !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(4) i { color:#ff6f8e !important; }
 .dashboard-page .dashboard-feature-grid > :nth-child(5) i { color:#6b2fa0 !important; }
 .dashboard-page .dashboard-feature-grid .btn { border:0 !important; border-radius:11px; font-weight:700; color:#fff !important; }
 .dashboard-page .dashboard-feature-grid > :nth-child(1) .btn { background:linear-gradient(135deg,#8a3fbf,#ad56c4) !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(2) .btn { background:linear-gradient(135deg,#ff8da1,#ff6f8e) !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(3) .btn { background:linear-gradient(135deg,#d96fdb,#ff9ce9) !important; }
-.dashboard-page .dashboard-feature-grid > :nth-child(4) .btn { background:linear-gradient(135deg,#f5a08c,#ffc2ba) !important; color:#5c2a17 !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(2) .btn { background:linear-gradient(135deg,#d96fdb,#ff9ce9) !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(3) .btn { background:linear-gradient(135deg,#f5a08c,#ffc2ba) !important; color:#5c2a17 !important; }
+.dashboard-page .dashboard-feature-grid > :nth-child(4) .btn { background:linear-gradient(135deg,#ff8da1,#ff6f8e) !important; }
 .dashboard-page .dashboard-feature-grid > :nth-child(5) .btn { background:linear-gradient(135deg,#6b2fa0,#ff9ce9) !important; }
 .dashboard-page > .dashboard-shell > .nav-tabs { margin-top:26px; padding:8px; gap:6px; border:1px solid #ede3f3; border-radius:16px; background:#fff; }
 .dashboard-page > .dashboard-shell > .nav-tabs .nav-link { flex:1; text-align:center; border:0 !important; border-radius:11px; color:#8b7fa0 !important; font-weight:600; background:transparent !important; }
