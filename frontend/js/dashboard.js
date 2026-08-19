@@ -577,8 +577,8 @@ async function loadEvents(page = eventsPage) {
         // Display upcoming events
         if (upcomingEvents.length > 0) {
             const upcomingSection = document.createElement('div');
-            upcomingSection.className = 'mb-4';
-            upcomingSection.innerHTML = '<h6 class="text-primary mb-3"><i class="bi bi-clock-history"></i> Upcoming Events</h6>';
+            upcomingSection.className = 'dashboard-events-section mb-4';
+            upcomingSection.innerHTML = '<h6 class="dashboard-events-heading text-primary"><i class="bi bi-clock-history"></i> Upcoming Events</h6>';
 
             upcomingEvents.forEach(event => {
                 upcomingSection.appendChild(createEventCard(event, false));
@@ -590,7 +590,8 @@ async function loadEvents(page = eventsPage) {
         // Display past events
         if (pastEvents.length > 0) {
             const pastSection = document.createElement('div');
-            pastSection.innerHTML = '<h6 class="text-muted mb-3"><i class="bi bi-clock"></i> Past Events</h6>';
+            pastSection.className = 'dashboard-events-section';
+            pastSection.innerHTML = '<h6 class="dashboard-events-heading text-muted"><i class="bi bi-clock"></i> Past Events</h6>';
 
             pastEvents.forEach(event => {
                 pastSection.appendChild(createEventCard(event, true));

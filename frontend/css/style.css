@@ -4381,3 +4381,8 @@ body .navbar .dropdown-item {
 #pm-status:empty::after{content:"AI can make mistakes or misrepresent details — please verify information independently.";color:#75677d}
 .ai-inline-disclaimer{display:inline-flex;margin-left:.35rem;padding:.12rem .42rem;border:1px solid #e5d6eb;border-radius:999px;background:#faf5fc;color:#75507f;font-size:.72rem;font-weight:650;white-space:nowrap}
 @media(max-width:575.98px){.ai-disclaimer{font-size:.74rem}.ai-inline-disclaimer{display:flex;width:max-content;max-width:100%;margin:.35rem 0 0;white-space:normal}}
+/* Dashboard Events section spacing */
+.dashboard-page #events-container > .dashboard-events-section{padding:1.25rem;margin-inline:0;overflow:hidden}
+.dashboard-page #events-container .dashboard-events-heading{display:flex;align-items:center;gap:.5rem;margin:0 0 1rem;line-height:1.3;font-size:1.05rem;font-weight:700}
+.dashboard-page #events-container .dashboard-events-heading i{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+@media(max-width:575.98px){.dashboard-page #events-container > .dashboard-events-section{padding:.9rem .8rem}.dashboard-page #events-container .dashboard-events-heading{margin-bottom:.8rem;font-size:1rem}}
