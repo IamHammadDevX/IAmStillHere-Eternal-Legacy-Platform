@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,7 +8,7 @@
     <meta name="description" content="A private, beautiful home for memories, family, and digital legacy."><title>IamAlwaysHere - Keep their story close</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="frontend/css/style.css?v=2026081805">
+    <link rel="stylesheet" href="frontend/css/style.css?v=2026081918">
 </head>
 
 <body class="landing-page">
