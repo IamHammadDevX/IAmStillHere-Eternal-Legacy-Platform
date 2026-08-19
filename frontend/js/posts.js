@@ -1,10 +1,22 @@
-﻿const POSTS_API = '/backend/posts';
+const POSTS_API = '/backend/posts';
 let postPage = 1;
 let postTotalPages = 1;
 let postPrivacyWidget = null;
 let scheduledPostsLoaded = false;
 let scheduledPostsCache = [];
 let editingScheduledPostId = 0;
+const POST_EMOJIS = [
+    '\u2764\uFE0F',
+    '\uD83D\uDE0A',
+    '\uD83D\uDE02',
+    '\uD83D\uDE22',
+    '\uD83D\uDE4F',
+    '\uD83C\uDF89',
+    '\u2728',
+    '\uD83C\uDF38',
+    '\uD83D\uDD4A\uFE0F',
+    '\uD83D\uDC9C'
+];
 
 function postMediaUrl(media) {
     const folder = media.media_type === 'video' ? 'videos' : 'photos';
@@ -38,7 +50,7 @@ function initInlineEmojiPicker(button, target) {
         let picker = button.parentElement.querySelector('.post-emoji-picker');
         if (picker) { picker.remove(); return; }
         picker = document.createElement('div'); picker.className = 'post-emoji-picker post-comment-emoji-picker';
-        ['â¤ï¸','ðŸ˜Š','ðŸ˜‚','ðŸ˜¢','ðŸ™','ðŸŽ‰','âœ¨','ðŸŒ¸','ðŸ•Šï¸','ðŸ’œ'].forEach(emoji => {
+        POST_EMOJIS.forEach(emoji => {
             const item = document.createElement('button'); item.type = 'button'; item.className = 'post-emoji-option'; item.textContent = emoji; item.title = `Add ${emoji}`;
             item.addEventListener('click', () => { target.value += emoji; picker.remove(); target.focus(); }); picker.appendChild(item);
         });
@@ -52,7 +64,7 @@ function initPostEditor(){
         let picker=document.querySelector('.post-emoji-picker');
         if(picker){picker.remove();return;}
         picker=document.createElement('div'); picker.className='post-emoji-picker';
-        ['â¤ï¸','ðŸ˜Š','ðŸ˜‚','ðŸ˜¢','ðŸ™','ðŸŽ‰','âœ¨','ðŸŒ¸','ðŸ•Šï¸','ðŸ’œ'].forEach(emoji=>{
+        POST_EMOJIS.forEach(emoji=>{
             const item=document.createElement('button'); item.type='button'; item.className='post-emoji-option'; item.textContent=emoji; item.title=`Add ${emoji}`;
             item.addEventListener('click',()=>{document.execCommand('insertText',false,emoji);picker.remove();document.getElementById('post-body')?.focus();}); picker.appendChild(item);
         });
@@ -332,7 +344,7 @@ async function renderPostComments(container, postId, comments, total) {
         const group = el('div', 'post-comment-composer');
         const input = document.createElement('input');
         input.className = 'form-control'; input.placeholder = 'Write a comment...'; input.maxLength = 2000; input.required = true;
-        const emojiButton = el('button', 'btn btn-light post-comment-emoji', 'ðŸ˜Š'); emojiButton.type = 'button'; emojiButton.title = 'Add emoji';
+        const emojiButton = el('button', 'btn btn-light post-comment-emoji', '\uD83D\uDE0A'); emojiButton.type = 'button'; emojiButton.title = 'Add emoji';
         const button = el('button', 'btn btn-primary', 'Post'); button.type = 'submit';
         group.appendChild(input); group.appendChild(emojiButton); group.appendChild(button); form.appendChild(group);
         initInlineEmojiPicker(emojiButton, input);

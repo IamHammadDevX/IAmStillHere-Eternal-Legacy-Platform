@@ -210,11 +210,7 @@ body {
 
 /* Responsive tribute cards */
 @media (max-width: 768px) {
-    .tribute-card img.rounded-circle {
-        width: 40px !important;
-        height: 40px !important;
-    }
-    
+
     .tribute-card .card-body {
         padding: 1rem;
     }
@@ -3924,12 +3920,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #post-composer [name="post-mode"] + label:hover { color: #fff !important; text-shadow: 0 1px 1px rgba(0,0,0,.18); }
 #profile-dates { display: inline-block; margin-top: .25rem; padding: .2rem .55rem; border-radius: 999px; color: #fff !important; background: rgba(25, 18, 38, .72); text-shadow: 0 1px 2px rgba(0,0,0,.7); font-weight: 600; }
 @media (max-width:576px) { .post-editor-toolbar { border-radius: 12px 12px 0 0; } .post-editor-surface { min-height: 115px; padding-top: .8rem !important; } #profile-dates { font-size: .72rem; background: rgba(25,18,38,.8); } }
-/* Dashboard feature order: Memories, Milestones, Events, Tributes, Requests */
-.dashboard-feature-grid > .col-md-3:nth-child(1) { order: 1; }
-.dashboard-feature-grid > .col-md-3:nth-child(3) { order: 2; }
-.dashboard-feature-grid > .col-md-3:nth-child(4) { order: 3; }
-.dashboard-feature-grid > .col-md-3:nth-child(5) { order: 4; }
-.dashboard-feature-grid > .col-md-3:nth-child(2) { order: 5; }
+
 /* Dashboard reference theme */
 .dashboard-page { background:#fbf7fc !important; color:#26163a; }
 .dashboard-page .dashboard-shell { max-width:1220px; }
@@ -4248,7 +4239,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .timeline-delete-menu.d-none { display:none !important; }
 .tributes-heading { padding: .25rem .25rem .75rem; }
 .tribute-card-layout { display:flex; align-items:flex-start; gap:1rem; min-width:0; }
-.tribute-avatar { flex:0 0 64px; width:64px !important; height:64px !important; max-width:none !important; object-fit:cover; border:3px solid #fff; box-shadow:0 4px 12px rgba(36,18,56,.16); }
+.profile-page .tribute-card img.tribute-avatar.rounded-circle { display:block; flex:0 0 76px; width:76px !important; min-width:76px !important; max-width:76px !important; height:76px !important; min-height:76px !important; max-height:76px !important; aspect-ratio:1 / 1; object-fit:cover !important; object-position:center; border:3px solid #fff; border-radius:50% !important; clip-path:circle(50%); box-shadow:0 4px 12px rgba(36,18,56,.16); }
 .tribute-card-main { flex:1 1 auto; min-width:0; }
 .tribute-card-header { display:flex; align-items:center; gap:.75rem; min-width:0; }
 .tribute-identity { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem; min-width:0; }
@@ -4264,7 +4255,7 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 @media (max-width:575.98px) {
   .tribute-card .card-body { padding:1rem !important; }
   .tribute-card-layout { gap:.8rem; }
-  .tribute-avatar { flex-basis:58px; width:58px !important; height:58px !important; }
+  .profile-page .tribute-card img.tribute-avatar.rounded-circle { flex-basis:68px; width:68px !important; min-width:68px !important; max-width:68px !important; height:68px !important; min-height:68px !important; max-height:68px !important; }
   .tribute-card-header { align-items:flex-start; flex-wrap:wrap; gap:.45rem; }
   .tribute-identity { flex:1 1 8rem; }
   .tribute-date-actions { width:100%; margin-left:0; justify-content:space-between; }
