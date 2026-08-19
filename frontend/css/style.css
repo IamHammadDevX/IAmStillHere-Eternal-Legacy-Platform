@@ -4367,3 +4367,10 @@ body .navbar .dropdown-item {
 .terms-document h2{font-size:1.15rem;margin-top:2rem}.terms-document p{color:#5f5368;line-height:1.75}
 .terms-notice{margin-top:2rem;padding:1.25rem;border-left:4px solid #9b3db5;background:#faf2fc;border-radius:12px}
 @media(max-width:576px){.terms-shell{padding-top:1rem}.terms-hero{padding:1.35rem;border-radius:18px}.terms-document{border-radius:18px}}
+
+/* Complete legal document presentation */
+.terms-document h3{font-size:1rem;margin:1.4rem 0 .45rem;color:#542565;font-weight:800}
+.terms-document p{margin-bottom:.72rem}
+.terms-document h2 + p{margin-top:.7rem}
+.terms-source-note{margin:1.25rem 0;padding:1rem 1.15rem;border:1px solid #e4c8eb;border-left:4px solid #9b3db5;border-radius:12px;background:#fcf6fd}
+.terms-source-note p{margin:0;color:#563e60;font-style:italic}
