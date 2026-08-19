@@ -21,7 +21,7 @@ async function init() {
     currentUserId = data.user.id;
     const savedFolder = Number(localStorage.getItem('memoryFolder_' + currentUserId) || 0);
     currentMemoryFolderId = Number.isFinite(savedFolder) && savedFolder > 0 ? savedFolder : 0;
-    const memoryPrivacy = document.getElementById('memory-privacy'); if(memoryPrivacy && typeof privacyComponent==='function'){ memoryPrivacy.style.display='none'; memoryPrivacyWidget=privacyComponent('memory',currentUserId); memoryPrivacy.parentElement.appendChild(memoryPrivacyWidget); }
+    const memoryPrivacy = document.getElementById('memory-privacy'); if(memoryPrivacy && typeof privacyComponent==='function'){ memoryPrivacy.style.display='none'; if(memoryPrivacy.previousElementSibling) memoryPrivacy.previousElementSibling.style.display='none'; memoryPrivacyWidget=privacyComponent('memory',currentUserId); memoryPrivacy.parentElement.appendChild(memoryPrivacyWidget); }
     const milestonePrivacy = document.getElementById('milestone-privacy'); if(milestonePrivacy && typeof privacyComponent==='function'){ milestonePrivacy.style.display='none'; if(milestonePrivacy.previousElementSibling) milestonePrivacy.previousElementSibling.style.display='none'; milestonePrivacyWidget=privacyComponent('milestone',currentUserId); milestonePrivacy.parentElement.appendChild(milestonePrivacyWidget); }
     await loadCsrfToken();
 
@@ -1228,4 +1228,5 @@ function collectAutomationPayload(){const actions=[...document.querySelectorAll(
 async function submitAutomation(e){e.preventDefault(); const err=document.getElementById('automation-error'); const save=document.getElementById('automation-save'); err.textContent=''; save.disabled=true; try{const payload=collectAutomationPayload(); const endpoint=payload.automation_id?'update':'create'; const data=await automationJson(endpoint,payload); if(!data.success)throw new Error(data.message||'Unable to save automation'); bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide(); showAlert(data.message||'Automation saved','success'); loadAutomations();}catch(ex){err.textContent=ex.message;}finally{save.disabled=false;}}
 async function setAutomationStatus(id,action){const data=await automationJson('cancel',{automation_id:id,action}); showAlert(data.message||'Done',data.success?'success':'danger'); if(data.success)loadAutomations();}
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);});
+
 

@@ -4214,3 +4214,6 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 .tribute-delete-menu { position:absolute; right:0; top:calc(100% + .35rem); z-index:30; padding:.3rem; border:1px solid #eadcf0; border-radius:10px; background:#fff; box-shadow:0 10px 24px rgba(36,18,56,.16); }
 .tribute-delete-menu.d-none { display:none !important; }
 .tribute-delete-menu .btn { display:grid; place-items:center; width:2rem; height:2rem; padding:0; }
+/* Upload Memory modal: clean privacy widget container */
+#uploadMemoryModal #memoryForm .privacy-component { margin-top:0; }
+#uploadMemoryModal #memoryForm .privacy-component > .form-label { margin-bottom:.35rem; }
