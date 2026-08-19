@@ -1,4 +1,4 @@
-﻿let currentUserId = null;
+let currentUserId = null;
 let loggedInUser = null;
 let csrfToken = null;
 let currentMemoryFolderId = 0;
@@ -992,7 +992,7 @@ async function vaultJson(endpoint, payload) {
 async function loadVault() {
     const docs = document.getElementById('vault-document-list');
     if (!docs || !currentUserId) return;
-    docs.innerHTML = '<div class="text-muted">Loading vault...</div>';
+    docs.innerHTML = '<div class="col-12"><div class="vault-empty-state"><span class="spinner-border spinner-border-sm"></span><strong>Opening secure vault…</strong></div></div>';
     try {
         const ownerInput = Number(document.getElementById('vault-owner-id')?.value || 0);
         const ownerParam = ownerInput > 0 ? `&owner_id=${ownerInput}` : '';
@@ -1049,11 +1049,11 @@ function renderVaultFolders(folders) {
 function renderVaultDocuments(documents) {
     const box = document.getElementById('vault-document-list');
     box.innerHTML = '';
-    if (!documents.length) { box.innerHTML = '<div class="col-12 text-muted">No vault documents here.</div>'; return; }
+    if (!documents.length) { box.innerHTML = '<div class="col-12"><div class="vault-empty-state"><i class="bi bi-file-earmark-lock"></i><strong>No documents yet</strong><span>Upload your first protected document.</span></div></div>'; return; }
     documents.forEach(doc => {
-        const col = document.createElement('div'); col.className = 'col-md-6';
-        const card = document.createElement('div'); card.className = 'card h-100';
-        const body = document.createElement('div'); body.className = 'card-body';
+        const col = document.createElement('div'); col.className = 'col-lg-6';
+        const card = document.createElement('div'); card.className = 'card h-100 vault-document-card';
+        const body = document.createElement('div'); body.className = 'card-body vault-document-body';
         const title = document.createElement('h6'); title.textContent = doc.display_name || doc.original_filename;
         const meta = document.createElement('div'); meta.className = 'small text-muted mb-2'; meta.textContent = `${doc.mime_type} - ${Math.ceil(doc.file_size / 1024)} KB`;
         const hash = document.createElement('div'); hash.className = 'small text-muted text-truncate mb-2'; hash.title = doc.sha256; hash.textContent = `SHA-256 ${doc.sha256}`;
@@ -1062,7 +1062,7 @@ function renderVaultDocuments(documents) {
         const menu = document.createElement('ul'); menu.className = 'dropdown-menu dropdown-menu-end';
         const addAction = (icon, label, handler, danger = false) => { const li=document.createElement('li'); const item=document.createElement('button'); item.type='button'; item.className=`dropdown-item ${danger?'text-danger':''}`; item.title=label; item.setAttribute('aria-label',label); item.innerHTML=`<i class="bi ${icon}"></i>`; item.onclick=handler; li.appendChild(item); menu.appendChild(li); };
         addAction('bi-download', 'Download', () => vaultDownload(doc)); addAction('bi-pencil', 'Rename', () => vaultRename(doc)); addAction('bi-trash', 'Delete', () => vaultDeleteDocument(doc.id), true);
-        actions.append(toggle, menu); body.append(title, meta, hash, actions); card.appendChild(body); col.appendChild(card); box.appendChild(col);
+        const icon = document.createElement('div'); icon.className = 'vault-document-icon'; icon.innerHTML = '<i class="bi bi-file-earmark-lock"></i>'; actions.append(toggle, menu); body.append(icon, title, meta, hash, actions); card.appendChild(body); col.appendChild(card); box.appendChild(col);
     });
 }function renderVaultPermissions(permissions) {
     const box = document.getElementById('vault-permission-list');
