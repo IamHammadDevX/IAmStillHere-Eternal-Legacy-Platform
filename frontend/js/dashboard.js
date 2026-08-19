@@ -1231,8 +1231,10 @@ document.addEventListener('DOMContentLoaded',()=>{document.getElementById('autom
 
 
 (function initDashboardMobileTabs(){
-  const tabs=document.querySelector('.dashboard-page > .dashboard-shell > .nav-tabs');
+  const tabs=document.querySelector('.dashboard-page .dashboard-shell .nav-tabs');
   const more=document.querySelector('.dashboard-tabs-more'); if(!tabs||!more)return;
   const sync=()=>{const active=tabs.querySelector('.nav-link.active'); tabs.querySelectorAll('.nav-item').forEach(li=>li.classList.toggle('dashboard-tab-visible',li.contains(active))); more.querySelectorAll('.dropdown-item').forEach(a=>a.classList.toggle('active',a.getAttribute('href')===active?.getAttribute('href')));};
-  tabs.addEventListener('shown.bs.tab',sync); sync();
+  tabs.addEventListener('shown.bs.tab',sync); more.querySelectorAll('.dropdown-item').forEach(item=>item.addEventListener('click',e=>{e.preventDefault();const href=item.getAttribute('href');const target=[...tabs.querySelectorAll('.nav-link')].find(link=>link.getAttribute('href')===href);if(target) bootstrap.Tab.getOrCreateInstance(target).show();})); sync();
 })();
+
+

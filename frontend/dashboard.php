@@ -8,7 +8,7 @@
     <title>Dashboard - IamAlwaysHere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css?v=2026081806">
+    <link rel="stylesheet" href="css/style.css?v=2026081809">
 </head>
 
 <body class="dashboard-page app-page">
@@ -151,11 +151,11 @@
         <div class="dashboard-tabs-more dropdown">
             <button class="btn nav-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="More dashboard sections"><i class="bi bi-three-dots-vertical"></i></button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="tab" href="#events-tab">Events</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="tab" href="#automations-tab">Automations</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="tab" href="#vault-tab">Vault</a></li>
+                <li><a class="dropdown-item" href="#memories-tab">Memories</a></li>
+                <li><a class="dropdown-item" href="#timeline-tab">Timeline</a></li>
+                <li><a class="dropdown-item" href="#events-tab">Events</a></li>
+                <li><a class="dropdown-item" href="#automations-tab">Automations</a></li>
+                <li><a class="dropdown-item" href="#vault-tab">Vault</a></li>
             </ul>
         </div>
 
@@ -394,6 +394,10 @@
 </body>
 
 </html>
+
+
+
+
 
 
 
