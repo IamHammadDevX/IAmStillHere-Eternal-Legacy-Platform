@@ -220,7 +220,8 @@ function autobioSectionTheme(sectionKey) {
     if (key.includes('achievement')) return 'autobio-theme-achievements';
     if (key.includes('wisdom') || key.includes('lesson')) return 'autobio-theme-wisdom';
     if (key.includes('legacy')) return 'autobio-theme-legacy';
-    if (key.includes('family') || key.includes('relationship') || key.includes('journey') || key.includes('experience')) return 'autobio-theme-family';
+    if (key.includes('journey') || key.includes('experience')) return 'autobio-theme-journeys';
+    if (key.includes('family') || key.includes('relationship')) return 'autobio-theme-family';
     if (key.includes('childhood')) return 'autobio-theme-childhood';
     if (key.includes('early')) return 'autobio-theme-early';
     return 'autobio-theme-early';
@@ -286,4 +287,5 @@ function setAutobioButtons(disabled) {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAiAutobiography);
 else initAiAutobiography();
 window.initAiAutobiography = initAiAutobiography;
+
 

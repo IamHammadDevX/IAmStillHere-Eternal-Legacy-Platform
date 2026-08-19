@@ -4198,3 +4198,9 @@ body:not(.landing-page) > .navbar { background: var(--color-plum) !important; bo
 #timeline-container .timeline-add-child { font-size:0; }
 #timeline-container .timeline-add-child::after { content:'Add update'; font-size:.82rem; }
 #timeline-container .timeline-story-heading > .btn { display:none !important; }
+/* Autobiography distinct reference palettes */
+#autobio-sections > .autobio-theme-career h6, #autobio-sections > .autobio-theme-career .card-body > .d-flex { background:linear-gradient(100deg,#ed78d9,#a947c4) !important; }
+#autobio-sections > .autobio-theme-family h6, #autobio-sections > .autobio-theme-family .card-body > .d-flex { background:linear-gradient(100deg,#b496e6,#7040ae) !important; }
+#autobio-sections > .autobio-theme-journeys h6, #autobio-sections > .autobio-theme-journeys .card-body > .d-flex { background:linear-gradient(100deg,#8d61cf,#512189) !important; }
+#autobio-sections > .autobio-theme-wisdom h6, #autobio-sections > .autobio-theme-wisdom .card-body > .d-flex { background:linear-gradient(100deg,#4c1d70,#24103f) !important; }
+#timeline-container .timeline-story-heading > .btn-outline-danger{display:grid!important;place-items:center;width:2.2rem;height:2.2rem;padding:0;color:#6b2fa0;border-color:#eadcf0}.timeline-story-heading > .btn-outline-danger .bi-three-dots-vertical{font-size:1rem}
