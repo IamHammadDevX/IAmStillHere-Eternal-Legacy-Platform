@@ -10,6 +10,8 @@ try {
     if (!posts_recent_create_allowed('last_post_created_at', POST_CREATE_COOLDOWN)) { ApiResponse::send(false, [], 'Please wait before posting again.', [], 429); exit; }
 
     $userId = SessionHelper::getUserId();
+    $profileUserId = (int) ($_POST['profile_user_id'] ?? 0);
+    if ($profileUserId <= 0 || $profileUserId !== (int) $userId) { ApiResponse::forbidden('Only the profile owner can create posts here.'); exit; }
     $body = posts_sanitize_body((string) ($_POST['body'] ?? ''));
     $privacy = (string) ($_POST['privacy_level'] ?? 'public');
     if (!in_array($privacy, ['public', 'family', 'friends', 'specific_people', 'private', 'release_date', 'release_event'], true)) $privacy = 'public';

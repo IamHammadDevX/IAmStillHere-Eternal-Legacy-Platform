@@ -72,29 +72,29 @@ function initPostEditor(){
     });
 }
 function postBodyHtml(){return document.getElementById('post-body')?.innerHTML.trim()||'';}
-function postBodyText(){return document.getElementById('post-body')?.innerText.trim()||'';}function initPostsFeature() {
+function postBodyText(){return document.getElementById('post-body')?.innerText.trim()||'';}
+function initPostsFeature() {
+    if (document.body.dataset.postsReady === '1') return;
+    document.body.dataset.postsReady = '1';
     const composer = document.getElementById('post-composer');
     const viewerId = currentUser && (currentUser.id || currentUser.user_id);
-    const isProfileOwner = viewerId && String(viewerId) === String(profileUserId);
-    const canEditProfile = document.getElementById('edit-profile-btn') && document.getElementById('edit-profile-btn').offsetParent !== null;
+    const isProfileOwner = Boolean(viewerId && String(viewerId) === String(profileUserId));
+    if (composer) composer.style.display = isProfileOwner ? 'block' : 'none';
 
-    if (composer && (isProfileOwner || canEditProfile)) {
-        composer.style.display = 'block';
+    if (isProfileOwner) {
+        const oldPrivacy = document.getElementById('post-privacy');
+        if (oldPrivacy && typeof privacyComponent === 'function') {
+            oldPrivacy.style.display = 'none';
+            postPrivacyWidget = privacyComponent('post', currentUser.id);
+            oldPrivacy.parentElement.appendChild(postPrivacyWidget);
+        }
+        initPostEditor();
+        enhancePostComposerForScheduling();
+        document.getElementById('post-form')?.addEventListener('submit', submitPost);
+        loadScheduledPosts();
     }
-
-    const oldPrivacy = document.getElementById('post-privacy');
-    if (oldPrivacy && typeof privacyComponent === 'function' && currentUser && currentUser.id) {
-        oldPrivacy.style.display = 'none';
-        postPrivacyWidget = privacyComponent('post', currentUser.id);
-        oldPrivacy.parentElement.appendChild(postPrivacyWidget);
-    }
-    initPostEditor();
-    enhancePostComposerForScheduling();
-    document.getElementById('post-form')?.addEventListener('submit', submitPost);
     loadPosts(1);
-    loadScheduledPosts();
 }
-
 function postLocalToIso(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toISOString();}
 function postUtcToLocal(value){if(!value)return 'not scheduled';const d=new Date(String(value).replace(' ','T')+'Z');return Number.isNaN(d.getTime())?value:d.toLocaleString();}
 function enhancePostComposerForScheduling(){
@@ -115,7 +115,7 @@ function enhancePostComposerForScheduling(){
 }
 async function submitScheduledPost(form){
     const fd=new FormData(); const rule=postPrivacyWidget?postPrivacyWidget.getRule():{visibility_type:document.getElementById('post-privacy').value,user_ids:[],release_at:'',release_event_id:0};
-    fd.append('body',postBodyHtml()); fd.append('privacy_level',rule.visibility_type); fd.append('csrf_token',csrfToken);
+    fd.append('body',postBodyHtml()); fd.append('privacy_level',rule.visibility_type); fd.append('csrf_token',csrfToken); fd.append('profile_user_id',profileUserId);
     fd.append('trigger_type',document.getElementById('post-schedule-trigger').value); fd.append('trigger_at',postLocalToIso(document.getElementById('post-schedule-at').value));
     const trigger=document.getElementById('post-schedule-trigger').value; const linked=Number(document.getElementById('post-linked-id').value||0); const linkedType=document.getElementById('post-linked-type').value; if(trigger==='linked_milestone_event'&&!linked){showAlert('Enter the event or milestone ID before scheduling.','warning');return;} if(linked>0){fd.append('linked_resource_type',linkedType);fd.append('linked_resource_id',linked);} const media=document.getElementById('post-media').files[0]; if(media)fd.append('media',media);
     const endpoint=editingScheduledPostId?POSTS_API+'/reschedule.php':POSTS_API+'/schedule.php';
@@ -286,6 +286,7 @@ async function submitPost(event) {
     form.append('body', postBodyHtml());
     form.append('privacy_level', postPrivacyWidget ? postPrivacyWidget.getRule().visibility_type : document.getElementById('post-privacy').value);
     form.append('csrf_token', csrfToken);
+    form.append('profile_user_id', profileUserId);
     const media = document.getElementById('post-media').files[0];
     if (media) form.append('media', media);
     try {
@@ -419,7 +420,7 @@ function renderMediaGrid(container, items, emptyText) {
 
 function initPostsFeatureWhenReady(attempt = 0) {
     const hasProfile = typeof profileUserId !== 'undefined' && profileUserId;
-    const sessionKnown = typeof currentUser !== 'undefined';
+    const sessionKnown = typeof currentUser !== 'undefined' && currentUser && (currentUser.id || currentUser.user_id);
 
     if (!hasProfile || !sessionKnown) {
         if (attempt < 30) {

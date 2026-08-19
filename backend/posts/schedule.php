@@ -9,6 +9,8 @@ try {
     $db = posts_connection();
     $owner = scheduled_post_require_owner($db);
     $data = scheduled_post_input();
+    $profileUserId = (int) ($data['profile_user_id'] ?? 0);
+    if ($profileUserId <= 0 || $profileUserId !== (int) $owner) { ApiResponse::forbidden('Only the profile owner can schedule posts here.'); exit; }
     if (!posts_require_csrf($data)) {
         ApiResponse::forbidden('Invalid CSRF token.');
         exit;
