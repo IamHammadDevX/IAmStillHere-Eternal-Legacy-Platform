@@ -4464,3 +4464,23 @@ body .navbar .dropdown-item {
   outline:3px solid rgba(255,255,255,.75);
   outline-offset:2px;
 }
+/* Cover-safe themed Remove Friend action */
+.profile-page #cover-section #friend-action-area .friend-remove-button {
+  color: #64258a !important;
+  background: rgba(246, 235, 252, .97) !important;
+  border: 2px solid rgba(255, 255, 255, .96) !important;
+  text-shadow: none !important;
+  box-shadow: 0 8px 24px rgba(25, 9, 39, .34), 0 0 0 2px rgba(116, 54, 151, .42) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-height: 42px;
+  padding: .55rem 1rem;
+}
+.profile-page #cover-section #friend-action-area .friend-remove-button:hover,
+.profile-page #cover-section #friend-action-area .friend-remove-button:focus-visible {
+  color: #fff !important;
+  background: #8f3fb0 !important;
+  border-color: #fff !important;
+  outline: 3px solid rgba(242, 216, 255, .8);
+  outline-offset: 2px;
+}

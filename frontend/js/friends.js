@@ -103,22 +103,14 @@ function renderFriendAction(area, status) {
   }
 
   if (state === 'friends') {
-    area.appendChild(makeFriendButton('Remove Friend', 'btn-outline-danger me-1', async () => {
+    area.appendChild(makeFriendButton('Remove Friend', 'friend-remove-button', async () => {
       if (confirm('Remove friend?')) {
         await friendPost('remove', { user_id: parseInt(profileUserId, 10) });
         await loadFriendStatus();
         await loadFriends();
       }
     }));
-    area.appendChild(makeFriendButton('Block', 'btn-danger', async () => {
-      if (confirm('Block this user?')) {
-        await friendPost('block', { user_id: parseInt(profileUserId, 10) });
-        await loadFriendStatus();
-        await loadFriends();
-      }
-    }));
   }
-
   if (state === 'blocked') {
     area.appendChild(friendEl('span', 'badge bg-danger', 'Blocked'));
   }
