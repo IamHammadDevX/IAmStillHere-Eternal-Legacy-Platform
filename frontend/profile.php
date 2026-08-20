@@ -171,7 +171,7 @@ if (!is_logged_in()) {
                       <div class="small text-muted">Pick what AI Avatar can learn. You stay in control.</div>
                     </div>
                     <div class="ai-source-header-actions">
-                      <button type="button" class="btn btn-outline-secondary btn-sm ai-source-collapse-toggle" data-bs-toggle="collapse" data-bs-target="#ai-avatar-source-results" aria-expanded="true" aria-controls="ai-avatar-source-results"><span>Sources</span><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+                      <button type="button" class="btn btn-outline-secondary btn-sm ai-source-collapse-toggle" data-bs-toggle="collapse" data-bs-target="#ai-avatar-source-results" aria-expanded="false" aria-controls="ai-avatar-source-results"><span>Sources</span><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
                       <button type="button" id="ai-avatar-build" class="btn btn-outline-primary btn-sm">Build selected</button>
                     </div>
                   </div>
@@ -187,7 +187,7 @@ if (!is_logged_in()) {
                     </div>
                     <button type="button" id="ai-avatar-select-visible" class="btn btn-outline-secondary btn-sm text-nowrap">Select visible</button>
                   </div>
-                  <div id="ai-avatar-source-results" class="collapse show">
+                  <div id="ai-avatar-source-results" class="collapse">
                     <div id="ai-avatar-source-summary" class="small text-muted mb-2"></div>
                     <div id="ai-avatar-sources" class="small text-muted ai-source-list">Loading sources...</div>
                   </div>
