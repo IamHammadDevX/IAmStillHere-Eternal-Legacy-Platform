@@ -134,14 +134,6 @@
 
     <footer class="bg-dark text-light py-4 mt-5">
         <div class="container text-center">
-            <div class="mb-2">
-                <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2 footer-link" title="GitHub">
-                    <i class="bi bi-github fs-4"></i>
-                </a>
-                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2 footer-link" title="Portfolio">
-                    <i class="bi bi-globe fs-4"></i>
-                </a>
-            </div>
             <p class="mb-0 small">
                 &copy; <span id="current-year"></span> <strong>SV mobile teleshoppe pvt. ltd.</strong> All rights reserved.
             </p>

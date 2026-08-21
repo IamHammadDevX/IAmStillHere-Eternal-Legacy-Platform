@@ -75,16 +75,6 @@
 
     <footer class="bg-dark text-light py-4 auth-footer">
         <div class="container text-center">
-            <div class="mb-2">
-                <!-- Social Links -->
-                <a href="https://github.com/IamHammadDevX" target="_blank" class="text-light mx-2" title="GitHub">
-                    <i class="bi bi-github fs-4"></i>
-                </a>
-                <a href="https://www.iamhammaddevx.app/" target="_blank" class="text-light mx-2"
-                    title="Portfolio">
-                    <i class="bi bi-globe fs-4"></i>
-                </a>
-            </div>
 
             <!-- Copyright -->
             <p class="mb-0 small">
