@@ -1115,9 +1115,48 @@ async function editProfileMemory(memoryId) {
     await profileMemoryPrivacyWidget.loadRule('memory',memory.id);
     bootstrap.Modal.getOrCreateInstance(modal).show();
 }
-document.getElementById('profileEditMemoryForm')?.addEventListener('submit',async event=>{event.preventDefault();if(!currentUser||Number(currentUser.id)!==Number(profileUserId))return;const error=document.getElementById('profile-edit-memory-error');const save=document.getElementById('profile-edit-memory-save');error.textContent='';save.disabled=true;try{const rule=profileMemoryPrivacyWidget.getRule();const response=await fetch('/backend/memories/update.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({memory_id:Number(document.getElementById('profile-edit-memory-id').value),title:document.getElementById('profile-edit-memory-title').value.trim(),description:document.getElementById('profile-edit-memory-description').value,memory_date:document.getElementById('profile-edit-memory-date').value,folder_id:Number(document.getElementById('profile-edit-memory-folder').value),privacy_level:rule.visibility_type})});const data=await response.json();if(!data.success)throw new Error(data.message||'Unable to update memory.');await savePrivacyRule(csrfToken,'memory',data.data.memory_id,rule);bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal')).hide();loadMemories();}catch(e){error.textContent=e.message;}finally{save.disabled=false;}});
+async function submitProfileMemoryEdit(event) {
+    event.preventDefault();
+    if (!currentUser || Number(currentUser.id) !== Number(profileUserId)) return;
+    const error = document.getElementById('profile-edit-memory-error');
+    const save = document.getElementById('profile-edit-memory-save');
+    error.textContent = '';
+    save.disabled = true;
+    try {
+        if (!profileMemoryPrivacyWidget) throw new Error('Privacy settings are not ready. Reopen the memory editor.');
+        const rule = profileMemoryPrivacyWidget.getRule();
+        const response = await fetch('/backend/memories/update.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRF-Token':csrfToken},
+            body: JSON.stringify({
+                memory_id: Number(document.getElementById('profile-edit-memory-id').value),
+                title: document.getElementById('profile-edit-memory-title').value.trim(),
+                description: document.getElementById('profile-edit-memory-description').value,
+                memory_date: document.getElementById('profile-edit-memory-date').value,
+                folder_id: Number(document.getElementById('profile-edit-memory-folder').value),
+                privacy_level: rule.visibility_type
+            })
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Unable to update memory.');
+        try {
+            await savePrivacyRule(csrfToken, 'memory', data.data.memory_id, rule);
+        } catch (privacyError) {
+            error.textContent = 'Memory updated, but privacy settings were not saved: ' + privacyError.message;
+            await loadMemories();
+            return;
+        }
+        bootstrap.Modal.getInstance(document.getElementById('profileEditMemoryModal'))?.hide();
+        await loadMemories();
+    } catch (e) {
+        error.textContent = e.message;
+    } finally {
+        save.disabled = false;
+    }
+}
 // Preserve the selected profile tab across refreshes.
 document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('profileEditMemoryForm')?.addEventListener('submit', submitProfileMemoryEdit);
     initAboutLifeJournal();
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"][href^="#"]');
     const saved = window.location.hash;

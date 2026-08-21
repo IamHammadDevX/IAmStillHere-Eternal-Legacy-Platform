@@ -513,7 +513,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082201"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082202"></script>
   <script src="js/posts.js?v=2026082001"></script>
   <script src="js/ai_avatar.js?v=2026082002"></script>
   <script src="js/ai_autobiography.js?v=2026082002"></script>
