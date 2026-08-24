@@ -416,6 +416,10 @@ if (!is_logged_in()) {
               <input type="file" class="form-control" id="cover-photo-upload" accept="image/*" />
             </div>
             <div class="mb-3">
+              <label class="form-label" for="username-input">Username</label>
+              <input type="text" class="form-control" id="username-input" minlength="3" maxlength="30" pattern="[A-Za-z0-9._]+" autocomplete="username" />
+              <div id="username-policy-help" class="form-text">You can change your username once every 15 days.</div>
+            </div>            <div class="mb-3">
               <label class="form-label">Bio</label>
               <textarea class="form-control" id="bio-input" rows="4" placeholder="Tell your story..."></textarea>
             </div>

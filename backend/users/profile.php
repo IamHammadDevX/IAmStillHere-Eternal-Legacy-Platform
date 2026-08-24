@@ -23,7 +23,7 @@ try {
     $conn = $db->getConnection();
 
     $stmt = $conn->prepare("
-        SELECT id, full_name, email, bio, date_of_birth, date_of_passing,
+        SELECT id, username, username_changed_at, full_name, email, bio, date_of_birth, date_of_passing,
                profile_photo, cover_photo, is_memorial, status
         FROM users
         WHERE id = :user_id

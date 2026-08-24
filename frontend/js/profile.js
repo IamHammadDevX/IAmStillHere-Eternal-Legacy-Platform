@@ -118,6 +118,13 @@ async function loadProfile() {
             document.getElementById('tribute-form').style.display = 'none'; // hide tribute form for self
 
             document.getElementById('bio-input').value = profile.bio || '';
+            const usernameInput = document.getElementById('username-input');
+            const usernameHelp = document.getElementById('username-policy-help');
+            if (usernameInput) usernameInput.value = profile.username || '';
+            if (usernameHelp) {
+                const next = profile.username_changed_at ? new Date(new Date(profile.username_changed_at + 'Z').getTime() + 15 * 86400000) : null;
+                usernameHelp.textContent = next && next > new Date() ? `Username can be changed again on ${next.toLocaleDateString()}.` : 'You can change your username once every 15 days.';
+            }
             document.getElementById('dob-input').value = profile.date_of_birth || '';
             document.getElementById('is-memorial-input').value = profile.is_memorial ? '1' : '0';
             document.getElementById('dop-input').value = profile.date_of_passing || '';
@@ -171,11 +178,12 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     const coverPhoto = document.getElementById('cover-photo-upload')?.files?.[0];
     if (profilePhoto) formData.append('profile_photo', profilePhoto);
     if (coverPhoto) formData.append('cover_photo', coverPhoto);
+    formData.append('username', document.getElementById('username-input')?.value || '');
     formData.append('bio', document.getElementById('bio-input')?.value || '');
     formData.append('date_of_birth', document.getElementById('dob-input')?.value || '');
 
     try {
-        const response = await fetch('/backend/users/update_profile.php', { method: 'POST', body: formData });
+        const response = await fetch('/backend/users/update_profile.php', { method: 'POST', headers: csrfToken ? {'X-CSRF-Token': csrfToken} : {}, body: formData });
         const raw = await response.text();
         let data;
         try { data = JSON.parse(raw); } catch (_) { throw new Error(`Server returned invalid response (${response.status}).`); }
@@ -186,7 +194,12 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
         bootstrap.Modal.getOrCreateInstance(document.getElementById('editProfileModal')).hide();
         if (data.user?.profile_photo) document.getElementById('profile-image').src = `${data.user.profile_photo}?v=${Date.now()}`;
         if (data.user?.cover_photo) { const coverImg = document.getElementById('cover-image'); coverImg.src = `${data.user.cover_photo}?v=${Date.now()}`; coverImg.style.display = 'block'; }
-        const bio = document.getElementById('profile-bio');
+        if (data.user?.username) {
+            const usernameInput = document.getElementById('username-input');
+            const usernameHelp = document.getElementById('username-policy-help');
+            if (usernameInput) usernameInput.value = data.user.username;
+            if (usernameHelp) usernameHelp.textContent = data.user.username_next_change_at ? `Username can be changed again on ${new Date(data.user.username_next_change_at + 'T00:00:00').toLocaleDateString()}.` : 'You can change your username once every 15 days.';
+        }        const bio = document.getElementById('profile-bio');
         if (bio) bio.textContent = data.user?.bio || 'No bio available.';
         const about = document.getElementById('profile-about-tab-bio');
         if (about) about.textContent = data.user?.bio || 'No bio available.';

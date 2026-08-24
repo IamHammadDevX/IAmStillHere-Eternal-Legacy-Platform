@@ -1,113 +1,74 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../helpers/CsrfHelper.php';
 header('Content-Type: application/json');
 
-if (!is_logged_in()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
-    exit;
-}
+if (!is_logged_in()) { http_response_code(401); echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit; }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit; }
+if (!CsrfHelper::validate(CsrfHelper::getTokenFromRequest($_POST))) { http_response_code(403); echo json_encode(['success' => false, 'message' => 'Invalid security token. Refresh and try again.']); exit; }
 
 $bio = sanitize_input($_POST['bio'] ?? '');
-$date_of_birth = sanitize_input($_POST['date_of_birth'] ?? '');
+$dateOfBirth = sanitize_input($_POST['date_of_birth'] ?? '');
+$requestedUsername = strtolower(trim((string) ($_POST['username'] ?? '')));
 
 try {
-    $db = new Database();
-    $conn = $db->getConnection();
+    $conn = (new Database())->getConnection();
+    $conn->beginTransaction();
+    $userStatement = $conn->prepare('SELECT id, username, username_changed_at FROM users WHERE id = :id FOR UPDATE');
+    $userStatement->execute(['id' => (int) $_SESSION['user_id']]);
+    $currentUser = $userStatement->fetch(PDO::FETCH_ASSOC);
+    if (!$currentUser) { throw new RuntimeException('User account not found.'); }
 
     $updates = [];
-    $params = ['user_id' => $_SESSION['user_id']];
+    $params = ['user_id' => (int) $_SESSION['user_id']];
+    if ($bio !== '') { $updates[] = 'bio = :bio'; $params['bio'] = $bio; }
+    if ($dateOfBirth !== '') { $updates[] = 'date_of_birth = :date_of_birth'; $params['date_of_birth'] = $dateOfBirth; }
 
-    if (!empty($bio)) {
-        $updates[] = "bio = :bio";
-        $params['bio'] = $bio;
-    }
-
-    if (!empty($date_of_birth)) {
-        $updates[] = "date_of_birth = :date_of_birth";
-        $params['date_of_birth'] = $date_of_birth;
-    }
-
-    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['profile_photo'];
-        if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid profile photo type']);
-            exit;
+    if ($requestedUsername !== '' && $requestedUsername !== strtolower((string) $currentUser['username'])) {
+        if (!preg_match('/^[a-z0-9._]{3,30}$/', $requestedUsername)) {
+            throw new InvalidArgumentException('Username must be 3–30 characters and use only letters, numbers, dots, or underscores.');
         }
-
-        $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'profile_' . $_SESSION['user_id'] . '_' . time() . '.' . $file_ext;
-        $filepath = UPLOAD_PATH . '/photos/' . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $filepath)) {
-            $updates[] = "profile_photo = :profile_photo";
-            $params['profile_photo'] = $filename;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to save profile photo']);
-            exit;
+        if (!empty($currentUser['username_changed_at'])) {
+            $nextAllowed = (new DateTimeImmutable($currentUser['username_changed_at'], new DateTimeZone('UTC')))->modify('+15 days');
+            $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            if ($now < $nextAllowed) {
+                throw new InvalidArgumentException('Username can be changed again on ' . $nextAllowed->format('M j, Y') . '.');
+            }
         }
+        $taken = $conn->prepare('SELECT id FROM users WHERE username = :username AND id <> :user_id LIMIT 1');
+        $taken->execute(['username' => $requestedUsername, 'user_id' => (int) $_SESSION['user_id']]);
+        if ($taken->fetch()) { throw new InvalidArgumentException('That username is already taken.'); }
+        $updates[] = 'username = :username';
+        $updates[] = 'username_changed_at = UTC_TIMESTAMP()';
+        $params['username'] = $requestedUsername;
     }
 
-    if (isset($_FILES['cover_photo']) && $_FILES['cover_photo']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['cover_photo'];
-        if (!in_array($file['type'], ALLOWED_IMAGE_TYPES)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid cover photo type']);
-            exit;
-        }
-
-        $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'cover_' . $_SESSION['user_id'] . '_' . time() . '.' . $file_ext;
-        $filepath = UPLOAD_PATH . '/photos/' . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $filepath)) {
-            $updates[] = "cover_photo = :cover_photo";
-            $params['cover_photo'] = $filename;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to save cover photo']);
-            exit;
-        }
+    foreach (['profile_photo' => 'profile', 'cover_photo' => 'cover'] as $field => $prefix) {
+        if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) { continue; }
+        $file = $_FILES[$field];
+        if (!in_array($file['type'], ALLOWED_IMAGE_TYPES, true)) { throw new InvalidArgumentException('Invalid ' . str_replace('_', ' ', $field) . ' type.'); }
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $filename = $prefix . '_' . $_SESSION['user_id'] . '_' . time() . '.' . $extension;
+        if (!move_uploaded_file($file['tmp_name'], UPLOAD_PATH . '/photos/' . $filename)) { throw new RuntimeException('Failed to save ' . str_replace('_', ' ', $field) . '.'); }
+        $updates[] = $field . ' = :' . $field;
+        $params[$field] = $filename;
     }
 
-    if (!empty($updates)) {
-        $sql = "UPDATE users SET " . implode(', ', $updates) . ", updated_at = CURRENT_TIMESTAMP WHERE id = :user_id";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'No changes to update']);
-        exit;
-    }
+    if (!$updates) { throw new InvalidArgumentException('No changes to update.'); }
+    $statement = $conn->prepare('UPDATE users SET ' . implode(', ', $updates) . ', updated_at = CURRENT_TIMESTAMP WHERE id = :user_id');
+    $statement->execute($params);
+    $result = $conn->prepare('SELECT username, username_changed_at, bio, date_of_birth, profile_photo, cover_photo FROM users WHERE id = :id');
+    $result->execute(['id' => (int) $_SESSION['user_id']]);
+    $user = $result->fetch(PDO::FETCH_ASSOC);
+    $conn->commit();
 
-    $stmt = $conn->prepare("SELECT full_name, bio, date_of_birth, profile_photo, cover_photo FROM users WHERE id = :user_id");
-    $stmt->execute(['user_id' => $_SESSION['user_id']]);
-    $user = $stmt->fetch();
-
-    echo json_encode([
-        'success' => true,
-        'message' => 'Profile updated successfully',
-        'user' => [
-            'full_name' => $user['full_name'],
-            'bio' => $user['bio'],
-            'date_of_birth' => $user['date_of_birth'],
-            'profile_photo' => !empty($user['profile_photo']) 
-                ? '/IAmStillHere/data/uploads/photos/' . $user['profile_photo'] 
-                : '/frontend/images/default-profile.png',
-            'cover_photo' => !empty($user['cover_photo']) 
-                ? '/IAmStillHere/data/uploads/photos/' . $user['cover_photo'] 
-                : ''
-        ]
-    ]);
-
-} catch (Exception $e) {
-    error_log($e->getMessage());
-    echo json_encode([
-        'success' => false,
-        'message' => 'An error occurred',
-        'error' => $e->getMessage()
-    ]);
+    $_SESSION['username'] = $user['username'];
+    $nextAllowed = !empty($user['username_changed_at']) ? (new DateTimeImmutable($user['username_changed_at'], new DateTimeZone('UTC')))->modify('+15 days')->format('Y-m-d') : null;
+    echo json_encode(['success' => true, 'message' => 'Profile updated successfully.', 'user' => ['username' => $user['username'], 'username_next_change_at' => $nextAllowed, 'bio' => $user['bio'], 'date_of_birth' => $user['date_of_birth'], 'profile_photo' => $user['profile_photo'] ? '/data/uploads/photos/' . $user['profile_photo'] : '/frontend/images/default-profile.png', 'cover_photo' => $user['cover_photo'] ? '/data/uploads/photos/' . $user['cover_photo'] : '']]);
+} catch (InvalidArgumentException $exception) {
+    if (isset($conn) && $conn->inTransaction()) { $conn->rollBack(); }
+    http_response_code(422); echo json_encode(['success' => false, 'message' => $exception->getMessage()]);
+} catch (Throwable $exception) {
+    if (isset($conn) && $conn->inTransaction()) { $conn->rollBack(); }
+    error_log($exception->getMessage()); http_response_code(500); echo json_encode(['success' => false, 'message' => 'Unable to update profile.']);
 }
