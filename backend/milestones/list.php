@@ -32,7 +32,7 @@ try {
         }
     }
     
-    $stmt = $conn->prepare("SELECT * FROM milestones WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions ORDER BY COALESCE(parent_id, id) ASC, parent_id IS NOT NULL ASC, milestone_date ASC, id ASC");
+    $stmt = $conn->prepare("SELECT * FROM milestones WHERE user_id = :user_id AND status = 'active' AND $privacy_conditions ORDER BY milestone_date ASC, id ASC");
     $stmt->execute(['user_id' => $user_id]);
     
     $milestones = array_values(array_filter($stmt->fetchAll(), static function (array $milestone) use ($conn) { return PrivacyService::canView($conn, 'milestone', (int) $milestone['id'], (int) $milestone['user_id'], SessionHelper::getUserId(), (string) $milestone['privacy_level']); }));
