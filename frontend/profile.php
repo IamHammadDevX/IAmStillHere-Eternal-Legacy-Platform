@@ -233,7 +233,7 @@ if (!is_logged_in()) {
           <div class="tab-pane fade" id="about-tab">
             <div class="card about-bio-card mb-4"><div class="card-body"><span class="about-eyebrow"><i class="bi bi-person-vcard"></i> Profile</span><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
             <section class="about-life-journal" aria-labelledby="about-life-journal-title">
-              <div class="about-journal-heading"><div><span class="about-eyebrow"><i class="bi bi-newspaper"></i>Journals</span><h5 id="about-life-journal-title">Memories, milestones & events</h5><p>Highlights from this person's story. Open any card to see the original item.</p></div></div>
+              <div class="about-journal-heading"><div><span class="about-eyebrow"><i class="bi bi-newspaper"></i>Journals</span><h5 id="about-life-journal-title" class="feature-heading">Life Highlights <button type="button" class="feature-info" aria-label="About Life Highlights" data-tooltip="View important highlights from this person's life, including visible memories, milestones, and events. Select any highlight to open the original item and see its full details.">i</button></h5><p>Important moments from this person's life. Open any card for the full details.</p></div></div>
               <div id="about-life-journal" class="about-life-journal-list"><div class="about-journal-loading">Loading life highlights...</div></div>
               <div id="about-life-journal-pagination" class="about-life-journal-pagination" aria-label="Life journal pages"></div>
             </section>
@@ -254,7 +254,7 @@ if (!is_logged_in()) {
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
-            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Friends and family can leave tributes, condolences, stories, and memories on memorial pages. Open a memorial, choose Leave a Tribute, write your message, and submit it.">i</button></h5><p class="small text-muted mb-0">Messages, memories, and condolences shared by family and friends.</p></div>
+            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Memorial messages, condolences, stories, and memories shared by family and friends to honor and remember a loved one. Open a memorial and choose Leave a Tribute to add your message.">i</button></h5><p class="small text-muted mb-0">Messages and condolences from family and friends honoring a loved one.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
                 <div class="card-body">
@@ -323,7 +323,7 @@ if (!is_logged_in()) {
             <div id="events-container"></div>
           </div>
           <div class="tab-pane fade" id="tributes-tab">
-            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Friends and family can leave tributes, condolences, stories, and memories on memorial pages. Open a memorial, choose Leave a Tribute, write your message, and submit it.">i</button></h5><p class="small text-muted mb-0">Messages, memories, and condolences shared by family and friends.</p></div>
+            <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Memorial messages, condolences, stories, and memories shared by family and friends to honor and remember a loved one. Open a memorial and choose Leave a Tribute to add your message.">i</button></h5><p class="small text-muted mb-0">Messages and condolences from family and friends honoring a loved one.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
                 <div class="card-body">
@@ -351,7 +351,7 @@ if (!is_logged_in()) {
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-                  <h5 class="mb-0">Friends</h5>
+                  <h5 class="mb-0 feature-heading">Friends <button type="button" class="feature-info" aria-label="About Friends" data-tooltip="View and search your existing friends, find another active user by username or email, send a friend request, and review requests waiting for your response.">i</button></h5>
                   <div class="d-flex gap-2"><button id="friends-add-button" class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friends-add-panel">Add Friend</button><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#friend-requests-panel">Requests</button></div>
                 </div>
                 <div class="collapse mb-3" id="friends-add-panel"><form id="friends-search-form" class="d-flex flex-column flex-sm-row gap-2"><input id="friends-search-input" class="form-control" type="search" minlength="2" placeholder="Search by username or email" autocomplete="off"><button class="btn btn-primary" type="submit">Search</button></form><div id="friends-search-results" class="mt-3" aria-live="polite"></div></div>
@@ -366,7 +366,7 @@ if (!is_logged_in()) {
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
-                  <div class="d-flex align-items-center gap-2"><h5 class="mb-0">Family Members</h5><button type="button" id="family-manage-toggle" class="btn btn-outline-secondary btn-sm d-none" aria-pressed="false">Manage</button></div>
+                  <div class="d-flex align-items-center gap-2"><h5 class="mb-0 feature-heading">Family Members <button type="button" class="feature-info" aria-label="About Family Members" data-tooltip="Add or search for family members, then explore accepted family connections in Grid, List, or Tree view. Use the search box to quickly find a person by name or relationship.">i</button></h5><button type="button" id="family-manage-toggle" class="btn btn-outline-secondary btn-sm d-none" aria-pressed="false">Manage</button></div>
                   <div class="btn-group btn-group-sm" role="group" aria-label="Family view toggle">
                     <button type="button" class="btn btn-outline-secondary active" id="family-grid-view-btn" data-family-view="grid">
                       <i class="bi bi-grid-3x3-gap"></i> Grid
@@ -508,7 +508,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082202"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082601"></script>
   <script src="js/posts.js?v=2026082001"></script>
   <script src="js/ai_avatar.js?v=2026082002"></script>
   <script src="js/ai_autobiography.js?v=2026082002"></script>
