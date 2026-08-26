@@ -59,7 +59,7 @@
         <section class="dashboard-hero mb-4">
             <div>
                 <span class="dashboard-kicker"><i class="bi bi-stars"></i> Your legacy workspace</span>
-                <h2 class="mb-2 mt-3 feature-heading">My Dashboard <button type="button" class="feature-info" aria-label="About My Dashboard" data-tooltip="Your Dashboard is your personal workspace. Upload photo, video, and document memories; organize them in folders; manage milestones; schedule future wall posts or emails for birthdays, anniversaries, New Year wishes, and other occasions; and keep confidential documents in your private encrypted vault.">i</button></h2>
+                <h2 class="mb-2 mt-3">My Dashboard <button type="button" class="feature-info" aria-label="About My Dashboard" data-tooltip="Your Dashboard is your personal workspace. Upload photo, video, and document memories; organize them in folders; manage milestones; schedule future wall posts or emails for birthdays, anniversaries, New Year wishes, and other occasions; and keep confidential documents in your private encrypted vault.">i</button></h2>
                 <p class="text-muted mb-0">Upload memories, organize folders, manage milestones, schedule future messages, and protect private documents.</p>
             </div>
             </section>
