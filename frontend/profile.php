@@ -16,10 +16,10 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026082603" />
+  <link rel="stylesheet" href="css/style.css?v=2026082701" />
 </head>
 
-<body class="profile-page app-page">
+<body class="profile-page app-page profile-visibility-loading">
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -94,7 +94,7 @@ if (!is_logged_in()) {
     <div class="row profile-main-row">
       <!-- Sidebar -->
       <div class="col-md-4 profile-main-sidebar">
-        <div class="card mb-4">
+        <div class="card mb-4" data-profile-section="about">
           <div class="card-body">
             <h5 class="card-title">About Me</h5>
             <p id="profile-bio" class="card-text">No bio available.</p>
@@ -116,23 +116,23 @@ if (!is_logged_in()) {
       <!-- Main content -->
       <div class="col-md-8 profile-main-content">
         <ul class="nav nav-tabs profile-tabs mb-4 flex-nowrap overflow-auto" role="tablist">
-          <li class="nav-item"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#autobiography-tab">Autobiography</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">AI Messages</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About Me</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#family-tab">Family</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
+          <li class="nav-item" data-profile-section="posts"><a class="nav-link text-nowrap active" data-bs-toggle="tab" href="#posts-tab">Posts</a></li>
+          <li class="nav-item" data-profile-section="ai_avatar"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#ai-avatar-tab">AI Avatar</a></li>
+          <li class="nav-item" data-profile-section="autobiography"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#autobiography-tab">Autobiography</a></li>
+          <li class="nav-item" data-profile-section="events"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#events-tab">AI Messages</a></li>
+          <li class="nav-item" data-profile-section="timeline"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#timeline-tab">Timeline</a></li>
+          <li class="nav-item" data-profile-section="journeys"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#journeys-tab">Journeys</a></li>
+          <li class="nav-item" data-profile-section="about"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#about-tab">About Me</a></li>
+          <li class="nav-item" data-profile-section="friends"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#friends-tab">Friends</a></li>
+          <li class="nav-item" data-profile-section="family"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#family-tab">Family</a></li>
+          <li class="nav-item" data-profile-section="photos"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#photos-tab">Photos</a></li>
+          <li class="nav-item" data-profile-section="videos"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#videos-tab">Videos</a></li>
           <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#memories-tab">Memories</a></li>
-          <li class="nav-item"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
+          <li class="nav-item" data-profile-section="tributes"><a class="nav-link text-nowrap" data-bs-toggle="tab" href="#tributes-tab">Tributes</a></li>
         </ul>
 
         <div class="tab-content">
-          <div class="tab-pane fade show active" id="posts-tab">
+          <div class="tab-pane fade show active" id="posts-tab" data-profile-section="posts">
             <div id="post-composer" class="card mb-4" style="display:none;">
               <div class="card-body">
                 <form id="post-form">
@@ -151,7 +151,7 @@ if (!is_logged_in()) {
             </div>
             <div id="posts-container"></div>
           </div>
-          <div class="tab-pane fade" id="ai-avatar-tab">
+          <div class="tab-pane fade" id="ai-avatar-tab" data-profile-section="ai_avatar">
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
@@ -201,7 +201,7 @@ if (!is_logged_in()) {
               </div>
             </div>
           </div>
-          <div class="tab-pane fade" id="autobiography-tab">
+          <div class="tab-pane fade" id="autobiography-tab" data-profile-section="autobiography">
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
@@ -230,7 +230,7 @@ if (!is_logged_in()) {
               </div>
             </div>
           </div>
-          <div class="tab-pane fade" id="about-tab">
+          <div class="tab-pane fade" id="about-tab" data-profile-section="about">
             <div class="card about-bio-card mb-4"><div class="card-body"><span class="about-eyebrow"><i class="bi bi-person-vcard"></i> Profile</span><h5>About</h5><p id="profile-about-tab-bio" class="mb-0 text-muted">No bio available.</p></div></div>
             <section class="about-life-journal" aria-labelledby="about-life-journal-title">
               <div class="about-journal-heading"><div><span class="about-eyebrow"><i class="bi bi-newspaper"></i>Journals</span><h5 id="about-life-journal-title" class="feature-heading">Life Highlights <button type="button" class="feature-info" aria-label="About Life Highlights" data-tooltip="View important highlights from this person's life, including visible memories, milestones, and events. Select any highlight to open the original item and see its full details.">i</button></h5><p>Important moments from this person's life. Open any card for the full details.</p></div></div>
@@ -238,22 +238,22 @@ if (!is_logged_in()) {
               <div id="about-life-journal-pagination" class="about-life-journal-pagination" aria-label="Life journal pages"></div>
             </section>
           </div>
-          <div class="tab-pane fade" id="journeys-tab">
+          <div class="tab-pane fade" id="journeys-tab" data-profile-section="journeys">
             <div class="card mb-4 journeys-overview-card"><div class="card-body"><div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-2"><div><h5 class="mb-1 feature-heading">Shared Journeys <button type="button" class="feature-info" aria-label="About Shared Journeys" data-tooltip="Build a life story together from approved memories, milestones, and event notes.">i</button></h5><p class="small text-muted mb-0">Build a life story together with approved memories, milestones, and event notes.</p></div><button id="journey-create-btn" class="btn btn-primary btn-sm" type="button">New Journey</button></div><div id="journeys-container" class="row g-3 mt-1"></div></div></div><div id="journey-detail" class="card mb-4 d-none"><div class="card-body"></div></div>
           </div>
-          <div class="tab-pane fade" id="photos-tab">
+          <div class="tab-pane fade" id="photos-tab" data-profile-section="photos">
             <div id="photos-container"></div>
           </div>
-          <div class="tab-pane fade" id="videos-tab">
+          <div class="tab-pane fade" id="videos-tab" data-profile-section="videos">
             <div id="videos-container"></div>
           </div>
-          <div class="tab-pane fade" id="timeline-tab">
+          <div class="tab-pane fade" id="timeline-tab" data-profile-section="timeline">
             <div class="card mb-4"><div class="card-body"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"><div><h5 class="mb-1 feature-heading">Timeline <button type="button" class="feature-info" aria-label="About Timeline" data-tooltip="View milestones chronologically with expandable child updates.">i</button></h5><p class="small text-muted mb-0">See personal milestones and expandable updates in chronological order.</p></div></div><div id="timeline-container"></div></div></div>
           </div>
           <div class="tab-pane fade" id="memories-tab">
             <div id="memories-container"><div class="row" id="memories-grid"></div></div>
           </div>
-          <div class="tab-pane fade" id="tributes-tab">
+          <div class="tab-pane fade" id="tributes-tab" data-profile-section="tributes">
             <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Memorial messages, condolences, stories, and memories shared by family and friends to honor and remember a loved one. Open a memorial and choose Leave a Tribute to add your message.">i</button></h5><p class="small text-muted mb-0">Messages and condolences from family and friends honoring a loved one.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
@@ -276,7 +276,7 @@ if (!is_logged_in()) {
             </div>
             <div id="tributes-container"></div>
           </div>
-          <div class="tab-pane fade" id="events-tab">
+          <div class="tab-pane fade" id="events-tab" data-profile-section="events">
             <div class="card mb-4" id="personalized-messages-card">
               <div class="card-body">
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
@@ -322,7 +322,7 @@ if (!is_logged_in()) {
             </div>
             <div id="events-container"></div>
           </div>
-          <div class="tab-pane fade" id="tributes-tab">
+          <div class="tab-pane fade" id="tributes-tab" data-profile-section="tributes">
             <div class="tributes-heading mb-3"><h5 class="mb-1 feature-heading">Tributes <button type="button" class="feature-info" aria-label="About Tributes" data-tooltip="Memorial messages, condolences, stories, and memories shared by family and friends to honor and remember a loved one. Open a memorial and choose Leave a Tribute to add your message.">i</button></h5><p class="small text-muted mb-0">Messages and condolences from family and friends honoring a loved one.</p></div>
             <div id="tribute-form" style="display:none;">
               <div class="card mb-4">
@@ -347,7 +347,7 @@ if (!is_logged_in()) {
             <div id="tributes-container"></div>
           </div>
 
-          <div class="tab-pane fade" id="friends-tab">
+          <div class="tab-pane fade" id="friends-tab" data-profile-section="friends">
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
@@ -362,7 +362,7 @@ if (!is_logged_in()) {
             </div>
           </div>
 
-          <div class="tab-pane fade" id="family-tab">
+          <div class="tab-pane fade" id="family-tab" data-profile-section="family">
             <div class="card mb-4">
               <div class="card-body">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
@@ -398,11 +398,11 @@ if (!is_logged_in()) {
   </div>
 
   <!-- Edit Profile Modal -->
-  <div class="modal fade" id="editProfileModal" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Edit Profile</h5>
+          <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -427,6 +427,24 @@ if (!is_logged_in()) {
               <label class="form-label">Date of Birth</label>
               <input type="date" class="form-control" id="dob-input" />
             </div>
+            <fieldset class="public-profile-settings mb-3" aria-describedby="public-profile-settings-help">
+              <legend>Which features in the Public Profile do you wish to enable?</legend>
+              <p id="public-profile-settings-help" class="small text-muted mb-3">Choose the sections other people can see when they visit your profile. You will always be able to see and manage every section.</p>
+              <div class="public-profile-section-grid">
+                <label class="public-profile-section-option" for="public-profile-posts"><input class="form-check-input" id="public-profile-posts" type="checkbox" value="posts" data-public-profile-section checked><span><i class="bi bi-chat-square-text" aria-hidden="true"></i> Posts</span></label>
+                <label class="public-profile-section-option" for="public-profile-ai-avatar"><input class="form-check-input" id="public-profile-ai-avatar" type="checkbox" value="ai_avatar" data-public-profile-section checked><span><i class="bi bi-person-bounding-box" aria-hidden="true"></i> AI Avatar</span></label>
+                <label class="public-profile-section-option" for="public-profile-autobiography"><input class="form-check-input" id="public-profile-autobiography" type="checkbox" value="autobiography" data-public-profile-section checked><span><i class="bi bi-journal-richtext" aria-hidden="true"></i> Autobiography</span></label>
+                <label class="public-profile-section-option" for="public-profile-about"><input class="form-check-input" id="public-profile-about" type="checkbox" value="about" data-public-profile-section checked><span><i class="bi bi-person-lines-fill" aria-hidden="true"></i> About</span></label>
+                <label class="public-profile-section-option" for="public-profile-friends"><input class="form-check-input" id="public-profile-friends" type="checkbox" value="friends" data-public-profile-section checked><span><i class="bi bi-people" aria-hidden="true"></i> Friends</span></label>
+                <label class="public-profile-section-option" for="public-profile-family"><input class="form-check-input" id="public-profile-family" type="checkbox" value="family" data-public-profile-section checked><span><i class="bi bi-diagram-3" aria-hidden="true"></i> Family</span></label>
+                <label class="public-profile-section-option" for="public-profile-journeys"><input class="form-check-input" id="public-profile-journeys" type="checkbox" value="journeys" data-public-profile-section checked><span><i class="bi bi-map" aria-hidden="true"></i> Journeys</span></label>
+                <label class="public-profile-section-option" for="public-profile-photos"><input class="form-check-input" id="public-profile-photos" type="checkbox" value="photos" data-public-profile-section checked><span><i class="bi bi-images" aria-hidden="true"></i> Photos</span></label>
+                <label class="public-profile-section-option" for="public-profile-videos"><input class="form-check-input" id="public-profile-videos" type="checkbox" value="videos" data-public-profile-section checked><span><i class="bi bi-play-btn" aria-hidden="true"></i> Videos</span></label>
+                <label class="public-profile-section-option" for="public-profile-timeline"><input class="form-check-input" id="public-profile-timeline" type="checkbox" value="timeline" data-public-profile-section checked><span><i class="bi bi-clock-history" aria-hidden="true"></i> Timeline</span></label>
+                <label class="public-profile-section-option" for="public-profile-tributes"><input class="form-check-input" id="public-profile-tributes" type="checkbox" value="tributes" data-public-profile-section checked><span><i class="bi bi-flower1" aria-hidden="true"></i> Tributes</span></label>
+                <label class="public-profile-section-option" for="public-profile-events"><input class="form-check-input" id="public-profile-events" type="checkbox" value="events" data-public-profile-section checked><span><i class="bi bi-calendar-event" aria-hidden="true"></i> Events</span></label>
+              </div>
+            </fieldset>
             <button type="submit" class="btn btn-primary" id="profile-save-btn">Save Changes</button><div id="profile-save-status" class="small mt-2" role="status" aria-live="polite"></div>
           </form>
         </div>
@@ -508,7 +526,7 @@ if (!is_logged_in()) {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/auth.js?v=2026081123"></script>
-  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082601"></script>
+  <script src="js/privacy.js"></script><script src="js/profile.js?v=2026082701"></script>
   <script src="js/posts.js?v=2026082001"></script>
   <script src="js/ai_avatar.js?v=2026082002"></script>
   <script src="js/ai_autobiography.js?v=2026082002"></script>

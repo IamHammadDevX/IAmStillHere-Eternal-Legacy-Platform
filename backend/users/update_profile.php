@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../helpers/CsrfHelper.php';
+require_once __DIR__ . '/_profile_visibility.php';
 header('Content-Type: application/json');
 
 if (!is_logged_in()) { http_response_code(401); echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit; }
@@ -10,6 +11,10 @@ if (!CsrfHelper::validate(CsrfHelper::getTokenFromRequest($_POST))) { http_respo
 $bio = sanitize_input($_POST['bio'] ?? '');
 $dateOfBirth = sanitize_input($_POST['date_of_birth'] ?? '');
 $requestedUsername = strtolower(trim((string) ($_POST['username'] ?? '')));
+$hasPublicProfileSections = array_key_exists('public_profile_sections', $_POST);
+$publicProfileSections = $hasPublicProfileSections
+    ? validate_public_profile_sections_input($_POST['public_profile_sections'])
+    : null;
 
 try {
     $conn = (new Database())->getConnection();
@@ -23,6 +28,10 @@ try {
     $params = ['user_id' => (int) $_SESSION['user_id']];
     if ($bio !== '') { $updates[] = 'bio = :bio'; $params['bio'] = $bio; }
     if ($dateOfBirth !== '') { $updates[] = 'date_of_birth = :date_of_birth'; $params['date_of_birth'] = $dateOfBirth; }
+    if ($hasPublicProfileSections) {
+        $updates[] = 'public_profile_sections = :public_profile_sections';
+        $params['public_profile_sections'] = json_encode($publicProfileSections);
+    }
 
     if ($requestedUsername !== '' && $requestedUsername !== strtolower((string) $currentUser['username'])) {
         if (!preg_match('/^[a-z0-9._]{3,30}$/', $requestedUsername)) {
@@ -57,14 +66,26 @@ try {
     if (!$updates) { throw new InvalidArgumentException('No changes to update.'); }
     $statement = $conn->prepare('UPDATE users SET ' . implode(', ', $updates) . ', updated_at = CURRENT_TIMESTAMP WHERE id = :user_id');
     $statement->execute($params);
-    $result = $conn->prepare('SELECT username, username_changed_at, bio, date_of_birth, profile_photo, cover_photo FROM users WHERE id = :id');
+    $result = $conn->prepare('SELECT username, username_changed_at, bio, date_of_birth, profile_photo, cover_photo, public_profile_sections FROM users WHERE id = :id');
     $result->execute(['id' => (int) $_SESSION['user_id']]);
     $user = $result->fetch(PDO::FETCH_ASSOC);
     $conn->commit();
 
     $_SESSION['username'] = $user['username'];
     $nextAllowed = !empty($user['username_changed_at']) ? (new DateTimeImmutable($user['username_changed_at'], new DateTimeZone('UTC')))->modify('+15 days')->format('Y-m-d') : null;
-    echo json_encode(['success' => true, 'message' => 'Profile updated successfully.', 'user' => ['username' => $user['username'], 'username_next_change_at' => $nextAllowed, 'bio' => $user['bio'], 'date_of_birth' => $user['date_of_birth'], 'profile_photo' => $user['profile_photo'] ? '/data/uploads/photos/' . $user['profile_photo'] : '/frontend/images/default-profile.png', 'cover_photo' => $user['cover_photo'] ? '/data/uploads/photos/' . $user['cover_photo'] : '']]);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Profile updated successfully.',
+        'user' => [
+            'username' => $user['username'],
+            'username_next_change_at' => $nextAllowed,
+            'bio' => $user['bio'],
+            'date_of_birth' => $user['date_of_birth'],
+            'profile_photo' => $user['profile_photo'] ? '/data/uploads/photos/' . $user['profile_photo'] : '/frontend/images/default-profile.png',
+            'cover_photo' => $user['cover_photo'] ? '/data/uploads/photos/' . $user['cover_photo'] : '',
+            'public_profile_sections' => normalize_public_profile_sections($user['public_profile_sections'] ?? null),
+        ],
+    ]);
 } catch (InvalidArgumentException $exception) {
     if (isset($conn) && $conn->inTransaction()) { $conn->rollBack(); }
     http_response_code(422); echo json_encode(['success' => false, 'message' => $exception->getMessage()]);

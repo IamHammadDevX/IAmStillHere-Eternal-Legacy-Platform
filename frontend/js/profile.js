@@ -7,6 +7,65 @@ const profileMediaState = { memories: { page: 1, folderId: 0 }, photos: { page: 
 let profileMemoryPrivacyWidget = null;
 let currentUser = null;
 let csrfToken = null;
+const PUBLIC_PROFILE_SECTION_KEYS = [
+    'posts', 'ai_avatar', 'autobiography', 'about', 'friends', 'family',
+    'journeys', 'photos', 'videos', 'timeline', 'tributes', 'events'
+];
+let publicProfileSections = new Set(PUBLIC_PROFILE_SECTION_KEYS);
+let profileIsOwner = false;
+
+function normalizePublicProfileSections(value) {
+    if (!Array.isArray(value)) return [...PUBLIC_PROFILE_SECTION_KEYS];
+    const allowed = new Set(PUBLIC_PROFILE_SECTION_KEYS);
+    return [...new Set(value.filter(key => typeof key === 'string' && allowed.has(key)))];
+}
+
+function syncPublicProfileSectionInputs() {
+    document.querySelectorAll('[data-public-profile-section]').forEach(input => {
+        input.checked = publicProfileSections.has(input.value);
+    });
+}
+
+function firstVisibleProfileTab() {
+    return [...document.querySelectorAll('.profile-tabs a[data-bs-toggle="tab"]')]
+        .find(link => {
+            const item = link.closest('li.nav-item');
+            return !item || (!item.hidden && !item.classList.contains('d-none'));
+        });
+}
+
+function applyPublicProfileVisibility() {
+    document.querySelectorAll('[data-profile-section]').forEach(element => {
+        const section = element.dataset.profileSection;
+        const visible = profileIsOwner || publicProfileSections.has(section);
+        element.hidden = !visible;
+        element.classList.toggle('d-none', !visible);
+        if (!visible && element.classList.contains('tab-pane')) {
+            element.classList.remove('show', 'active');
+        }
+    });
+
+    const activeLink = document.querySelector('.profile-tabs a[data-bs-toggle="tab"].active');
+    const activeItem = activeLink?.closest('li.nav-item');
+    if (!activeLink || activeItem?.hidden || activeItem?.classList.contains('d-none')) {
+        const fallback = firstVisibleProfileTab();
+        if (fallback && window.bootstrap) {
+            bootstrap.Tab.getOrCreateInstance(fallback).show();
+            const href = fallback.getAttribute('href');
+            if (href) history.replaceState(null, '', `${window.location.pathname}${window.location.search}${href}`);
+        }
+    }
+
+    document.body.classList.remove('profile-visibility-loading');
+    window.dispatchEvent(new CustomEvent('profile-visibility-ready', {
+        detail: { isOwner: profileIsOwner, enabled: [...publicProfileSections] }
+    }));
+    window.dispatchEvent(new Event('resize'));
+}
+
+window.isProfileSectionEnabled = function (section) {
+    return profileIsOwner || publicProfileSections.has(section);
+};
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -35,6 +94,7 @@ async function init() {
         await loadProfile();
     } catch (error) {
         console.error('Initialization error:', error);
+        document.body.classList.remove('profile-visibility-loading');
     }
 }
 
@@ -111,6 +171,10 @@ async function loadProfile() {
         document.getElementById('profile-dates').textContent = dates.join(' | ');
 
         const isOwner = currentUser && currentUser.id == profileUserId;
+        profileIsOwner = Boolean(isOwner);
+        publicProfileSections = new Set(normalizePublicProfileSections(profile.public_profile_sections));
+        syncPublicProfileSectionInputs();
+        applyPublicProfileVisibility();
 
         if (isOwner) {
             document.getElementById('edit-profile-btn').style.display = 'block';
@@ -141,13 +205,14 @@ async function loadProfile() {
                 .forEach(el => el.disabled = true);
         }
 
-        loadTimeline();
+        if (window.isProfileSectionEnabled('timeline')) loadTimeline();
         loadMemories();
-        loadEvents();
-        loadTributes();
+        if (window.isProfileSectionEnabled('events')) loadEvents();
+        if (window.isProfileSectionEnabled('tributes')) loadTributes();
 
     } catch (error) {
         console.error('Error loading profile:', error);
+        document.body.classList.remove('profile-visibility-loading');
     }
 }
 
@@ -181,6 +246,9 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     formData.append('username', document.getElementById('username-input')?.value || '');
     formData.append('bio', document.getElementById('bio-input')?.value || '');
     formData.append('date_of_birth', document.getElementById('dob-input')?.value || '');
+    const selectedPublicSections = [...document.querySelectorAll('[data-public-profile-section]:checked')]
+        .map(input => input.value);
+    formData.append('public_profile_sections', JSON.stringify(selectedPublicSections));
 
     try {
         const response = await fetch('/backend/users/update_profile.php', { method: 'POST', headers: csrfToken ? {'X-CSRF-Token': csrfToken} : {}, body: formData });
@@ -193,6 +261,11 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
         setStatus('Saved successfully.', 'success');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('editProfileModal')).hide();
         if (data.user?.profile_photo) document.getElementById('profile-image').src = `${data.user.profile_photo}?v=${Date.now()}`;
+        if (Array.isArray(data.user?.public_profile_sections)) {
+            publicProfileSections = new Set(normalizePublicProfileSections(data.user.public_profile_sections));
+            syncPublicProfileSectionInputs();
+            applyPublicProfileVisibility();
+        }
         if (data.user?.cover_photo) { const coverImg = document.getElementById('cover-image'); coverImg.src = `${data.user.cover_photo}?v=${Date.now()}`; coverImg.style.display = 'block'; }
         if (data.user?.username) {
             const usernameInput = document.getElementById('username-input');
@@ -1254,7 +1327,8 @@ function initResponsiveProfileTabs() {
 
         moreItem.style.display = 'block';
         const visibleCount = window.innerWidth <= 767 ? 3 : 6;
-        originalItems.slice(visibleCount).forEach(moveToMenu);
+        const visibleItems = originalItems.filter(item => !item.hidden && !item.classList.contains('d-none'));
+        visibleItems.slice(visibleCount).forEach(moveToMenu);
         moreItem.style.display = moreMenu.children.length ? 'block' : 'none';
     }
 

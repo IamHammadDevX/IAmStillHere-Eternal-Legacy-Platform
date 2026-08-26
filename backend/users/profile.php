@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/_profile_visibility.php';
 
 header('Content-Type: application/json');
 
@@ -24,7 +25,7 @@ try {
 
     $stmt = $conn->prepare("
         SELECT id, username, username_changed_at, full_name, email, bio, date_of_birth, date_of_passing,
-               profile_photo, cover_photo, is_memorial, status
+               profile_photo, cover_photo, is_memorial, public_profile_sections, status
         FROM users
         WHERE id = :user_id
           AND status = 'active'
@@ -59,6 +60,8 @@ try {
     $user['cover_photo'] = !empty($user['cover_photo'])
         ? $baseUrl . $user['cover_photo']
         : null;
+
+    $user['public_profile_sections'] = normalize_public_profile_sections($user['public_profile_sections'] ?? null);
 
     echo json_encode([
         'success' => true,
