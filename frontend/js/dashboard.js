@@ -1202,11 +1202,26 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(initVaultFeature,
 const AUTOMATIONS_API = '/backend/automations';
 let automationsCache = [];
 let automationsPagination = null;
+let automationSelectedRecipient = null;
 function automationEl(tag, cls='', text=''){const el=document.createElement(tag); if(cls)el.className=cls; if(text)el.textContent=text; return el;}
 function automationUtcFromLocal(value){return value ? new Date(value).toISOString() : '';}
 function automationLocalInputFromUtc(value){if(!value)return ''; const d=new Date(String(value).replace(' ','T')+'Z'); const pad=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
 function automationDisplayDate(value){return value ? new Date(String(value).replace(' ','T')+'Z').toLocaleString() : 'none';}
-function toggleAutomationFields(){const t=document.getElementById('automation-trigger')?.value; document.querySelectorAll('.automation-datetime').forEach(e=>e.classList.toggle('d-none', !['specific_datetime','linked_milestone_event'].includes(t))); document.querySelectorAll('.automation-recurring').forEach(e=>e.classList.toggle('d-none', !['birthday','anniversary','custom_recurring'].includes(t))); document.querySelectorAll('.automation-linked').forEach(e=>e.classList.toggle('d-none', t!=='linked_milestone_event'));}
+function toggleAutomationFields(){
+    const trigger=document.getElementById('automation-trigger')?.value;
+    document.querySelectorAll('.automation-datetime').forEach(element=>element.classList.toggle('d-none', !['specific_datetime','linked_milestone_event'].includes(trigger)));
+    document.querySelectorAll('.automation-recurring').forEach(element=>element.classList.toggle('d-none', !['birthday','anniversary','custom_recurring'].includes(trigger)));
+    document.querySelectorAll('.automation-linked').forEach(element=>element.classList.toggle('d-none', trigger!=='linked_milestone_event'));
+    toggleAutomationRecipientFields();
+}
+function toggleAutomationRecipientFields(){
+    const notificationEnabled=!!document.querySelector('.automation-action[value="notification"]')?.checked;
+    const emailEnabled=!!document.querySelector('.automation-action[value="email"]')?.checked;
+    document.getElementById('automation-notification-fields')?.classList.toggle('d-none',!notificationEnabled);
+    document.getElementById('automation-email-fields')?.classList.toggle('d-none',!emailEnabled);
+    const email=document.getElementById('automation-recipient-email');
+    if(email) email.required=emailEnabled;
+}
 async function automationJson(endpoint,payload){const res=await fetch(`${AUTOMATIONS_API}/${endpoint}.php`,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrfToken},body:JSON.stringify({...payload,csrf_token:csrfToken})});const text=await res.text();if(!text.trim())throw new Error(`Automation endpoint returned an empty response (HTTP ${res.status}). Check the server error log.`);try{return JSON.parse(text);}catch(e){throw new Error(`Automation endpoint returned invalid JSON (HTTP ${res.status}).`);}}
 async function loadAutomations(page=automationsPage){automationsPage=Math.max(1,Number(page)||1);const box=document.getElementById('automations-container'); if(!box||!currentUserId)return; box.innerHTML='<div class="text-muted">Loading automations...</div>'; try{const res=await fetch(`${AUTOMATIONS_API}/list.php?page=${automationsPage}&limit=${DASHBOARD_PAGE_SIZE}`); const data=await res.json(); if(!data.success)throw new Error(data.message||'Unable to load automations'); automationsCache=data.data.automations||[];automationsPagination=data.data.pagination||null;renderAutomations(automationsCache);}catch(e){box.innerHTML=`<div class="alert alert-danger">${escapeHtml(e.message)}</div>`;}}
 function renderAutomations(rows){
@@ -1225,10 +1240,134 @@ function renderAutomations(rows){
     });
     if(automationsPagination&&automationsPagination.total_pages>1)appendDashboardPager(box,automationsPage,automationsPagination.total_items,nextPage=>loadAutomations(nextPage));
 }
-function openAutomationModal(id=null){const a=id?automationsCache.find(x=>Number(x.id)===Number(id)):null; document.getElementById('automation-id').value=a?.id||''; document.getElementById('automation-title').value=a?.title||''; document.getElementById('automation-description').value=a?.description||''; document.getElementById('automation-status').value=['draft','scheduled'].includes(a?.status)?a.status:'scheduled'; document.getElementById('automation-trigger').value=a?.trigger_type||'specific_datetime'; document.getElementById('automation-datetime').value=a?.trigger_datetime?automationLocalInputFromUtc(a.trigger_datetime):automationLocalInputFromUtc(a?.next_run_at); document.getElementById('automation-month').value=a?.recurring_month||''; document.getElementById('automation-day').value=a?.recurring_day||''; document.getElementById('automation-linked-type').value=a?.linked_resource_type||'event'; document.getElementById('automation-linked-id').value=a?.linked_resource_id||''; document.querySelectorAll('.automation-action').forEach(ch=>{ch.checked=!a ? ch.value==='notification' : (a.actions||[]).some(x=>x.action_type===ch.value);}); document.getElementById('automation-error').textContent=''; toggleAutomationFields(); bootstrap.Modal.getOrCreateInstance(document.getElementById('automationModal')).show();}
-function collectAutomationPayload(){const actions=[...document.querySelectorAll('.automation-action:checked')].map(ch=>({action_type:ch.value,payload: ch.value==='wall_post'?{body:document.getElementById('automation-description').value,privacy_level:'private'}:{message:document.getElementById('automation-description').value}})); return {automation_id:Number(document.getElementById('automation-id').value||0),title:document.getElementById('automation-title').value.trim(),description:document.getElementById('automation-description').value,trigger_type:document.getElementById('automation-trigger').value,trigger_datetime:automationUtcFromLocal(document.getElementById('automation-datetime').value),recurring_month:Number(document.getElementById('automation-month').value||0),recurring_day:Number(document.getElementById('automation-day').value||0),linked_resource_type:document.getElementById('automation-linked-type').value,linked_resource_id:Number(document.getElementById('automation-linked-id').value||0),status:document.getElementById('automation-status').value,actions};}
-async function submitAutomation(e){e.preventDefault(); const err=document.getElementById('automation-error'); const save=document.getElementById('automation-save'); err.textContent=''; save.disabled=true; try{const payload=collectAutomationPayload(); const endpoint=payload.automation_id?'update':'create'; const data=await automationJson(endpoint,payload); if(!data.success)throw new Error(data.message||'Unable to save automation'); bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide(); showAlert(data.message||'Automation saved','success'); loadAutomations();}catch(ex){err.textContent=ex.message;}finally{save.disabled=false;}}
+function clearAutomationRecipient(){
+    automationSelectedRecipient=null;
+    const idInput=document.getElementById('automation-recipient-user-id');
+    const selected=document.getElementById('automation-selected-recipient');
+    if(idInput) idInput.value='';
+    if(selected){selected.textContent='';selected.classList.add('d-none');}
+}
+function setAutomationRecipient(user){
+    const id=Number(user?.id||0);
+    if(!id){clearAutomationRecipient();return;}
+    automationSelectedRecipient={id,full_name:String(user.full_name||user.recipient_name||user.username||`User #${id}`),username:String(user.username||'')};
+    const idInput=document.getElementById('automation-recipient-user-id');
+    const selected=document.getElementById('automation-selected-recipient');
+    if(idInput) idInput.value=String(id);
+    if(selected){
+        selected.textContent='';
+        const label=document.createElement('span');
+        label.innerHTML='<i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>';
+        label.append(document.createTextNode(`${automationSelectedRecipient.full_name}${automationSelectedRecipient.username?` (@${automationSelectedRecipient.username})`:''} · User ID ${id}`));
+        const clear=document.createElement('button');
+        clear.type='button';clear.className='btn btn-sm btn-outline-danger';clear.textContent='Change';
+        clear.addEventListener('click',()=>{clearAutomationRecipient();document.getElementById('automation-recipient-search')?.focus();});
+        selected.append(label,clear);selected.classList.remove('d-none');
+    }
+    const results=document.getElementById('automation-recipient-results');
+    if(results) results.textContent='';
+}
+async function searchAutomationRecipients(){
+    const input=document.getElementById('automation-recipient-search');
+    const button=document.getElementById('automation-recipient-search-btn');
+    const results=document.getElementById('automation-recipient-results');
+    const query=input?.value.trim()||'';
+    if(!results)return;
+    if(query.length<2&&!/^\d+$/.test(query)){results.innerHTML='<div class="small text-danger p-2">Enter at least 2 characters or an exact User ID.</div>';return;}
+    const oldLabel=button?.innerHTML;
+    if(button){button.disabled=true;button.textContent='Searching...';}
+    results.innerHTML='<div class="small text-muted p-2">Searching users...</div>';
+    try{
+        const response=await fetch(`${AUTOMATIONS_API}/recipients.php?q=${encodeURIComponent(query)}`);
+        const raw=await response.text();
+        let data;try{data=JSON.parse(raw);}catch(_){throw new Error(`Recipient search returned invalid response (${response.status}).`);}
+        if(!response.ok||!data.success)throw new Error(Object.values(data.errors||{})[0]||data.message||'Unable to search users.');
+        const users=data.data?.users||[];
+        results.textContent='';
+        if(!users.length){results.innerHTML='<div class="small text-muted p-2">No available users found.</div>';return;}
+        users.forEach(user=>{
+            const item=document.createElement('button');item.type='button';item.className='list-group-item list-group-item-action automation-recipient-result';
+            const avatar=document.createElement('img');avatar.className='automation-recipient-avatar';avatar.src=user.profile_photo||'/frontend/images/default-profile.png';avatar.alt='';
+            const copy=document.createElement('span');copy.className='min-w-0';
+            const name=document.createElement('strong');name.className='d-block text-truncate';name.textContent=user.full_name||user.username||`User #${user.id}`;
+            const meta=document.createElement('small');meta.className='text-muted';meta.textContent=`@${user.username} · User ID ${user.id}`;
+            copy.append(name,meta);item.append(avatar,copy);item.addEventListener('click',()=>setAutomationRecipient(user));results.append(item);
+        });
+    }catch(error){results.innerHTML=`<div class="small text-danger p-2">${escapeHtml(error.message)}</div>`;}
+    finally{if(button){button.disabled=false;button.innerHTML=oldLabel||'<i class="bi bi-search"></i> Search';}}
+}
+function automationResponseError(data,fallback){
+    const first=Object.values(data?.errors||{})[0];
+    return typeof first==='string'&&first.trim()?first:(data?.message||fallback);
+}
+function openAutomationModal(id=null){
+    const automation=id?automationsCache.find(item=>Number(item.id)===Number(id)):null;
+    document.getElementById('automation-id').value=automation?.id||'';
+    document.getElementById('automation-title').value=automation?.title||'';
+    document.getElementById('automation-description').value=automation?.description||'';
+    document.getElementById('automation-status').value=['draft','scheduled'].includes(automation?.status)?automation.status:'scheduled';
+    document.getElementById('automation-trigger').value=automation?.trigger_type||'specific_datetime';
+    document.getElementById('automation-datetime').value=automation?.trigger_datetime?automationLocalInputFromUtc(automation.trigger_datetime):automationLocalInputFromUtc(automation?.next_run_at);
+    document.getElementById('automation-month').value=automation?.recurring_month||'';
+    document.getElementById('automation-day').value=automation?.recurring_day||'';
+    document.getElementById('automation-linked-type').value=automation?.linked_resource_type||'event';
+    document.getElementById('automation-linked-id').value=automation?.linked_resource_id||'';
+    document.querySelectorAll('.automation-action').forEach(input=>{input.checked=!automation?input.value==='notification':(automation.actions||[]).some(action=>action.action_type===input.value);});
+    const notificationAction=(automation?.actions||[]).find(action=>action.action_type==='notification');
+    const emailAction=(automation?.actions||[]).find(action=>action.action_type==='email');
+    clearAutomationRecipient();
+    if(notificationAction?.payload?.recipient_user_id){setAutomationRecipient({id:notificationAction.payload.recipient_user_id,full_name:notificationAction.payload.recipient_name||`User #${notificationAction.payload.recipient_user_id}`});}
+    document.getElementById('automation-recipient-search').value='';
+    document.getElementById('automation-recipient-results').textContent='';
+    document.getElementById('automation-recipient-email').value=emailAction?.payload?.recipient_email||'';
+    document.getElementById('automation-recipient-name').value=emailAction?.payload?.recipient_name||'';
+    document.getElementById('automation-error').textContent='';
+    toggleAutomationFields();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('automationModal')).show();
+}
+function collectAutomationPayload(){
+    const message=document.getElementById('automation-description').value;
+    const actions=[...document.querySelectorAll('.automation-action:checked')].map(input=>{
+        if(input.value==='notification'){
+            const recipientUserId=Number(document.getElementById('automation-recipient-user-id').value||0);
+            if(!recipientUserId)throw new Error('Choose a user for the in-app notification.');
+            return {action_type:'notification',payload:{message,recipient_user_id:recipientUserId,recipient_name:automationSelectedRecipient?.full_name||''}};
+        }
+        if(input.value==='email'){
+            const emailInput=document.getElementById('automation-recipient-email');
+            const recipientEmail=emailInput.value.trim();
+            if(!recipientEmail||!emailInput.checkValidity())throw new Error('Enter a valid recipient email address.');
+            return {action_type:'email',payload:{message,recipient_email:recipientEmail,recipient_name:document.getElementById('automation-recipient-name').value.trim()}};
+        }
+        return {action_type:'wall_post',payload:{body:message,privacy_level:'private'}};
+    });
+    if(!actions.length)throw new Error('Select at least one automation action.');
+    return {automation_id:Number(document.getElementById('automation-id').value||0),title:document.getElementById('automation-title').value.trim(),description:message,trigger_type:document.getElementById('automation-trigger').value,trigger_datetime:automationUtcFromLocal(document.getElementById('automation-datetime').value),recurring_month:Number(document.getElementById('automation-month').value||0),recurring_day:Number(document.getElementById('automation-day').value||0),linked_resource_type:document.getElementById('automation-linked-type').value,linked_resource_id:Number(document.getElementById('automation-linked-id').value||0),status:document.getElementById('automation-status').value,actions};
+}
+async function submitAutomation(e){
+    e.preventDefault();
+    const errorBox=document.getElementById('automation-error');
+    const save=document.getElementById('automation-save');
+    const oldLabel=save.textContent;
+    errorBox.textContent='';save.disabled=true;save.textContent='Saving...';
+    try{
+        const payload=collectAutomationPayload();
+        const endpoint=payload.automation_id?'update':'create';
+        const data=await automationJson(endpoint,payload);
+        if(!data.success)throw new Error(automationResponseError(data,'Unable to save automation.'));
+        bootstrap.Modal.getInstance(document.getElementById('automationModal')).hide();
+        showAlert(data.message||'Automation saved','success');loadAutomations();
+    }catch(error){errorBox.textContent=error.message;}
+    finally{save.disabled=false;save.textContent=oldLabel;}
+}
 async function setAutomationStatus(id,action){const data=await automationJson('cancel',{automation_id:id,action}); showAlert(data.message||'Done',data.success?'success':'danger'); if(data.success)loadAutomations();}
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);});
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('automation-trigger')?.addEventListener('change',toggleAutomationFields);
+    document.querySelectorAll('.automation-action').forEach(input=>input.addEventListener('change',toggleAutomationRecipientFields));
+    document.getElementById('automation-recipient-search-btn')?.addEventListener('click',searchAutomationRecipients);
+    document.getElementById('automation-recipient-search')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchAutomationRecipients();}});
+    document.getElementById('automationForm')?.addEventListener('submit',submitAutomation);
+    toggleAutomationRecipientFields();
+});
 
 

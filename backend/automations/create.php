@@ -3,6 +3,7 @@ ob_start();
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../helpers/CsrfHelper.php';
 require_once __DIR__ . '/../helpers/Logger.php';
+require_once __DIR__ . '/_automation_helpers.php';
 
 function automation_create_json($success, $data, $message, $errors, $status)
 {
@@ -85,21 +86,18 @@ try {
         }
     }
 
+    $db = (new Database())->getConnection();
     $actions = isset($data['actions']) && is_array($data['actions']) ? $data['actions'] : array();
-    $safeActions = array();
-    foreach ($actions as $action) {
-        $type = isset($action['action_type']) ? (string) $action['action_type'] : '';
-        if (!in_array($type, array('notification', 'wall_post', 'email'), true)) continue;
-        $payload = isset($action['payload']) && is_array($action['payload']) ? $action['payload'] : array();
-        $safeActions[] = array('action_type' => $type, 'payload' => $payload);
+    try {
+        $safeActions = automation_validate_actions($db, $actions, $owner);
+    } catch (InvalidArgumentException $validationError) {
+        automation_create_json(false, array(), 'Validation failed.', array('actions' => $validationError->getMessage()), 422);
     }
-    if (!$safeActions) automation_create_json(false, array(), 'Validation failed.', array('actions' => 'Select at least one action.'), 422);
 
     if ($status === 'scheduled' && !$triggerAt) {
         automation_create_json(false, array(), 'Validation failed.', array('next_run_at' => 'A valid future trigger is required.'), 422);
     }
 
-    $db = (new Database())->getConnection();
     $db->beginTransaction();
     $rule = $db->prepare('INSERT INTO automation_rules(owner_id,title,description,trigger_type,trigger_datetime,recurring_month,recurring_day,linked_resource_type,linked_resource_id,timezone,next_run_at,status) VALUES(:owner,:title,:description,:trigger,:trigger_at,:month,:day,:linked_type,:linked_id,:timezone,:next_run,:status)');
     $rule->execute(array(

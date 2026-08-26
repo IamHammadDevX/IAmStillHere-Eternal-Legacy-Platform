@@ -21,6 +21,16 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
     if(!is_array($payload)) $payload=[];
     if($action['action_type']==='notification'){
         $message=mb_substr((string)($payload['message']??($rule['description']??('Automation ready: '. $rule['title']))),0,10000);
+        $recipientId=(int)($payload['recipient_user_id']??0);
+        if($recipientId<=0) $recipientId=(int)$rule['owner_id'];
+        $recipient=$db->prepare("SELECT id FROM users WHERE id=:id AND status='active' AND role<>'admin' LIMIT 1");
+        $recipient->execute(['id'=>$recipientId]);
+        if(!$recipient->fetchColumn()) throw new RuntimeException('Notification recipient is unavailable.');
+        if($recipientId!==(int)$rule['owner_id']){
+            $blocked=$db->prepare("SELECT id FROM friendships WHERE ((user_id=:owner AND friend_id=:recipient) OR (user_id=:recipient AND friend_id=:owner)) AND status='blocked' LIMIT 1");
+            $blocked->execute(['owner'=>(int)$rule['owner_id'],'recipient'=>$recipientId]);
+            if($blocked->fetchColumn()) throw new RuntimeException('Notification recipient is unavailable.');
+        }
         $event=$db->prepare("SELECT id FROM scheduled_events WHERE user_id=:user AND event_type='automation_notification' AND title=:title AND scheduled_date=:scheduled LIMIT 1");
         $event->execute(['user'=>(int)$rule['owner_id'],'title'=>$rule['title'],'scheduled'=>$rule['next_run_at']]);
         $eventId=(int)$event->fetchColumn();
@@ -29,7 +39,8 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
             $insert->execute(['user'=>(int)$rule['owner_id'],'title'=>$rule['title'],'message'=>$message,'scheduled'=>$rule['next_run_at']]);
             $eventId=(int)$db->lastInsertId();
         }
-        NotificationService::createOnce($db,(int)$rule['owner_id'],null,NotificationService::TYPE_SCHEDULED_EVENT_STATUS,'scheduled_event',$eventId,$message);
+        $actorId=$recipientId===(int)$rule['owner_id']?null:(int)$rule['owner_id'];
+        NotificationService::createOnce($db,$recipientId,$actorId,NotificationService::TYPE_SCHEDULED_EVENT_STATUS,'automation',(int)$rule['id'],$message);
         $db->prepare("UPDATE scheduled_events SET status='published', notified=1, notified_at=NOW() WHERE id=:id")->execute(['id'=>$eventId]);
         return;
     }
@@ -75,11 +86,19 @@ function automation_worker_run_action(PDO $db, array $rule, array $action): void
             $db->prepare("UPDATE scheduled_wall_posts SET status='scheduled', last_error=:error, updated_at=UTC_TIMESTAMP() WHERE id=:id AND status='processing'")->execute(['error'=>mb_substr($e->getMessage(),0,500),'id'=>$scheduledId]);
             throw $e;
         }
-        return;    }    if($action['action_type']==='email'){
-        $u=$db->prepare('SELECT email,full_name FROM users WHERE id=:id LIMIT 1');$u->execute(['id'=>(int)$rule['owner_id']]);$user=$u->fetch(PDO::FETCH_ASSOC);
-        if(!$user) throw new RuntimeException('Owner not found.');
+        return;
+    }
+    if($action['action_type']==='email'){
+        $recipientEmail=trim((string)($payload['recipient_email']??''));
+        if(!filter_var($recipientEmail,FILTER_VALIDATE_EMAIL)) throw new RuntimeException('Email recipient is invalid.');
+        $recipientName=trim((string)($payload['recipient_name']??''));
+        if($recipientName==='') $recipientName=$recipientEmail;
+        $ownerStatement=$db->prepare('SELECT full_name FROM users WHERE id=:id AND status=\'active\' LIMIT 1');
+        $ownerStatement->execute(['id'=>(int)$rule['owner_id']]);
+        $ownerName=(string)$ownerStatement->fetchColumn();
+        if($ownerName==='') throw new RuntimeException('Automation owner not found.');
         $event=['title'=>$rule['title'],'event_type'=>$rule['trigger_type'],'scheduled_date'=>$rule['next_run_at'],'message'=>$payload['message']??$rule['description']??'','user_id'=>(int)$rule['owner_id']];
-        if(!EmailHelper::sendEventNotificationEmail($user['email'],$user['full_name']?:'User',$event,$user['full_name']?:'User')) throw new RuntimeException('Email send failed.');
+        if(!EmailHelper::sendEventNotificationEmail($recipientEmail,$recipientName,$event,$ownerName)) throw new RuntimeException('Email send failed.');
         return;
     }
     throw new RuntimeException('Unknown action.');
