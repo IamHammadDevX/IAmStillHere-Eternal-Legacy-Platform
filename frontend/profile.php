@@ -16,7 +16,7 @@ if (!is_logged_in()) {
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026082008" />
+  <link rel="stylesheet" href="css/style.css?v=2026082603" />
 </head>
 
 <body class="profile-page app-page">
@@ -519,6 +519,7 @@ if (!is_logged_in()) {
   <script src="js/friends.js?v=2026082001"></script>
   <script src="js/family.js?v=2026081901"></script>
   <script src="js/search.js"></script>
+  <script src="js/feature_tooltips.js?v=2026082601"></script>
 
 <div class="modal fade" id="journeyModal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Shared journey</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="journeyForm"><input type="hidden" id="journey-id"><label class="form-label">Title</label><input id="journey-title" class="form-control mb-2" maxlength="180" required><label class="form-label">Description</label><textarea id="journey-description" class="form-control mb-2" maxlength="5000"></textarea><label class="form-label">Journey cover <span class="text-muted small">(optional photo or video)</span></label><input id="journey-cover-media" type="file" class="form-control mb-2" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"><div class="row"><div class="col-md-6"><label class="form-label">Start date</label><input id="journey-start" type="date" class="form-control mb-2"></div><div class="col-md-6"><label class="form-label">End date</label><input id="journey-end" type="date" class="form-control mb-2"></div></div><label class="form-label">Status</label><select id="journey-status" class="form-select mb-3"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select><div id="journey-privacy"></div><div id="journey-error" class="small text-danger mt-2"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" form="journeyForm" class="btn btn-primary" id="journey-save">Save</button></div></div></div></div>
 <div class="modal fade" id="journeyInviteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Invite participant</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input id="journey-invite-search" class="form-control mb-2" placeholder="Search friends/family"><div id="journey-invite-results" class="list-group small"></div></div></div></div></div>
