@@ -182,6 +182,8 @@ async function loadProfile() {
             document.getElementById('tribute-form').style.display = 'none'; // hide tribute form for self
 
             document.getElementById('bio-input').value = profile.bio || '';
+            const displayNameInput = document.getElementById('display-name-input');
+            if (displayNameInput) displayNameInput.value = profile.full_name || '';
             const usernameInput = document.getElementById('username-input');
             const usernameHelp = document.getElementById('username-policy-help');
             if (usernameInput) usernameInput.value = profile.username || '';
@@ -246,6 +248,7 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     formData.append('username', document.getElementById('username-input')?.value || '');
     formData.append('bio', document.getElementById('bio-input')?.value || '');
     formData.append('date_of_birth', document.getElementById('dob-input')?.value || '');
+    formData.append('full_name', document.getElementById('display-name-input')?.value || '');
     const selectedPublicSections = [...document.querySelectorAll('[data-public-profile-section]:checked')]
         .map(input => input.value);
     formData.append('public_profile_sections', JSON.stringify(selectedPublicSections));
@@ -272,7 +275,14 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
             const usernameHelp = document.getElementById('username-policy-help');
             if (usernameInput) usernameInput.value = data.user.username;
             if (usernameHelp) usernameHelp.textContent = data.user.username_next_change_at ? `Username can be changed again on ${new Date(data.user.username_next_change_at + 'T00:00:00').toLocaleDateString()}.` : 'You can change your username once every 15 days.';
-        }        const bio = document.getElementById('profile-bio');
+        }
+        if (data.user?.full_name) {
+            const displayNameInput = document.getElementById('display-name-input');
+            if (displayNameInput) displayNameInput.value = data.user.full_name;
+            const profileName = document.getElementById('profile-name');
+            if (profileName) profileName.textContent = data.user.full_name;
+        }
+        const bio = document.getElementById('profile-bio');
         if (bio) bio.textContent = data.user?.bio || 'No bio available.';
         const about = document.getElementById('profile-about-tab-bio');
         if (about) about.textContent = data.user?.bio || 'No bio available.';

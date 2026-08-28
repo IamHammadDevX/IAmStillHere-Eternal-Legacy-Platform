@@ -12,6 +12,7 @@ $bio = sanitize_input($_POST['bio'] ?? '');
 $dateOfBirth = sanitize_input($_POST['date_of_birth'] ?? '');
 $requestedUsername = strtolower(trim((string) ($_POST['username'] ?? '')));
 $hasPublicProfileSections = array_key_exists('public_profile_sections', $_POST);
+$requestedDisplayName = sanitize_input($_POST['full_name'] ?? '');
 $publicProfileSections = $hasPublicProfileSections
     ? validate_public_profile_sections_input($_POST['public_profile_sections'])
     : null;
@@ -19,7 +20,7 @@ $publicProfileSections = $hasPublicProfileSections
 try {
     $conn = (new Database())->getConnection();
     $conn->beginTransaction();
-    $userStatement = $conn->prepare('SELECT id, username, username_changed_at FROM users WHERE id = :id FOR UPDATE');
+    $userStatement = $conn->prepare('SELECT id, username, full_name, username_changed_at FROM users WHERE id = :id FOR UPDATE');
     $userStatement->execute(['id' => (int) $_SESSION['user_id']]);
     $currentUser = $userStatement->fetch(PDO::FETCH_ASSOC);
     if (!$currentUser) { throw new RuntimeException('User account not found.'); }
@@ -28,6 +29,16 @@ try {
     $params = ['user_id' => (int) $_SESSION['user_id']];
     if ($bio !== '') { $updates[] = 'bio = :bio'; $params['bio'] = $bio; }
     if ($dateOfBirth !== '') { $updates[] = 'date_of_birth = :date_of_birth'; $params['date_of_birth'] = $dateOfBirth; }
+    if ($requestedDisplayName === '') {
+        throw new InvalidArgumentException('Display name is required.');
+    }
+    if (mb_strlen($requestedDisplayName) > 255) {
+        throw new InvalidArgumentException('Display name must be 255 characters or fewer.');
+    }
+    if ($requestedDisplayName !== (string) $currentUser['full_name']) {
+        $updates[] = 'full_name = :full_name';
+        $params['full_name'] = $requestedDisplayName;
+    }
     if ($hasPublicProfileSections) {
         $updates[] = 'public_profile_sections = :public_profile_sections';
         $params['public_profile_sections'] = json_encode($publicProfileSections);
@@ -66,7 +77,7 @@ try {
     if (!$updates) { throw new InvalidArgumentException('No changes to update.'); }
     $statement = $conn->prepare('UPDATE users SET ' . implode(', ', $updates) . ', updated_at = CURRENT_TIMESTAMP WHERE id = :user_id');
     $statement->execute($params);
-    $result = $conn->prepare('SELECT username, username_changed_at, bio, date_of_birth, profile_photo, cover_photo, public_profile_sections FROM users WHERE id = :id');
+    $result = $conn->prepare('SELECT username, full_name, username_changed_at, bio, date_of_birth, profile_photo, cover_photo, public_profile_sections FROM users WHERE id = :id');
     $result->execute(['id' => (int) $_SESSION['user_id']]);
     $user = $result->fetch(PDO::FETCH_ASSOC);
     $conn->commit();
@@ -79,6 +90,7 @@ try {
         'user' => [
             'username' => $user['username'],
             'username_next_change_at' => $nextAllowed,
+            'full_name' => $user['full_name'],
             'bio' => $user['bio'],
             'date_of_birth' => $user['date_of_birth'],
             'profile_photo' => $user['profile_photo'] ? '/data/uploads/photos/' . $user['profile_photo'] : '/frontend/images/default-profile.png',

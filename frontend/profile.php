@@ -419,7 +419,13 @@ if (!is_logged_in()) {
               <label class="form-label" for="username-input">Username</label>
               <input type="text" class="form-control" id="username-input" minlength="3" maxlength="30" pattern="[A-Za-z0-9._]+" autocomplete="username" />
               <div id="username-policy-help" class="form-text">You can change your username once every 15 days.</div>
-            </div>            <div class="mb-3">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="display-name-input">Display Name</label>
+              <input type="text" class="form-control" id="display-name-input" maxlength="255" autocomplete="name" required />
+              <div class="form-text">This is the name shown on your public profile. It does not need to be unique.</div>
+            </div>
+            <div class="mb-3">
               <label class="form-label">Bio</label>
               <textarea class="form-control" id="bio-input" rows="4" placeholder="Tell your story..."></textarea>
             </div>
